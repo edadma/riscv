@@ -2,9 +2,45 @@
 package xyz.hyperreal.riscv
 
 
-class BDF( name: String, chars: Vector[Bitmap] ) {
+class BDF( val name: String, val chars: Vector[Bitmap], val width: Int, val height: Int, val ascent: Int ) {
 
-  def show( c: Int ): Unit = {
+  case class Bit( x: Int, y: Int, set: Boolean )
+
+  def bitStream( c: Char ): Stream[Bit] = {
+    require( c < 256, s"character $c is out of range (0 - 255)" )
+
+    val bitmap = chars(c)
+
+    def bitStream( x: Int, y: Int ): Stream[Bit] =
+      if (y == height)
+        Stream.empty
+      else if (x == width)
+        bitStream( 0, y + 1 )
+      else
+        Bit( x, y, (((bitmap.data(y) >>> (15 - x))&1) == 1) ) #:: bitStream( x + 1, y )
+
+    bitStream( 0, 0 )
+  }
+
+  case class Segment( x: Int, y: Int, length: Int )
+
+  def segmentStream( c: Char ): Stream[Segment] = {
+    def segmentStream( s: Stream[Bit] ): Stream[Segment] = {
+      s.dropWhile( !_.set ) match {
+        case Stream.Empty => Stream.empty
+        case bs@(Bit(_, y, _) #:: _) => bs.span( b => b.y == y && b.set ) match {
+          case (segment@(Bit(x, y, _) #:: _), next) =>
+            Segment( x, y, segment.length) #:: segmentStream( next )
+        }
+      }
+    }
+
+    segmentStream( bitStream(c) )
+  }
+
+  def show( c: Char ): Unit = {
+    require( c < 256, s"character $c is out of range (0 - 255)" )
+
     chars(c) match {
       case null => println( s"character $c not defined" )
       case Bitmap( name, array ) =>
@@ -12,7 +48,7 @@ class BDF( name: String, chars: Vector[Bitmap] ) {
         println( "-"*10 )
 
         for (row <- array) {
-          for (col <- 0 to bbx(0))
+          for (col <- 0 until width)
             if ((row & (1 << (15 - col))) == 0)
               print( ' ' )
             else
@@ -30,63 +66,63 @@ class BDF( name: String, chars: Vector[Bitmap] ) {
 object BDF {
 
   def read( src: io.Source ) = {
-    var font: String = _
-    var bbx: Vector[Int] = _
+    var font: String = null
+    var bbx: Vector[Int] = null
     var ascent: Option[Int] = None
     val chars = new Array[Bitmap]( 256 )
-
-    val src = io.Source.fromFile( "9x15.bdf" )
     val lines = src.getLines
     var count = 0
-
     var bitmap = false
-    var index: Int = _
+    var index: Int = 0
+    var name: String = null
+    var encoding: Int = 0
+    var data: Array[Int] = null
 
-    var name: String = _
-    var encoding: Int = _
-    var data: Array[Int] = _
+    def readchars {
+      while (lines hasNext) {
+        val line = lines.next
+        val (word, rest) =
+          line.indexOf( ' ' ) match {
+            case -1 => (line, "")
+            case idx => (line.substring( 0, idx ), line.substring( idx ).trim)
+          }
 
-    while (lines hasNext) {
-      val line = lines.next
-      val (word, rest) =
-        line.indexOf( ' ' ) match {
-          case -1 => (line, "")
-          case idx => (line.substring( 0, idx ), line.substring( idx ).trim)
-        }
-
-      if (bitmap) {
-        word match {
-          case "ENDCHAR" =>
-            chars(encoding) = Bitmap( name, data.toVector )
-            bitmap = false
-          case _ if word.length == 4 && word.forall( "0123456789ABCDEF" contains _ ) =>
-            data(index) = Integer.parseInt( word, 16 )
-            index += 1
-          case _ =>
-        }
-      } else {
-        word match {
-          case "FONT" => font = rest
-          case "FONTBOUNDINGBOX" => bbx = rest.split( " " ) map (_.toInt) toVector
-          case "FONT_ASCENT" => ascent = Some( rest.toInt )
-          case "ENDFONT" => return
-          case "STARTCHAR" => name = rest
-          case "ENCODING" => encoding = rest.toInt
-          case "BITMAP" =>
-            count += 1
-            data = new Array[Int]( bbx(1) )
-            index = 0
-            bitmap = true
-          case _ =>
+        if (bitmap) {
+          word match {
+            case "ENDCHAR" =>
+              chars(encoding) = Bitmap( name, data.toVector )
+              bitmap = false
+            case _ if word.length == 4 && word.forall( "0123456789ABCDEF" contains _ ) =>
+              data(index) = Integer.parseInt( word, 16 )
+              index += 1
+            case _ =>
+          }
+        } else {
+          word match {
+            case "FONT" => font = rest
+            case "FONTBOUNDINGBOX" => bbx = rest.split( " " ) map (_.toInt) toVector
+            case "FONT_ASCENT" => ascent = Some( rest.toInt )
+            case "ENDFONT" => return
+            case "STARTCHAR" => name = rest
+            case "ENCODING" => encoding = rest.toInt
+            case "BITMAP" =>
+              count += 1
+              data = new Array[Int]( bbx(1) )
+              index = 0
+              bitmap = true
+            case _ =>
+          }
         }
       }
     }
+
+    readchars
 
     if (ascent isEmpty)
       sys.error( s"font $font is missing ascent value" )
 
     println( s"$count characters have been read for font $font" )
-    new BDF( font, chars.toVector, ascent.get )
+    new BDF( font, chars.toVector, bbx(0), bbx(1), ascent.get )
   }
 }
 
@@ -130,7 +166,7 @@ object BDFMain extends App {
 //    """.stripMargin
 //  )
 
-  BDF.read
+  val font9x15 = BDF.read( io.Source.fromFile("9x15.bdf") )
 
-  show( 'A'.toChar.toInt )
+  println( font9x15.segmentStream( 'A' ).toList )
 }
