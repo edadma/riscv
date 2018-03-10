@@ -38,15 +38,18 @@ class Video( columns: Int, rows: Int, font: BDF ) extends Panel {
 
   def color = curc
 
-  def scrollup: Unit = {
-    Array.copy( array, 1, array, 0, rows - 1 )
-    array(rows - 1) = Array.fill( columns )( Cell(' ', Color.BLACK) )
+  def scrollup( lines: Int ): Unit = {
+    require( 0 < lines && lines < rows, s"number of lines to scroll is out of range: $lines" )
+    Array.copy( array, lines, array, 0, rows - lines )
+
+    for (i <- rows - lines until rows)
+      array(i) = Array.fill( columns )( Cell(' ', Color.BLACK) )
   }
 
   private def write( c: Char ): Unit = {
     def nextline: Unit =
       if (cury == rows - 1)
-        scrollup
+        scrollup( 1 )
       else
         cury += 1
 

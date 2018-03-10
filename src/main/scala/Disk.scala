@@ -43,7 +43,7 @@ class FileDisk( pathname: String, val cylinders: Int, val heads: Int, val sector
   override def format: Unit = {
     val b = new Array[Byte]( block )
 
-    for (_ <- cylinders*heads*sectors)
+    for (_ <- 1 to cylinders*heads*sectors)
       file.write( block )
   }
 
