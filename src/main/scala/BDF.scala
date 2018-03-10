@@ -1,5 +1,6 @@
 //@
 package xyz.hyperreal.riscv
+import scala.swing.{Color, Graphics2D}
 
 
 class BDF( val name: String, val chars: Vector[Bitmap], val width: Int, val height: Int, val ascent: Int ) {
@@ -52,7 +53,7 @@ class BDF( val name: String, val chars: Vector[Bitmap], val width: Int, val heig
             if ((row & (1 << (15 - col))) == 0)
               print( ' ' )
             else
-              print( 'X' )
+              print( '*' )
 
           println
         }
@@ -60,6 +61,15 @@ class BDF( val name: String, val chars: Vector[Bitmap], val width: Int, val heig
         println( "-"*10 )
     }
   }
+
+  def draw( g: Graphics2D, char: Char, cx: Int, cy: Int ): Unit =
+    segmentStream( char ) foreach {
+      case Segment( sx, sy, length ) =>
+        val x = cx + sx
+        val y = cy + sy
+
+        g.drawLine( x, y, x + length - 1, y )
+    }
 
 }
 
