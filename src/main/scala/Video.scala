@@ -1,9 +1,11 @@
 package xyz.hyperreal.riscv
 
 import java.awt.Color
+import java.util.{Timer, TimerTask}
 
 import scala.swing.{Graphics2D, MainFrame, Panel, SimpleSwingApplication}
 import scala.swing.Swing._
+import scala.swing.event.WindowActivated
 
 
 class Video( columns: Int, rows: Int, font: BDF ) extends Panel {
@@ -13,7 +15,7 @@ class Video( columns: Int, rows: Int, font: BDF ) extends Panel {
 
   case class Cell( char: Char, color: Color )
 
-  private val array = Array.fill[Cell]( columns, rows )( Cell(' ', Color.GRAY) )
+  private val array = Array.fill[Cell]( rows, columns )( Cell(' ', Color.GRAY) )
   private var curx = 0
   private var cury = 0
   private var curc = Color.GRAY
@@ -36,17 +38,28 @@ class Video( columns: Int, rows: Int, font: BDF ) extends Panel {
 
   def color = curc
 
+  def scrollup: Unit = {
+    Array.copy( array, 1, array, 0, rows - 1 )
+    array(rows - 1) = Array.fill( columns )( Cell(' ', Color.BLACK) )
+  }
+
   private def write( c: Char ): Unit = {
+    def nextline: Unit =
+      if (cury == rows - 1)
+        scrollup
+      else
+        cury += 1
+
     c match {
       case '\n' =>
         curx = 0
-        cury = (cury + 1)%rows
+        nextline
       case _ =>
-        array( curx )( cury ) = Cell( c, curc )
+        array( cury )( curx ) = Cell( c, curc )
         curx = (curx + 1)%columns
 
         if (curx == 0)
-          cury = (cury + 1)%rows
+          nextline
     }
   }
 
@@ -68,8 +81,8 @@ class Video( columns: Int, rows: Int, font: BDF ) extends Panel {
   override def paintComponent( g: Graphics2D ): Unit = {
     super.paintComponent( g )
 
-    for (j <- 0 until rows; i <- 0 until columns) {
-      val Cell( char, color ) = array(i)(j)
+    for (i <- 0 until columns; j <- 0 until rows) {
+      val Cell( char, color ) = array(j)(i)
 
       g setColor color
       font.draw( g, char, i*font.width, j*font.height )
@@ -105,7 +118,29 @@ object VideoMain extends SimpleSwingApplication {
     new MainFrame {
       title = "video test"
       contents = video
-      pack
+      listenTo( this )
+
+      val timer = new Timer
+      val task =
+        new TimerTask {
+          var counter = 1
+
+          def run: Unit = {
+            video.println( s"$counter - this is another very very very very very very very very boring test" )
+            counter += 1
+          }
+        }
+
+      reactions += {
+        case WindowActivated( _ ) =>
+          timer.scheduleAtFixedRate( task, 0, 500 )
+      }
     }
 
+
 }
+
+//for (i <- 1 to 2) {
+//  video.println( i )
+//  Thread.sleep( 500 )
+//}
