@@ -3,11 +3,6 @@ package xyz.hyperreal.riscv
 import collection.mutable.{ArrayBuffer}
 
 
-trait VectorsAddresses {
-	val RESET_VECTOR = 0xFFFC
-	val BRK_VECTOR = 0xFFFE
-}
-
 trait Addressable {
 
 	def name: String

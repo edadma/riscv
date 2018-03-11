@@ -5,9 +5,13 @@ import scala.collection.mutable.ListBuffer
 
 class CPU( mem: Memory ) {
 
-  val opcodes = Array.fill[Instruction]( 0x1000000 )( IllegalInstruction )
+  private [riscv] val registers = Array[Long]( 32 )
+  private [riscv] var pc: Long = 0
+  private [riscv] var instruction = 0
 
-  def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
+  private val opcodes = Array.fill[Instruction]( 0x1000000 )( IllegalInstruction )
+
+  private def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
       opcodes(idx) = inst( m )
 
@@ -21,7 +25,7 @@ class CPU( mem: Memory ) {
 
     val bits = p(0)
 
-//    require( bits.length == 16, "pattern should comprise 16 bits" )
+    require( bits.length > 0, "pattern should comprise at least one bit" )
     require( bits.forall(c => c == '0' || c == '1' || c.isLetter), "pattern should comprise only 0's, 1's or letters" )
 
     val ranges = Map( (p drop 1 map {case Range( v, l, u ) => v(0) -> (l.toInt, u.toInt)}): _* )
@@ -68,6 +72,8 @@ class CPU( mem: Memory ) {
     }, Map() )
     enumeration.toList
   }
+
+  populate( "ddddd 0110111", Instructions.LUI )
 }
 
 /*
