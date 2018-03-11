@@ -12,4 +12,8 @@ package object riscv {
 
   def hex( s: String ) = Integer.parseInt( s, 16 )
 
+  def problem( cpu: CPU, error: String ) = {
+    sys.error( error )
+  }
+
 }

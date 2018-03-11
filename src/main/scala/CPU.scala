@@ -3,10 +3,15 @@ package xyz.hyperreal.riscv
 import scala.collection.mutable.ListBuffer
 
 
-object CPU/*( mem: Memory )*/ extends App {
+class CPU( mem: Memory ) {
 
+  val opcodes = Array.fill[Instruction]( 0x1000000 )( IllegalInstruction )
 
-  def generate( pattern: String ) = {
+  def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
+    for ((idx, m) <- generate( pattern ))
+      opcodes(idx) = inst( m )
+
+  private def generate( pattern: String ) = {
     case class Variable( v: Char, lower: Int, upper: Int, bits: List[Int] )
 
     val Range = "([a-zA-Z]):([0-9]+)-([0-9]+)"r
@@ -63,8 +68,6 @@ object CPU/*( mem: Memory )*/ extends App {
     }, Map() )
     enumeration.toList
   }
-
-  println( generate("ddddd 0110111") )
 }
 
 /*
