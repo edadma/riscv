@@ -8,6 +8,7 @@ class CPU( mem: Memory ) {
   private [riscv] val registers = Array[Long]( 32 )
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
+  private [riscv] var halt = false
 
   private val opcodes = Array.fill[Instruction]( 0x1000000 )( IllegalInstruction )
 
@@ -15,7 +16,7 @@ class CPU( mem: Memory ) {
     for ((idx, m) <- generate( pattern ))
       opcodes(idx) = inst( m )
 
-  private def populate( insts: List[(String, Map[Char, Int] => Instruction)] ) =
+  private def populate( insts: List[(String, Map[Char, Int] => Instruction)] ): Unit =
     for ((p, c) <- insts)
       populate( p, c )
 
@@ -77,7 +78,7 @@ class CPU( mem: Memory ) {
     enumeration.toList
   }
 
-  import RV32IConstructors._
+  import RV32IInstructions._
 
   val RV32I =
     List(
@@ -86,6 +87,12 @@ class CPU( mem: Memory ) {
     )
 
   populate( RV32I )
+
+  def run: Unit = {
+
+    while (!halt)
+      opcodes(mem.readInt( pc.toInt ))( this )
+  }
 }
 
 /*

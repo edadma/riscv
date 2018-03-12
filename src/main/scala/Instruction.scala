@@ -1,7 +1,16 @@
 package xyz.hyperreal.riscv
 
 
-abstract class Instruction extends (CPU => Boolean)
+abstract class Instruction extends (CPU => Unit) {
+
+  def perform( cpu: CPU )
+
+  def apply( cpu: CPU ): Unit = {
+    perform( cpu )
+    cpu.pc += 4
+  }
+
+}
 
 abstract class UTypeInstruction extends Instruction {
 
@@ -10,22 +19,19 @@ abstract class UTypeInstruction extends Instruction {
   def immediate( cpu: CPU ) = cpu.instruction&0xFFFFF000
 }
 
-class LUI( protected val rd: Int ) extends UTypeInstruction {
-  def apply( cpu: CPU ) = {
-    cpu.registers(rd) = immediate( cpu )
-    true
-  }
-}
+abstract class JTypeInstruction extends Instruction {
 
-class AUIPC( protected val rd: Int ) extends UTypeInstruction {
-  def apply( cpu: CPU ) = {
-    cpu.registers(rd) += immediate( cpu )
-    true
-  }
+  protected val rd: Int
+
+  def immediate( cpu: CPU ) =
+    (cpu.instruction >> 21)&0x7FE |
+      (cpu.instruction >> 9)&0x800 |
+      cpu.instruction&0xFF000 |
+      (cpu.instruction >> 11)&0xFFF00000
 }
 
 object IllegalInstruction extends Instruction {
 
-  def apply( cpu: CPU ) = problem( cpu, "illegal instruction" )
+  def perform( cpu: CPU ) = problem( cpu, "illegal instruction" )
 
 }

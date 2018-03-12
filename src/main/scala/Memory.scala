@@ -23,52 +23,58 @@ trait Addressable {
 	
 	def program( addr: Int, value: Int ) = writeByte( addr, value )
 	
-	def readWord( addr: Int ) = readByte( addr ) + (readByte( addr + 1 )<<8)
-	
-	def writeWord( addr: Int, value: Int ) {
+	def readShort( addr: Int ) = readByte( addr ) | (readByte( addr + 1 )<<8)
+
+	def writeShort( addr: Int, value: Int ) {
 		writeByte( addr, value&0xFF )
 		writeByte( addr, value>>8 )
 	}
-	
+
+	def readInt( addr: Int ) = readShort( addr ) | (readShort( addr + 2 )<<16)
+
+	def writeInt( addr: Int, value: Int ) {
+		writeShort( addr, value&0xFFFF )
+		writeShort( addr, value>>16 )
+	}
 }
 
 class RAM( val name: String, val start: Int, end: Int ) extends Addressable {
-	
+
 	require( start >= 0 )
 	require( end >= start )
-	
+
 	val size = end - start + 1
-		
+
 	protected val mem = new Array[Byte]( size )
-	
+
 	def clear =
 		for (i <- 0 until size)
 			mem(i) = 0
-	
+
 	def readByte( addr: Int ) = mem( addr - start )&0xFF
-	
+
 	def writeByte( addr: Int, value: Int ) = mem( addr - start ) = value.toByte
-	
+
 	override def toString = s"$name RAM: ${hexWord(start)}-${hexWord(end)}"
 }
 
 class ROM( val name: String, val start: Int, end: Int ) extends Addressable {
-	
+
 	require( start >= 0 )
 	require( end >= start )
-	
+
 	val size = end - start + 1
-		
+
 	protected val mem = new Array[Byte]( size )
-	
+
 	def readByte( addr: Int ) = mem( addr - start )&0xFF
-	
+
 	def writeByte( addr: Int, value: Int ) = sys.error( "read only memory: " + (addr&0xffff).toHexString + " (tried to write " + (value&0xff).toHexString + ")" )
-	
+
 	override def program( addr: Int, value: Int ) = mem( addr - start ) = value.toByte
-	
+
 	override def toString = s"$name ROM: ${hexWord(start)}-${hexWord(start + size - 1)}"
-	
+
 }
 
 object ROM {
@@ -80,62 +86,62 @@ object ROM {
 }
 
 trait Device extends Addressable {
-	
+
 	def init {}
-	
+
 	def disable {}
-	
+
 	override def toString = s"$name device: ${hexWord(start)}-${hexWord(start + size - 1)}"
 
 }
 
 abstract class SingleAddressDevice extends Device {
-	
+
 	val size = 1
-	
+
 	override def toString = s"$name device: ${hexWord(start)}"
-	
+
 }
 
 abstract class ReadOnlyDevice extends SingleAddressDevice {
-	
+
 	def writeByte( addr: Int, value: Int ) = sys.error( "read only device" )
-	
+
 }
 
 abstract class WriteOnlyDevice extends SingleAddressDevice {
-	
+
 	def readByte( addr: Int ) = sys.error( "write only device" )
-	
+
 }
 
 abstract class Memory extends Addressable {
-	
+
 	val name = "System memory"
 	protected val regions = new ArrayBuffer[Addressable]
 	protected var first = 0
 	protected var end = 0
-	
+
 	def init
-	
+
 	init
-	
+
 	protected def lookup( addr: Int ) =
 		regions.indexWhere( r => r.start <= addr && r.start + r.size > addr ) match {
 			case -1 => None
 			case ind => Some( regions(ind) )
 		}
-	
+
 	protected def find( addr: Int ) =
 		lookup( addr ) match {
 			case None => sys.error( addr.toHexString + " is not an addressable memory location" )
 			case Some( r ) => r
 		}
-		
+
 	def start = first
-	
+
 	def size = end - first
-	
+
 	def readByte( addr: Int ) = find( addr ).readByte( addr )
 	
 	def writeByte( addr: Int, value: Int ) = find( addr ).writeByte( addr, value )
