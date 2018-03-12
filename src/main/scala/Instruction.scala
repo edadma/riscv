@@ -20,6 +20,18 @@ abstract class ITypeInstruction extends Instruction {
   def immediate( cpu: CPU ) = cpu.instruction >> 20
 }
 
+abstract class BTypeInstruction extends Instruction {
+
+  protected val rs1: Int
+  protected val rs2: Int
+
+  def immediate( cpu: CPU ) =
+    (cpu.instruction >> 7)&0x1E |
+      (cpu.instruction >> 20)&0x3F0 |
+      (cpu.instruction >> 7)&1 |
+      (cpu.instruction >> 19)&0x1000
+}
+
 abstract class UTypeInstruction extends Instruction {
 
   protected val rd: Int

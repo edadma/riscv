@@ -31,7 +31,7 @@ class CPU( mem: Memory ) {
     val bits = p(0)
 
     require( bits.length > 0, "pattern should comprise at least one bit" )
-    require( bits.forall(c => c == '0' || c == '1' || c.isLetter), "pattern should comprise only 0's, 1's or letters" )
+    require( bits.forall(c => c == '0' || c == '1' || c.isLetter || c == "-"), "pattern should comprise only 0's, 1's, letters or -'s" )
 
     val ranges = Map( (p drop 1 map {case Range( v, l, u ) => v(0) -> (l.toInt, u.toInt)}): _* )
 
@@ -85,8 +85,14 @@ class CPU( mem: Memory ) {
       "ddddd 0110111" -> LUI,
       "ddddd 0010111" -> AUIPC,
       "ddddd 1101111" -> JAL,
-      "aaaaa 000 ddddd 1100111" -> JALR
-    )
+      "aaaaa 000 ddddd 1100111" -> JALR,
+	    "bbbbb aaaaa 000 ----- 1100011" -> BEQ,
+			"bbbbb aaaaa 001 ----- 1100011" -> BNE,
+			"bbbbb aaaaa 100 ----- 1100011" -> BLT,
+			"bbbbb aaaaa 101 ----- 1100011" -> BGE,
+			"bbbbb aaaaa 110 ----- 1100011" -> BLTU,
+			"bbbbb aaaaa 111 ----- 1100011" -> BGEU
+		)
 
   populate( RV32I )
 
