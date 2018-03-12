@@ -1,15 +1,23 @@
 package xyz.hyperreal.riscv
 
 
-abstract class Instruction extends (CPU => Unit) {
+class Instruction extends (CPU => Unit) {
 
-  def perform( cpu: CPU )
+  def perform( cpu: CPU ) {}
 
   def apply( cpu: CPU ): Unit = {
     perform( cpu )
     cpu.pc += 4
   }
 
+}
+
+abstract class ITypeInstruction extends Instruction {
+
+  protected val rs1: Int
+  protected val rd: Int
+
+  def immediate( cpu: CPU ) = cpu.instruction >> 20
 }
 
 abstract class UTypeInstruction extends Instruction {
@@ -32,6 +40,6 @@ abstract class JTypeInstruction extends Instruction {
 
 object IllegalInstruction extends Instruction {
 
-  def perform( cpu: CPU ) = problem( cpu, "illegal instruction" )
+  override def perform( cpu: CPU ) = problem( cpu, "illegal instruction" )
 
 }

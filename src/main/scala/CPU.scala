@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 
 class CPU( mem: Memory ) {
 
-  private [riscv] val registers = Array[Long]( 32 )
+  private [riscv] val x = Array[Long]( 32 )
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
   private [riscv] var halt = false
@@ -74,16 +74,18 @@ class CPU( mem: Memory ) {
           Variable( v, ranges(v)._1, ranges(v)._2, b )
         } else
           Variable( v, 0, (1 << b.length) - 1, b )
-    }, Map() )
+      }, Map() )
     enumeration.toList
   }
 
   import RV32IInstructions._
 
   val RV32I =
-    List(
-      "ddddd 0110111" -> LUI _,
-      "ddddd 0010111" -> AUIPC _
+    List[(String, Map[Char, Int] => Instruction)](
+      "ddddd 0110111" -> LUI,
+      "ddddd 0010111" -> AUIPC,
+      "ddddd 1101111" -> JAL,
+      "aaaaa 000 ddddd 1100111" -> JALR
     )
 
   populate( RV32I )
