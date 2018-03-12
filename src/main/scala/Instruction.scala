@@ -17,6 +17,13 @@ class LUI( protected val rd: Int ) extends UTypeInstruction {
   }
 }
 
+class AUIPC( protected val rd: Int ) extends UTypeInstruction {
+  def apply( cpu: CPU ) = {
+    cpu.registers(rd) += immediate( cpu )
+    true
+  }
+}
+
 object IllegalInstruction extends Instruction {
 
   def apply( cpu: CPU ) = problem( cpu, "illegal instruction" )

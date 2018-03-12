@@ -15,6 +15,10 @@ class CPU( mem: Memory ) {
     for ((idx, m) <- generate( pattern ))
       opcodes(idx) = inst( m )
 
+  private def populate( insts: List[(String, Map[Char, Int] => Instruction)] ) =
+    for ((p, c) <- insts)
+      populate( p, c )
+
   private def generate( pattern: String ) = {
     case class Variable( v: Char, lower: Int, upper: Int, bits: List[Int] )
 
@@ -73,7 +77,15 @@ class CPU( mem: Memory ) {
     enumeration.toList
   }
 
-  populate( "ddddd 0110111", Instructions.LUI )
+  import RV32IConstructors._
+
+  val RV32I =
+    List(
+      "ddddd 0110111" -> LUI _,
+      "ddddd 0010111" -> AUIPC _
+    )
+
+  populate( RV32I )
 }
 
 /*
