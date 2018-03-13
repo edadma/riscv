@@ -144,3 +144,10 @@ class LHU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruct
     cpu x rd = cpu.mem.readShort( immediate(cpu) + cpu.x(rs1) )&0xFFFF
   }
 }
+
+//ADDI not done yet
+class ADDI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def apply( cpu: CPU ) = {
+    cpu x rd = cpu.mem.readShort( immediate(cpu) + cpu.x(rs1) )&0xFFFF
+  }
+}
