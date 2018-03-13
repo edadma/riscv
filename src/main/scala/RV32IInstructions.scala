@@ -23,9 +23,15 @@ object RV32IInstructions {
 
   def BGEU( operands: Map[Char, Int] ) = new BGEU( operands('a'), operands('b') )
 
-  def BGEU( operands: Map[Char, Int] ) = new BGEU( operands('a'), operands('b') )
+  def LB( operands: Map[Char, Int] ) = new LB( operands('a'), operands('d') )
 
-  def BGEU( operands: Map[Char, Int] ) = new BGEU( operands('a'), operands('b') )
+  def LH( operands: Map[Char, Int] ) = new LH( operands('a'), operands('d') )
+
+  def LW( operands: Map[Char, Int] ) = new LW( operands('a'), operands('d') )
+
+  def LBU( operands: Map[Char, Int] ) = new LBU( operands('a'), operands('d') )
+
+  def LHU( operands: Map[Char, Int] ) = new LHU( operands('a'), operands('d') )
 
 }
 
@@ -111,6 +117,30 @@ class BGEU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstru
 
 class LB( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
   override def apply( cpu: CPU ) = {
-    cpu x rd = cpu.mem(immediate( cpu ) + cpu.x(rs1))
+    cpu x rd = cpu.mem.readByte( immediate(cpu) + cpu.x(rs1) )
+  }
+}
+
+class LH( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def apply( cpu: CPU ) = {
+    cpu x rd = cpu.mem.readShort( immediate(cpu) + cpu.x(rs1) )
+  }
+}
+
+class LW( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def apply( cpu: CPU ) = {
+    cpu x rd = cpu.mem.readInt( immediate(cpu) + cpu.x(rs1) )
+  }
+}
+
+class LBU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def apply( cpu: CPU ) = {
+    cpu x rd = cpu.mem.readByte( immediate(cpu) + cpu.x(rs1) )&0xFF
+  }
+}
+
+class LHU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def apply( cpu: CPU ) = {
+    cpu x rd = cpu.mem.readShort( immediate(cpu) + cpu.x(rs1) )&0xFFFF
   }
 }

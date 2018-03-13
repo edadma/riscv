@@ -3,14 +3,14 @@ package xyz.hyperreal.riscv
 import scala.collection.mutable.ListBuffer
 
 
-class CPU( mem: Memory ) {
+class CPU( val mem: Memory ) {
 
   private [riscv] val x = Array[Long]( 32 )
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
   private [riscv] var halt = false
 
-  private val opcodes = Array.fill[Instruction]( 0x1000000 )( IllegalInstruction )
+  private val opcodes = Array.fill[Instruction]( 0x10000000 )( IllegalInstruction )
 
   private def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
@@ -31,7 +31,7 @@ class CPU( mem: Memory ) {
     val bits = p(0)
 
     require( bits.length > 0, "pattern should comprise at least one bit" )
-    require( bits.forall(c => c == '0' || c == '1' || c.isLetter || c == "-"), "pattern should comprise only 0's, 1's, letters or -'s" )
+    require( bits.forall(c => c == '0' || c == '1' || c.isLetter || c == '-'), "pattern should comprise only 0's, 1's, letters or -'s" )
 
     val ranges = Map( (p drop 1 map {case Range( v, l, u ) => v(0) -> (l.toInt, u.toInt)}): _* )
 
@@ -91,7 +91,12 @@ class CPU( mem: Memory ) {
 			"bbbbb aaaaa 100 ----- 1100011" -> BLT,
 			"bbbbb aaaaa 101 ----- 1100011" -> BGE,
 			"bbbbb aaaaa 110 ----- 1100011" -> BLTU,
-			"bbbbb aaaaa 111 ----- 1100011" -> BGEU
+			"bbbbb aaaaa 111 ----- 1100011" -> BGEU,
+      "aaaaa 000 ddddd 0000011" -> LB,
+      "aaaaa 001 ddddd 0000011" -> LH,
+      "aaaaa 010 ddddd 0000011" -> LW,
+      "aaaaa 100 ddddd 0000011" -> LBU,
+      "aaaaa 101 ddddd 0000011" -> LHU
 		)
 
   populate( RV32I )
