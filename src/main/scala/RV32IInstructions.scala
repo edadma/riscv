@@ -23,6 +23,10 @@ object RV32IInstructions {
 
   def BGEU( operands: Map[Char, Int] ) = new BGEU( operands('a'), operands('b') )
 
+  def BGEU( operands: Map[Char, Int] ) = new BGEU( operands('a'), operands('b') )
+
+  def BGEU( operands: Map[Char, Int] ) = new BGEU( operands('a'), operands('b') )
+
 }
 
 class LUI( protected val rd: Int ) extends UTypeInstruction {
@@ -102,5 +106,11 @@ class BGEU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstru
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
+  }
+}
+
+class LB( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def apply( cpu: CPU ) = {
+    cpu x rd = cpu.mem(immediate( cpu ) + cpu.x(rs1))
   }
 }
