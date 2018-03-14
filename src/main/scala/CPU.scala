@@ -1,3 +1,4 @@
+//@
 package xyz.hyperreal.riscv
 
 import scala.collection.mutable.ListBuffer
@@ -5,12 +6,26 @@ import scala.collection.mutable.ListBuffer
 
 class CPU( val mem: Memory ) {
 
-  private [riscv] val x = Array[Long]( 32 )
+  private [riscv] val registers = new Array[Long]( 32 )
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
   private [riscv] var halt = false
 
   private val opcodes = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
+
+  def apply( r: Int ) = if (r == 0) 0L else registers(r)
+
+  def update( r: Int, v: Long ): Unit = registers(r) = v
+
+//  private [riscv] val x =
+//    new AnyRef {
+//      def apply( r: Int ) = if (r == 0) 0L else registers(r)
+//
+//      def update( r: Int, v: Long ): Unit = registers(r) = v
+//    }
+//  private [riscv] def x_=( r: Int, v: Long ): Unit = registers(r) = v
+//
+//  private [riscv] def x( r: Int ) = if (r == 0) 0L else registers(r)
 
   private def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
@@ -82,6 +97,7 @@ class CPU( val mem: Memory ) {
 
   val RV32I =
     List[(String, Map[Char, Int] => Instruction)](
+      "00000 00000 000 00000 0000000" -> (_ => HaltInstruction),
       "----- ----- --- ddddd 0110111" -> LUI,
       "----- ----- --- ddddd 0010111" -> AUIPC,
       "----- ----- --- ddddd 1101111" -> JAL,
@@ -114,7 +130,9 @@ class CPU( val mem: Memory ) {
 
   def run: Unit = {
 
-    while (!halt)
-      opcodes(mem.readInt( pc.toInt )&0xFFFFFF)( this )
+    while (!halt) {
+      instruction = mem.readInt( pc.toInt )
+      opcodes(instruction&0xFFFFFF)( this )
+    }
   }
 }

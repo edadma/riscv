@@ -20,4 +20,7 @@ package object riscv {
     sys.error( error )
   }
 
+  def itype( imm: Int, rs1: Int, funct3: Symbol, rd: Int, opcode: Symbol ) =
+    (imm << 20) | (rs1 << 15) | (Integer.parseInt(funct3.name drop 1, 2) << 12) | (rd << 7) |
+      Integer.parseInt(opcode.name drop 1, 2)
 }

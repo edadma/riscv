@@ -1,3 +1,4 @@
+//@
 package xyz.hyperreal.riscv
 
 import collection.mutable.{ArrayBuffer}
@@ -21,8 +22,23 @@ trait Addressable {
 	
 	def isDevice = isInstanceOf[Device]
 	
-	def program( addr: Long, value: Int ) = writeByte( addr, value )
-	
+	def programByte( addr: Long, value: Int ) = writeByte( addr, value )
+
+	def programShort( addr: Long, value: Int ): Unit = {
+		programByte( addr, value&0xFF )
+		programByte( addr + 1, value>>8 )
+	}
+
+	def programInt( addr: Long, value: Int ) {
+		programShort( addr, value&0xFFFF )
+		programShort( addr + 2, value>>16 )
+	}
+
+	def programLong( addr: Long, value: Long ) {
+		programInt( addr, value.asInstanceOf[Int] )
+		programInt( addr + 4, (value>>32).asInstanceOf[Int] )
+	}
+
 	def readShort( addr: Long ) = readByte( addr ) | (readByte( addr + 1 )<<8)
 
 	def writeShort( addr: Long, value: Int ) {
@@ -78,16 +94,23 @@ class ROM( val name: String, val start: Long, end: Long ) extends Addressable {
 
 	def writeByte( addr: Long, value: Int ) = sys.error( "read only memory: " + (addr&0xffff).toHexString + " (tried to write " + (value&0xff).toHexString + ")" )
 
-	override def program( addr: Long, value: Int ) = mem( (addr - start).asInstanceOf[Int] ) = value.toByte
+	override def programByte( addr: Long, value: Int ) = mem( (addr - start).asInstanceOf[Int] ) = value.toByte
 
 	override def toString = s"$name ROM: ${hexLong(start)}-${hexLong(start + size - 1)}"
 
 }
 
 object ROM {
-	def apply( name: String, start: Int, data: Seq[Byte] ) = {
+	def apply( name: String, start: Long, data: Seq[Byte] ) = {
 		new ROM( name, start, start + data.length - 1 ) {
 			data.copyToArray( mem )
+		}
+	}
+
+	def code( name: String, startx: Long, data: Seq[Int] ) = {
+		new ROM( name, startx, startx + data.length*4 - 1 ) {
+			for ((inst, idx) <- data zipWithIndex)
+				programInt( start + idx*4, inst )
 		}
 	}
 }
@@ -122,16 +145,16 @@ abstract class WriteOnlyDevice extends SingleAddressDevice {
 
 }
 
-/*abstract*/ class Memory extends Addressable {//todo: look into "init()"
+abstract class Memory extends Addressable {
 
 	val name = "System memory"
 	protected val regions = new ArrayBuffer[Addressable]
 	protected var first: Long = 0
 	protected var end: Long = 0
 
-//	def init
-//
-//	init
+	def init
+
+	init
 
 	protected def lookup( addr: Long ) =
 		regions.indexWhere( r => r.start <= addr && r.start + r.size > addr ) match {
@@ -153,7 +176,7 @@ abstract class WriteOnlyDevice extends SingleAddressDevice {
 	
 	def writeByte( addr: Long, value: Int ) = find( addr ).writeByte( addr, value )
 	
-	override def program( addr: Long, value: Int ) = find( addr ).program( addr, value )
+	override def programByte( addr: Long, value: Int ) = find( addr ).programByte( addr, value )
 	
 	def addressable( addr: Long ) = lookup( addr ) nonEmpty
 	

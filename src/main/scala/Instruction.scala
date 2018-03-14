@@ -89,3 +89,9 @@ object IllegalInstruction extends Instruction {
   override def perform( cpu: CPU ) = illegal( cpu )
 
 }
+
+object HaltInstruction extends Instruction {
+
+  override def apply( cpu: CPU ) = cpu.halt = true
+
+}
