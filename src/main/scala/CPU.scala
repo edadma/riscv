@@ -97,6 +97,9 @@ class CPU( val mem: Memory ) {
       "----- aaaaa 010 ddddd 0000011" -> LW,
       "----- aaaaa 100 ddddd 0000011" -> LBU,
       "----- aaaaa 101 ddddd 0000011" -> LHU,
+      "bbbbb aaaaa 000 ----- 0100011" -> SB,
+      "bbbbb aaaaa 001 ----- 0100011" -> SH,
+      "bbbbb aaaaa 010 ----- 0100011" -> SW,
       "----- aaaaa 100 ddddd 0010011" -> ADDI
 		)
 

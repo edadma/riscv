@@ -12,12 +12,20 @@ class Instruction extends (CPU => Unit) {
 
 }
 
+abstract class RTypeInstruction extends Instruction {
+
+  protected val rs1: Int
+  protected val rs2: Int
+
+}
+
 abstract class ITypeInstruction extends Instruction {
 
   protected val rs1: Int
   protected val rd: Int
 
   def immediate( cpu: CPU ) = cpu.instruction >> 20
+
 }
 
 abstract class STypeInstruction extends Instruction {
@@ -26,6 +34,7 @@ abstract class STypeInstruction extends Instruction {
   protected val rs2: Int
 
   def immediate( cpu: CPU ) = (cpu.instruction >> 7)&0xF | (cpu.instruction >> 20)&0x7F0
+
 }
 
 abstract class BTypeInstruction extends Instruction {
@@ -38,6 +47,7 @@ abstract class BTypeInstruction extends Instruction {
       (cpu.instruction >> 20)&0x3F0 |
       (cpu.instruction >> 7)&1 |
       (cpu.instruction >> 19)&0x1000
+
 }
 
 abstract class UTypeInstruction extends Instruction {
@@ -56,6 +66,7 @@ abstract class JTypeInstruction extends Instruction {
       (cpu.instruction >> 9)&0x800 |
       cpu.instruction&0xFF000 |
       (cpu.instruction >> 11)&0xFFF00000
+
 }
 
 object IllegalInstruction extends Instruction {
