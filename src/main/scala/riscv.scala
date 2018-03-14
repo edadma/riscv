@@ -23,4 +23,9 @@ package object riscv {
   def itype( imm: Int, rs1: Int, funct3: Symbol, rd: Int, opcode: Symbol ) =
     (imm << 20) | (rs1 << 15) | (Integer.parseInt(funct3.name drop 1, 2) << 12) | (rd << 7) |
       Integer.parseInt(opcode.name drop 1, 2)
+
+  def btype( imm: Int, rs2: Int, rs1: Int, funct3: Symbol, opcode: Symbol ) =
+    (imm&0x800 >> 4) | (imm&0x1E << 7) | (imm&0x7E0 << 20) | (imm&0x1000 << 19) |
+      (rs2 << 20) | (rs1 << 15) | (Integer.parseInt(funct3.name drop 1, 2) << 12) |
+      Integer.parseInt(opcode.name drop 1, 2)
 }
