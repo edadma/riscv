@@ -11,6 +11,8 @@ class CPU( val mem: Memory ) {
   private [riscv] var instruction = 0
   private [riscv] var halt = false
 
+  var counter = 0L
+
   private val opcodes = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
 
   def apply( r: Int ) = if (r == 0) 0L else registers(r)
@@ -133,6 +135,9 @@ class CPU( val mem: Memory ) {
     while (!halt) {
       instruction = mem.readInt( pc.toInt )
       opcodes(instruction&0xFFFFFF)( this )
+      counter += 1
     }
+
   }
+
 }
