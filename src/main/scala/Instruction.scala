@@ -59,9 +59,9 @@ abstract class BTypeInstruction extends Instruction {
 
   def immediate( cpu: CPU ) =
     (cpu.instruction >> 7)&0x1E |
-      (cpu.instruction >> 20)&0x3F0 |
-      (cpu.instruction >> 7)&1 |
-      (cpu.instruction >> 19)&0x1000
+      (cpu.instruction >> 20)&0x7E0 |
+      (cpu.instruction << 4)&0x800 |
+      (cpu.instruction >> 19)&0xFFFFF000
 
 }
 
@@ -94,4 +94,11 @@ object HaltInstruction extends Instruction {
 
   override def apply( cpu: CPU ) = cpu.halt = true
 
+}
+
+object PrintInstruction extends Instruction {
+
+  override def perform( cpu: CPU ) = {
+    println(cpu(1))
+  }
 }

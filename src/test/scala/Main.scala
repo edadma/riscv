@@ -11,8 +11,9 @@ object Main extends App {
         add( ROM.code("program", 0x0000, List(
           itype( 1, 0, 'b000, 1, 'b0010011 ),
           itype( 5, 0, 'b000, 2, 'b0010011 ),
+          1,
           itype( 1, 1, 'b000, 1, 'b0010011 ),
-          btype( -4, 2, 1, 'b001, 'b1100011 ),
+          btype( -8, 2, 1, 'b001, 'b1100011 ),
           0
         )) )
       }

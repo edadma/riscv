@@ -100,6 +100,7 @@ class CPU( val mem: Memory ) {
   val RV32I =
     List[(String, Map[Char, Int] => Instruction)](
       "00000 00000 000 00000 0000000" -> (_ => HaltInstruction),
+      "00000 00000 000 00000 0000001" -> (_ => PrintInstruction),
       "----- ----- --- ddddd 0110111" -> LUI,
       "----- ----- --- ddddd 0010111" -> AUIPC,
       "----- ----- --- ddddd 1101111" -> JAL,
