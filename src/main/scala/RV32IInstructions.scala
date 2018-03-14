@@ -33,6 +33,8 @@ object RV32IInstructions {
 
   def LHU( operands: Map[Char, Int] ) = new LHU( operands('a'), operands('d') )
 
+  def ADDI( operands: Map[Char, Int] ) = new ADDI( operands('a'), operands('d') )
+
 }
 
 class LUI( protected val rd: Int ) extends UTypeInstruction {
@@ -145,9 +147,8 @@ class LHU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruct
   }
 }
 
-//ADDI not done yet
 class ADDI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
   override def apply( cpu: CPU ) = {
-    cpu x rd = cpu.mem.readShort( immediate(cpu) + cpu.x(rs1) )&0xFFFF
+    cpu x rd = immediate(cpu) + cpu.x(rs1)
   }
 }

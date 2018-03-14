@@ -96,7 +96,8 @@ class CPU( val mem: Memory ) {
       "----- aaaaa 001 ddddd 0000011" -> LH,
       "----- aaaaa 010 ddddd 0000011" -> LW,
       "----- aaaaa 100 ddddd 0000011" -> LBU,
-      "----- aaaaa 101 ddddd 0000011" -> LHU
+      "----- aaaaa 101 ddddd 0000011" -> LHU,
+      "----- aaaaa 100 ddddd 0010011" -> ADDI
 		)
 
   populate( RV32I )
@@ -107,25 +108,3 @@ class CPU( val mem: Memory ) {
       opcodes(mem.readInt( pc.toInt )&0xFFFFFF)( this )
   }
 }
-
-/*
-RV32I (pg. 116)
------
-
-ddddd 0110111 LUI
-ddddd 0010111 AUIPC
-ddddd 1101111 JAL
-aaaaa 000 ddddd 1100111 JALR
-bbbbb aaaaa 000 oooop 1100011 BEQ
-bbbbb aaaaa 001 oooop 1100011 BNE
-bbbbb aaaaa 100 oooop 1100011 BLT
-bbbbb aaaaa 101 oooop 1100011 BGE
-bbbbb aaaaa 110 oooop 1100011 BLTU
-bbbbb aaaaa 111 oooop 1100011 BGEU
-aaaaa 000 ddddd 0000011 LB
-aaaaa 001 ddddd 0000011 LH
-aaaaa 010 ddddd 0000011 LW
-aaaaa 100 ddddd 0000011 LBU
-aaaaa 101 ddddd 0000011 LHU
-
- */
