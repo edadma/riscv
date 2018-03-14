@@ -10,12 +10,17 @@ class Instruction extends (CPU => Unit) {
     cpu.pc += 4
   }
 
+  def illegal( cpu: CPU ) = problem( cpu, "illegal instruction" )
+
 }
 
 abstract class RTypeInstruction extends Instruction {
 
   protected val rs1: Int
   protected val rs2: Int
+  protected val rd: Int
+
+  def funct( cpu: CPU ) = cpu.instruction >>> 25
 
 }
 
@@ -25,6 +30,16 @@ abstract class ITypeInstruction extends Instruction {
   protected val rd: Int
 
   def immediate( cpu: CPU ) = cpu.instruction >> 20
+
+}
+
+abstract class ShiftITypeInstruction extends Instruction {
+
+  protected val shamt: Int
+  protected val rs1: Int
+  protected val rd: Int
+
+  def funct( cpu: CPU ) = cpu.instruction >>> 25
 
 }
 
@@ -71,6 +86,6 @@ abstract class JTypeInstruction extends Instruction {
 
 object IllegalInstruction extends Instruction {
 
-  override def perform( cpu: CPU ) = problem( cpu, "illegal instruction" )
+  override def perform( cpu: CPU ) = illegal( cpu )
 
 }

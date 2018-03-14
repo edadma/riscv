@@ -135,6 +135,58 @@ class ADDI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruc
   }
 }
 
+class SLTI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    cpu x rd = if (cpu.x(rs1) < immediate(cpu)) 1 else 0
+  }
+}
+
+class SLTIU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    cpu x rd = if (java.lang.Long.compareUnsigned(cpu.x(rs1), immediate(cpu)) < 0) 1 else 0
+  }
+}
+
+class XORI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def perform( cpu: CPU ) = cpu x rd = immediate(cpu) ^ cpu.x(rs1)
+}
+
+class ORI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def perform( cpu: CPU ) = cpu x rd = immediate(cpu) | cpu.x(rs1)
+}
+
+class ANDI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+  override def perform( cpu: CPU ) = cpu x rd = immediate(cpu) & cpu.x(rs1)
+}
+
+class SLLI( protected val shamt: Int, protected val rs1: Int, protected val rd: Int ) extends ShiftITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    if (funct(cpu) == 0)
+      cpu x rd = cpu.x(rs1) << shamt
+    else
+      illegal( cpu )
+  }
+}
+
+class SRLI( protected val shamt: Int, protected val rs1: Int, protected val rd: Int ) extends ShiftITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    if (funct(cpu) == 0)
+      cpu x rd = cpu.x(rs1) >>> shamt
+    else
+      illegal( cpu )
+  }
+}
+
+class SRI( protected val shamt: Int, protected val rs1: Int, protected val rd: Int ) extends ShiftITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    funct(cpu) match {
+      case 0 => cpu x rd = cpu.x(rs1) >> shamt
+      case 0x20 => cpu x rd = cpu.x(rs1) >> shamt
+      case _ => illegal( cpu )
+    }
+  }
+}
+
 object RV32IInstructions {
 
 	def LUI( operands: Map[Char, Int] ) = new LUI( operands('d') )
@@ -174,5 +226,19 @@ object RV32IInstructions {
 	def SW( operands: Map[Char, Int] ) = new SW( operands('a'), operands('b') )
 
 	def ADDI( operands: Map[Char, Int] ) = new ADDI( operands('a'), operands('d') )
+
+  def SLTI( operands: Map[Char, Int] ) = new SLTI( operands('a'), operands('d') )
+
+  def SLTIU( operands: Map[Char, Int] ) = new SLTIU( operands('a'), operands('d') )
+
+  def XORI( operands: Map[Char, Int] ) = new XORI( operands('a'), operands('d') )
+
+  def ORI( operands: Map[Char, Int] ) = new ORI( operands('a'), operands('d') )
+
+  def ANDI( operands: Map[Char, Int] ) = new ANDI( operands('a'), operands('d') )
+
+  def SLLI( operands: Map[Char, Int] ) = new SLLI( operands('s'), operands('a'), operands('d') )
+
+  def SRI( operands: Map[Char, Int] ) = new SRI( operands('s'), operands('a'), operands('d') )
 
 }
