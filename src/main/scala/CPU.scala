@@ -133,12 +133,19 @@ class CPU( val mem: Memory ) {
 
   def run: Unit = {
 
+    System.gc
+    System.gc
+    System.gc
+
+    val start = System.currentTimeMillis
+
     while (!halt) {
       instruction = mem.readInt( pc.toInt )
       opcodes(instruction&0xFFFFFF)( this )
       counter += 1
     }
 
+    println( counter.toDouble/((System.currentTimeMillis - start).toDouble/1000) )
   }
 
 }
