@@ -3,33 +3,33 @@ package xyz.hyperreal.riscv
 import java.lang.Long.{compareUnsigned => lcu}
 
 
-class LUI( protected val rd: Int ) extends UTypeInstruction {
+class LUI( val rd: Int ) extends UTypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = immediate( cpu )
   }
 }
 
-class AUIPC( protected val rd: Int ) extends UTypeInstruction {
+class AUIPC( val rd: Int ) extends UTypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) += immediate( cpu )
   }
 }
 
-class JAL( protected val rd: Int ) extends JTypeInstruction {
+class JAL( val rd: Int ) extends JTypeInstruction {
   override def apply( cpu: CPU ) = {
     cpu.pc += immediate( cpu )
     cpu(rd) = cpu.pc + 4
   }
 }
 
-class JALR( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class JALR( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def apply( cpu: CPU ) = {
     cpu.pc += (immediate( cpu ) + cpu(rs1))&0xFFFFFFFE
     cpu(rd) = cpu.pc + 4
   }
 }
 
-class BEQ( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
+class BEQ( val rs1: Int, val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
     if (cpu(rs1) == cpu(rs2))
       cpu.pc += immediate( cpu )
@@ -38,7 +38,7 @@ class BEQ( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruc
   }
 }
 
-class BNE( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
+class BNE( val rs1: Int, val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
     if (cpu(rs1) != cpu(rs2))
       cpu.pc += immediate( cpu )
@@ -47,7 +47,7 @@ class BNE( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruc
   }
 }
 
-class BLT( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
+class BLT( val rs1: Int, val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
     if (cpu(rs1) < cpu(rs2))
       cpu.pc += immediate( cpu )
@@ -56,7 +56,7 @@ class BLT( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruc
   }
 }
 
-class BLTU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
+class BLTU( val rs1: Int, val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
     if (lcu( cpu(rs1), cpu(rs2) ) < 0)
       cpu.pc += immediate( cpu )
@@ -65,7 +65,7 @@ class BLTU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstru
   }
 }
 
-class BGE( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
+class BGE( val rs1: Int, val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
     if (cpu(rs1) >= cpu(rs2))
       cpu.pc += immediate( cpu )
@@ -74,7 +74,7 @@ class BGE( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruc
   }
 }
 
-class BGEU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
+class BGEU( val rs1: Int, val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
     if (lcu( cpu(rs1), cpu(rs2) ) >= 0)
       cpu.pc += immediate( cpu )
@@ -83,85 +83,85 @@ class BGEU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstru
   }
 }
 
-class LB( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class LB( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = cpu.mem.readByte( immediate(cpu) + cpu(rs1) )
   }
 }
 
-class LH( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class LH( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = cpu.mem.readShort( immediate(cpu) + cpu(rs1) )
   }
 }
 
-class LW( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class LW( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = cpu.mem.readInt( immediate(cpu) + cpu(rs1) )
   }
 }
 
-class LBU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class LBU( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = cpu.mem.readByte( immediate(cpu) + cpu(rs1) )&0xFF
   }
 }
 
-class LHU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class LHU( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = cpu.mem.readShort( immediate(cpu) + cpu(rs1) )&0xFFFF
   }
 }
 
-class SB( protected val rs1: Int, protected val rs2: Int ) extends STypeInstruction {
+class SB( val rs1: Int, val rs2: Int ) extends STypeInstruction {
 	override def perform( cpu: CPU ) = {
 		cpu.mem.writeByte( immediate(cpu) + cpu(rs1), cpu(rs2).toInt )
 	}
 }
 
-class SH( protected val rs1: Int, protected val rs2: Int ) extends STypeInstruction {
+class SH( val rs1: Int, val rs2: Int ) extends STypeInstruction {
 	override def perform( cpu: CPU ) = {
 		cpu.mem.writeShort( immediate(cpu) + cpu(rs1), cpu(rs2).toInt )
 	}
 }
 
-class SW( protected val rs1: Int, protected val rs2: Int ) extends STypeInstruction {
+class SW( val rs1: Int, val rs2: Int ) extends STypeInstruction {
 	override def perform( cpu: CPU ) = {
 		cpu.mem.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).toInt )
 	}
 }
 
-class ADDI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class ADDI( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = immediate(cpu) + cpu(rs1)
   }
 }
 
-class SLTI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class SLTI( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = if (cpu(rs1) < immediate(cpu)) 1 else 0
   }
 }
 
-class SLTIU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class SLTIU( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
     cpu(rd) = if (lcu(cpu(rs1), immediate(cpu)) < 0) 1 else 0
   }
 }
 
-class XORI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class XORI( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = cpu(rd) = immediate(cpu) ^ cpu(rs1)
 }
 
-class ORI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class ORI( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = cpu(rd) = immediate(cpu) | cpu(rs1)
 }
 
-class ANDI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
+class ANDI( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = cpu(rd) = immediate(cpu) & cpu(rs1)
 }
 
-class SLLI( protected val shamt: Int, protected val rs1: Int, protected val rd: Int ) extends ShiftITypeInstruction {
+class SLLI( protected val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
   override def perform( cpu: CPU ) = {
     if (funct(cpu) == 0)
       cpu(rd) = cpu(rs1) << shamt
@@ -170,7 +170,7 @@ class SLLI( protected val shamt: Int, protected val rs1: Int, protected val rd: 
   }
 }
 
-class SRLI( protected val shamt: Int, protected val rs1: Int, protected val rd: Int ) extends ShiftITypeInstruction {
+class SRLI( protected val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
   override def perform( cpu: CPU ) = {
     if (funct(cpu) == 0)
       cpu(rd) = cpu(rs1) >>> shamt
@@ -179,7 +179,7 @@ class SRLI( protected val shamt: Int, protected val rs1: Int, protected val rd: 
   }
 }
 
-class SRI( protected val shamt: Int, protected val rs1: Int, protected val rd: Int ) extends ShiftITypeInstruction {
+class SRI( protected val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >> shamt
@@ -189,7 +189,7 @@ class SRI( protected val shamt: Int, protected val rs1: Int, protected val rd: I
   }
 }
 
-class ADD( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends RTypeInstruction {
+class ADD( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) + cpu(rs2)
@@ -199,24 +199,24 @@ class ADD( protected val rs1: Int, protected val rs2: Int, protected val rd: Int
   }
 }
 
-class SLL( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+class SLL( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) << (cpu(rs2)&0x1F)
 }
 
-class SLT( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+class SLT( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) = if (cpu(rs1) < cpu(rs2)) 1 else 0
 }
 
-class SLTU( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+class SLTU( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) =
     if (lcu(cpu(rs1).asInstanceOf[Int], cpu(rs2).asInstanceOf[Int]) < 0) 1 else 0
 }
 
-class XOR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+class XOR( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) ^ cpu(rs2)
 }
 
-class SR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends RTypeInstruction {
+class SR( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x1F)
@@ -226,11 +226,11 @@ class SR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int 
   }
 }
 
-class OR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+class OR( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) | cpu(rs2)
 }
 
-class AND( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+class AND( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) & cpu(rs2)
 }
 

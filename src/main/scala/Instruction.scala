@@ -17,9 +17,9 @@ class Instruction extends (CPU => Unit) {
 
 abstract class RTypeInstruction extends Instruction {
 
-  protected val rs1: Int
-  protected val rs2: Int
-  protected val rd: Int
+  val rs1: Int
+  val rs2: Int
+  val rd: Int
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
 
@@ -38,8 +38,8 @@ abstract class FRTypeInstruction( f: Int ) extends RTypeInstruction {
 
 abstract class ITypeInstruction extends Instruction {
 
-  protected val rs1: Int
-  protected val rd: Int
+  val rs1: Int
+  val rd: Int
 
   def immediate( cpu: CPU ) = cpu.instruction >> 20
 
@@ -48,8 +48,8 @@ abstract class ITypeInstruction extends Instruction {
 abstract class ShiftITypeInstruction extends Instruction {
 
   protected val shamt: Int
-  protected val rs1: Int
-  protected val rd: Int
+  val rs1: Int
+  val rd: Int
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
 
@@ -57,8 +57,8 @@ abstract class ShiftITypeInstruction extends Instruction {
 
 abstract class STypeInstruction extends Instruction {
 
-  protected val rs1: Int
-  protected val rs2: Int
+  val rs1: Int
+  val rs2: Int
 
   def immediate( cpu: CPU ) = (cpu.instruction >> 7)&0xF | (cpu.instruction >> 20)&0x7F0
 
@@ -66,8 +66,8 @@ abstract class STypeInstruction extends Instruction {
 
 abstract class BTypeInstruction extends Instruction {
 
-  protected val rs1: Int
-  protected val rs2: Int
+  val rs1: Int
+  val rs2: Int
 
   def immediate( cpu: CPU ) =
     (cpu.instruction >> 7)&0x1E |
@@ -79,14 +79,14 @@ abstract class BTypeInstruction extends Instruction {
 
 abstract class UTypeInstruction extends Instruction {
 
-  protected val rd: Int
+  val rd: Int
 
   def immediate( cpu: CPU ) = cpu.instruction&0xFFFFF000
 }
 
 abstract class JTypeInstruction extends Instruction {
 
-  protected val rd: Int
+  val rd: Int
 
   def immediate( cpu: CPU ) =
     (cpu.instruction >> 21)&0x7FE |
@@ -108,9 +108,16 @@ object HaltInstruction extends Instruction {
 
 }
 
-object PrintInstruction extends Instruction {
+abstract class EmulatorInstruction extends Instruction {
+
+  val r: Int
+
+}
+
+class PrintInstruction( val r: Int ) extends EmulatorInstruction {
 
   override def perform( cpu: CPU ) = {
-    println(cpu(1))
+    println( cpu(r) )
   }
+
 }

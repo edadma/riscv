@@ -95,12 +95,18 @@ class CPU( val mem: Memory ) {
     enumeration.toList
   }
 
-  import RV32IInstructions._
-
-  val RV32I =
+  // emulator instructions
+  populate(
     List[(String, Map[Char, Int] => Instruction)](
       "00000 00000 000 00000 0000000" -> (_ => HaltInstruction),
-      "00000 00000 000 00000 0000001" -> (_ => PrintInstruction),
+      "000000000000 rrrrr 0 0000001" -> ((operands: Map[Char, Int]) => new PrintInstruction( operands('r') )),
+    ) )
+
+  import RV32IInstructions._
+
+  // RV32I
+  populate(
+    List[(String, Map[Char, Int] => Instruction)](
       "----- ----- --- ddddd 0110111" -> LUI,
       "----- ----- --- ddddd 0010111" -> AUIPC,
       "----- ----- --- ddddd 1101111" -> JAL,
@@ -135,25 +141,16 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa 101 ddddd 0110011" -> SR,
       "bbbbb aaaaa 110 ddddd 0110011" -> OR,
       "bbbbb aaaaa 111 ddddd 0110011" -> AND,
-    )
-
-  populate( RV32I )
+    ) )
 
   def run: Unit = {
 
-    System.gc
-    System.gc
-    System.gc
-
-    val start = System.currentTimeMillis
-
     while (!halt) {
       instruction = mem.readInt( pc.toInt )
-      opcodes(instruction&0xFFFFFF)( this )
+      opcodes( instruction&0xFFFFFF )( this )
       counter += 1
     }
 
-    println( counter.toDouble/((System.currentTimeMillis - start).toDouble/1000) )
   }
 
 }
