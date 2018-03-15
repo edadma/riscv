@@ -102,7 +102,7 @@ class CPU( val mem: Memory ) {
       "000000000000 rrrrr 0 0000001" -> ((operands: Map[Char, Int]) => new PrintInstruction( operands('r') )),
     ) )
 
-  import RV32IInstructions._
+  import RV32I._
 
   // RV32I
   populate(
@@ -131,8 +131,8 @@ class CPU( val mem: Memory ) {
       "----- aaaaa 100 ddddd 0010011" -> XORI,
       "----- aaaaa 110 ddddd 0010011" -> ORI,
       "----- aaaaa 111 ddddd 0010011" -> ANDI,
-      "sssss aaaaa 001 ddddd 0010011" -> SLLI,
-      "sssss aaaaa 101 ddddd 0010011" -> SRI,
+      "----- aaaaa 001 ddddd 0010011" -> SLLI,
+      "----- aaaaa 101 ddddd 0010011" -> SRI,
       "bbbbb aaaaa 000 ddddd 0110011" -> ADD,
       "bbbbb aaaaa 001 ddddd 0110011" -> SLL,
       "bbbbb aaaaa 010 ddddd 0110011" -> SLT,
@@ -141,6 +141,13 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa 101 ddddd 0110011" -> SR,
       "bbbbb aaaaa 110 ddddd 0110011" -> OR,
       "bbbbb aaaaa 111 ddddd 0110011" -> AND,
+    ) )
+
+  // RV64I
+  populate(
+    List[(String, Map[Char, Int] => Instruction)](
+      "----- aaaaa 110 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LWU( operands('a'), operands('d') )),
+      "----- aaaaa 011 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LD( operands('a'), operands('d') )),
     ) )
 
   def run: Unit = {

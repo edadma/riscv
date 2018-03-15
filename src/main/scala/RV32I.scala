@@ -115,19 +115,19 @@ class LHU( val rs1: Int, val rd: Int ) extends ITypeInstruction {
 
 class SB( val rs1: Int, val rs2: Int ) extends STypeInstruction {
 	override def perform( cpu: CPU ) = {
-		cpu.mem.writeByte( immediate(cpu) + cpu(rs1), cpu(rs2).toInt )
+		cpu.mem.writeByte( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 	}
 }
 
 class SH( val rs1: Int, val rs2: Int ) extends STypeInstruction {
 	override def perform( cpu: CPU ) = {
-		cpu.mem.writeShort( immediate(cpu) + cpu(rs1), cpu(rs2).toInt )
+		cpu.mem.writeShort( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 	}
 }
 
 class SW( val rs1: Int, val rs2: Int ) extends STypeInstruction {
 	override def perform( cpu: CPU ) = {
-		cpu.mem.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).toInt )
+		cpu.mem.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 	}
 }
 
@@ -161,29 +161,20 @@ class ANDI( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = cpu(rd) = immediate(cpu) & cpu(rs1)
 }
 
-class SLLI( protected val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
+class SLLI( val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
   override def perform( cpu: CPU ) = {
     if (funct(cpu) == 0)
-      cpu(rd) = cpu(rs1) << shamt
+      cpu(rd) = cpu(rs1) << shamt( cpu )
     else
       illegal( cpu )
   }
 }
 
-class SRLI( protected val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
-  override def perform( cpu: CPU ) = {
-    if (funct(cpu) == 0)
-      cpu(rd) = cpu(rs1) >>> shamt
-    else
-      illegal( cpu )
-  }
-}
-
-class SRI( protected val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
+class SRI( val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
-      case 0 => cpu(rd) = cpu(rs1) >> shamt
-      case 0x20 => cpu(rd) = cpu(rs1) >> shamt
+      case 0 => cpu(rd) = cpu(rs1) >>> shamt( cpu )
+      case 0x10 => cpu(rd) = cpu(rs1) >> shamt( cpu )
       case _ => illegal( cpu )
     }
   }
@@ -234,7 +225,7 @@ class AND( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) & cpu(rs2)
 }
 
-object RV32IInstructions {
+object RV32I {
 
 	def LUI( operands: Map[Char, Int] ) = new LUI( operands('d') )
 
@@ -284,9 +275,9 @@ object RV32IInstructions {
 
   def ANDI( operands: Map[Char, Int] ) = new ANDI( operands('a'), operands('d') )
 
-  def SLLI( operands: Map[Char, Int] ) = new SLLI( operands('s'), operands('a'), operands('d') )
+  def SLLI( operands: Map[Char, Int] ) = new SLLI( operands('a'), operands('d') )
 
-  def SRI( operands: Map[Char, Int] ) = new SRI( operands('s'), operands('a'), operands('d') )
+  def SRI( operands: Map[Char, Int] ) = new SRI( operands('a'), operands('d') )
 
   def ADD( operands: Map[Char, Int] ) = new ADD( operands('a'), operands('b'), operands('d') )
 

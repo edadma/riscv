@@ -47,11 +47,12 @@ abstract class ITypeInstruction extends Instruction {
 
 abstract class ShiftITypeInstruction extends Instruction {
 
-  protected val shamt: Int
   val rs1: Int
   val rd: Int
 
-  def funct( cpu: CPU ) = cpu.instruction >>> 25
+  def funct( cpu: CPU ) = cpu.instruction >>> 26
+
+  def shamt( cpu: CPU ) = (cpu.instruction >> 20)&0x3F
 
 }
 
