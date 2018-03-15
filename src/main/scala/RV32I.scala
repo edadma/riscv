@@ -191,7 +191,7 @@ class ADD( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
 }
 
 class SLL( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
-  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) << (cpu(rs2)&0x1F)
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) << (cpu(rs2)&0x3F)
 }
 
 class SLT( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
@@ -210,8 +210,8 @@ class XOR( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 
 class SR( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
-      case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x1F)
-      case 0x20 => cpu(rd) = cpu(rs1) >> (cpu(rs2)&0x1F)
+      case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x3F)
+      case 0x20 => cpu(rd) = cpu(rs1) >> (cpu(rs2)&0x3F)
       case _ => illegal( cpu )
     }
   }

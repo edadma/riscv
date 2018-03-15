@@ -56,6 +56,16 @@ abstract class ShiftITypeInstruction extends Instruction {
 
 }
 
+abstract class ShiftWITypeInstruction extends Instruction {
+
+  val shamt: Int
+  val rs1: Int
+  val rd: Int
+
+  def funct( cpu: CPU ) = cpu.instruction >>> 25
+
+}
+
 abstract class STypeInstruction extends Instruction {
 
   val rs1: Int

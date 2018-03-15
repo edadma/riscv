@@ -149,6 +149,11 @@ class CPU( val mem: Memory ) {
       "----- aaaaa 110 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LWU( operands('a'), operands('d') )),
       "----- aaaaa 011 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LD( operands('a'), operands('d') )),
       "----- aaaaa 000 ddddd 0011011" -> ((operands: Map[Char, Int]) => new ADDIW( operands('a'), operands('d') )),
+      "sssss aaaaa 001 ddddd 0011011" -> ((operands: Map[Char, Int]) => new SLLIW( operands('s'), operands('a'), operands('d') )),
+      "sssss aaaaa 101 ddddd 0011011" -> ((operands: Map[Char, Int]) => new SRIW( operands('s'), operands('a'), operands('d') )),
+      "bbbbb aaaaa 000 ddddd 0111011" -> ((operands: Map[Char, Int]) => new ADDW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 001 ddddd 0111011" -> ((operands: Map[Char, Int]) => new SLLW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 101 ddddd 0111011" -> ((operands: Map[Char, Int]) => new SRW( operands('a'), operands('b'), operands('d') )),
    ) )
 
   def run: Unit = {

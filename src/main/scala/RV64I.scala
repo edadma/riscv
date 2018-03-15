@@ -24,3 +24,47 @@ class ADDIW( val rs1: Int, val rd: Int ) extends ITypeInstruction {
     cpu(rd) = immediate(cpu) + cpu(rs1).asInstanceOf[Int]
   }
 }
+
+//todo: find out if SLLIW/SRIW/SLLW/SRW should sign-extend to 64 bits or not; the manual (pg. 30) doesn't say to sign-extend
+class SLLIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    if (funct(cpu) == 0)
+      cpu(rd) = cpu(rs1).asInstanceOf[Int] << shamt
+    else
+      illegal( cpu )
+  }
+}
+
+class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction {
+  override def perform( cpu: CPU ) = {
+    funct(cpu) match {
+      case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> shamt
+      case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >> shamt
+      case _ => illegal( cpu )
+    }
+  }
+}
+
+class ADDW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) = {
+    funct(cpu) match {
+      case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] + cpu(rs2).asInstanceOf[Int]
+      case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] - cpu(rs2).asInstanceOf[Int]
+      case _ => illegal( cpu )
+    }
+  }
+}
+
+class SLLW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] << (cpu(rs2).asInstanceOf[Int]&0x1F)
+}
+
+class SRW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) = {
+    funct(cpu) match {
+      case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> (cpu(rs2).asInstanceOf[Int]&0x1F)
+      case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >> (cpu(rs2).asInstanceOf[Int]&0x1F)
+      case _ => illegal( cpu )
+    }
+  }
+}
