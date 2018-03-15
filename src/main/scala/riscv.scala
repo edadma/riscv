@@ -32,4 +32,9 @@ package object riscv {
   def utype( imm: Int, rd: Int, opcode: Symbol ) =
     (imm << 12) | (rd << 7) | Integer.parseInt(opcode.name drop 1, 2)
 
+  def ulong( v: Long ) =
+    if (v < 0)
+      BigInt( v&0x7FFFFFFFFFFFFFFFL ).setBit( 63 )
+    else
+      BigInt( v )
 }

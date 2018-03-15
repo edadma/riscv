@@ -32,6 +32,6 @@ object Main extends App {
 
   println( "run..." )
   cpu.run
-  println( (cpu.counter/((System.currentTimeMillis - start).toDouble/1000)).toInt + " instructions per second" )
+  println( (cpu.counter.toDouble/(System.currentTimeMillis - start)*1000).toInt + " instructions per second" )
   println( cpu.registers mkString ", " )
 }

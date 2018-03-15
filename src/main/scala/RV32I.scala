@@ -1,3 +1,4 @@
+//@
 package xyz.hyperreal.riscv
 
 import java.lang.Long.{compareUnsigned => lcu}
@@ -180,27 +181,43 @@ class SRI( val rs1: Int, val rd: Int ) extends ShiftITypeInstruction {
   }
 }
 
-class ADD( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
-  override def perform( cpu: CPU ) = {
+class ADD_SUB_MUL(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) + cpu(rs2)
       case 0x20 => cpu(rd) = cpu(rs1) - cpu(rs2)
+      case 1 => cpu(rd) = cpu(rs1) * cpu(rs2)
       case _ => illegal( cpu )
     }
-  }
 }
 
-class SLL( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
-  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) << (cpu(rs2)&0x3F)
+class SLL_MULH(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) =
+    funct(cpu) match {
+      case 0 => cpu(rd) = cpu(rs1) << (cpu(rs2)&0x3F)
+      case 1 => cpu(rd) = ((BigInt(cpu(rs1)) * cpu(rs2)) >> 32).longValue
+      case _ => illegal( cpu )
+    }
 }
 
-class SLT( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
-  override def perform( cpu: CPU ) = cpu(rd) = if (cpu(rs1) < cpu(rs2)) 1 else 0
+class SLT_MULHSU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) =
+    funct(cpu) match {
+      case 0 => cpu(rd) = if (cpu(rs1) < cpu(rs2)) 1 else 0
+      case 1 => cpu(rd) = ((BigInt(cpu(rs1)) * ulong(cpu(rs2))) >> 32).longValue
+      case _ => illegal( cpu )
+    }
 }
 
-class SLTU( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
-  override def perform( cpu: CPU ) = cpu(rd) =
-    if (lcu(cpu(rs1).asInstanceOf[Int], cpu(rs2).asInstanceOf[Int]) < 0) 1 else 0
+class SLTU_MULHU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) =
+    funct(cpu) match {
+      case 0 =>
+        cpu(rd) =
+          if (lcu(cpu(rs1).asInstanceOf[Int], cpu(rs2).asInstanceOf[Int]) < 0) 1 else 0
+      case 1 => cpu(rd) = ((ulong(cpu(rs1)) * ulong(cpu(rs2))) >> 32).longValue
+      case _ => illegal( cpu )
+    }
 }
 
 class XOR( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
@@ -279,13 +296,13 @@ object RV32I {
 
   def SRI( operands: Map[Char, Int] ) = new SRI( operands('a'), operands('d') )
 
-  def ADD( operands: Map[Char, Int] ) = new ADD( operands('a'), operands('b'), operands('d') )
+  def ADD_SUB_MUL(operands: Map[Char, Int] ) = new ADD_SUB_MUL( operands('a'), operands('b'), operands('d') )
 
-  def SLL( operands: Map[Char, Int] ) = new SLL( operands('a'), operands('b'), operands('d') )
+  def SLL_MULH(operands: Map[Char, Int] ) = new SLL_MULH( operands('a'), operands('b'), operands('d') )
 
-  def SLT( operands: Map[Char, Int] ) = new SLT( operands('a'), operands('b'), operands('d') )
+  def SLT_MULHSU( operands: Map[Char, Int] ) = new SLT_MULHSU( operands('a'), operands('b'), operands('d') )
 
-  def SLTU( operands: Map[Char, Int] ) = new SLTU( operands('a'), operands('b'), operands('d') )
+  def SLTU_MULHU( operands: Map[Char, Int] ) = new SLTU_MULHU( operands('a'), operands('b'), operands('d') )
 
   def XOR( operands: Map[Char, Int] ) = new XOR( operands('a'), operands('b'), operands('d') )
 
