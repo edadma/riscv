@@ -1,3 +1,4 @@
+//@
 package xyz.hyperreal.riscv
 
 
@@ -21,6 +22,17 @@ abstract class RTypeInstruction extends Instruction {
   protected val rd: Int
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
+
+  def funct( cpu: CPU, f: Int ) = if ((cpu.instruction >>> 25) != f) illegal( cpu )
+
+}
+
+abstract class FRTypeInstruction( f: Int ) extends RTypeInstruction {
+
+  override def apply( cpu: CPU ): Unit = {
+    funct( cpu, f )
+    super.apply( cpu )
+  }
 
 }
 

@@ -1,5 +1,7 @@
 package xyz.hyperreal.riscv
 
+import java.lang.Long.{compareUnsigned => lcu}
+
 
 class LUI( protected val rd: Int ) extends UTypeInstruction {
   override def perform( cpu: CPU ) = {
@@ -56,7 +58,7 @@ class BLT( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruc
 
 class BLTU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
-    if (java.lang.Long.compareUnsigned( cpu(rs1), cpu(rs2) ) < 0)
+    if (lcu( cpu(rs1), cpu(rs2) ) < 0)
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
@@ -74,7 +76,7 @@ class BGE( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruc
 
 class BGEU( protected val rs1: Int, protected val rs2: Int ) extends BTypeInstruction {
   override def apply( cpu: CPU ) = {
-    if (java.lang.Long.compareUnsigned( cpu(rs1), cpu(rs2) ) >= 0)
+    if (lcu( cpu(rs1), cpu(rs2) ) >= 0)
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
@@ -143,7 +145,7 @@ class SLTI( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruc
 
 class SLTIU( protected val rs1: Int, protected val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = {
-    cpu(rd) = if (java.lang.Long.compareUnsigned(cpu(rs1), immediate(cpu)) < 0) 1 else 0
+    cpu(rd) = if (lcu(cpu(rs1), immediate(cpu)) < 0) 1 else 0
   }
 }
 
@@ -185,6 +187,51 @@ class SRI( protected val shamt: Int, protected val rs1: Int, protected val rd: I
       case _ => illegal( cpu )
     }
   }
+}
+
+class ADD( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) = {
+    funct(cpu) match {
+      case 0 => cpu(rd) = cpu(rs1) + cpu(rs2)
+      case 0x20 => cpu(rd) = cpu(rs1) - cpu(rs2)
+      case _ => illegal( cpu )
+    }
+  }
+}
+
+class SLL( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) << (cpu(rs2)&0x1F)
+}
+
+class SLT( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = if (cpu(rs1) < cpu(rs2)) 1 else 0
+}
+
+class SLTU( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) =
+    if (lcu(cpu(rs1).asInstanceOf[Int], cpu(rs2).asInstanceOf[Int]) < 0) 1 else 0
+}
+
+class XOR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) ^ cpu(rs2)
+}
+
+class SR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends RTypeInstruction {
+  override def perform( cpu: CPU ) = {
+    funct(cpu) match {
+      case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x1F)
+      case 0x20 => cpu(rd) = cpu(rs1) >> (cpu(rs2)&0x1F)
+      case _ => illegal( cpu )
+    }
+  }
+}
+
+class OR( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) | cpu(rs2)
+}
+
+class AND( protected val rs1: Int, protected val rs2: Int, protected val rd: Int ) extends FRTypeInstruction( 0 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1) & cpu(rs2)
 }
 
 object RV32IInstructions {
@@ -240,5 +287,21 @@ object RV32IInstructions {
   def SLLI( operands: Map[Char, Int] ) = new SLLI( operands('s'), operands('a'), operands('d') )
 
   def SRI( operands: Map[Char, Int] ) = new SRI( operands('s'), operands('a'), operands('d') )
+
+  def ADD( operands: Map[Char, Int] ) = new ADD( operands('a'), operands('b'), operands('d') )
+
+  def SLL( operands: Map[Char, Int] ) = new SLL( operands('a'), operands('b'), operands('d') )
+
+  def SLT( operands: Map[Char, Int] ) = new SLT( operands('a'), operands('b'), operands('d') )
+
+  def SLTU( operands: Map[Char, Int] ) = new SLTU( operands('a'), operands('b'), operands('d') )
+
+  def XOR( operands: Map[Char, Int] ) = new XOR( operands('a'), operands('b'), operands('d') )
+
+  def SR( operands: Map[Char, Int] ) = new SR( operands('a'), operands('b'), operands('d') )
+
+  def OR( operands: Map[Char, Int] ) = new OR( operands('a'), operands('b'), operands('d') )
+
+  def AND( operands: Map[Char, Int] ) = new AND( operands('a'), operands('b'), operands('d') )
 
 }

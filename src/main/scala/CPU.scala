@@ -127,7 +127,15 @@ class CPU( val mem: Memory ) {
       "----- aaaaa 111 ddddd 0010011" -> ANDI,
       "sssss aaaaa 001 ddddd 0010011" -> SLLI,
       "sssss aaaaa 101 ddddd 0010011" -> SRI,
-		)
+      "bbbbb aaaaa 000 ddddd 0110011" -> ADD,
+      "bbbbb aaaaa 001 ddddd 0110011" -> SLL,
+      "bbbbb aaaaa 010 ddddd 0110011" -> SLT,
+      "bbbbb aaaaa 011 ddddd 0110011" -> SLTU,
+      "bbbbb aaaaa 100 ddddd 0110011" -> XOR,
+      "bbbbb aaaaa 101 ddddd 0110011" -> SR,
+      "bbbbb aaaaa 110 ddddd 0110011" -> OR,
+      "bbbbb aaaaa 111 ddddd 0110011" -> AND,
+    )
 
   populate( RV32I )
 
