@@ -148,7 +148,8 @@ class CPU( val mem: Memory ) {
     List[(String, Map[Char, Int] => Instruction)](
       "----- aaaaa 110 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LWU( operands('a'), operands('d') )),
       "----- aaaaa 011 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LD( operands('a'), operands('d') )),
-    ) )
+      "----- aaaaa 000 ddddd 0011011" -> ((operands: Map[Char, Int]) => new ADDIW( operands('a'), operands('d') )),
+   ) )
 
   def run: Unit = {
 
