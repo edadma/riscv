@@ -137,10 +137,10 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa 001 ddddd 0110011" -> SLL_MULH,
       "bbbbb aaaaa 010 ddddd 0110011" -> SLT_MULHSU,
       "bbbbb aaaaa 011 ddddd 0110011" -> SLTU_MULHU,
-      "bbbbb aaaaa 100 ddddd 0110011" -> XOR,
-      "bbbbb aaaaa 101 ddddd 0110011" -> SR,
-      "bbbbb aaaaa 110 ddddd 0110011" -> OR,
-      "bbbbb aaaaa 111 ddddd 0110011" -> AND,
+      "bbbbb aaaaa 100 ddddd 0110011" -> XOR_DIV,
+      "bbbbb aaaaa 101 ddddd 0110011" -> SR_DIVU,
+      "bbbbb aaaaa 110 ddddd 0110011" -> OR_REM,
+      "bbbbb aaaaa 111 ddddd 0110011" -> AND_REMU,
     ) )
 
   // RV64I
