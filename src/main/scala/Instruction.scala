@@ -45,6 +45,10 @@ abstract class ITypeInstruction extends Instruction {
 
 }
 
+abstract class LDITypeInstruction extends ITypeInstruction {
+  def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
+}
+
 abstract class ShiftITypeInstruction extends Instruction {
 
   val rs1: Int

@@ -10,6 +10,7 @@ class CPU( val mem: Memory ) {
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
   private [riscv] var halt = false
+  private [riscv] val f = new Array[Double]( 32 )
 
   var counter = 0L
 
