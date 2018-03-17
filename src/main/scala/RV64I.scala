@@ -45,24 +45,39 @@ class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstr
   }
 }
 
-class ADDW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+class ADDW_MULW(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] + cpu(rs2).asInstanceOf[Int]
+      case 1 => cpu(rd) = cpu(rs1).asInstanceOf[Int] * cpu(rs2).asInstanceOf[Int]
       case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] - cpu(rs2).asInstanceOf[Int]
       case _ => illegal( cpu )
     }
   }
 }
 
+// division by zero should cause result to be -1 (all 1's) (pg. 36)
 class SLLW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] << (cpu(rs2).asInstanceOf[Int]&0x1F)
 }
 
-class SRW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+class DIVW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] / cpu(rs2).asInstanceOf[Int]
+}
+
+class REMW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] % cpu(rs2).asInstanceOf[Int]
+}
+
+class REMUW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1 ) {
+  override def perform( cpu: CPU ) = cpu(rd) = (cpu(rs1)&0xFFFFFFFF) % (cpu(rs2)&0xFFFFFFFF)
+}
+
+class SRW_DIVUW(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> (cpu(rs2).asInstanceOf[Int]&0x1F)
+      case 1 => cpu(rd) = (cpu(rs1)&0xFFFFFFFF) / (cpu(rs2)&0xFFFFFFFF)
       case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >> (cpu(rs2).asInstanceOf[Int]&0x1F)
       case _ => illegal( cpu )
     }

@@ -151,9 +151,12 @@ class CPU( val mem: Memory ) {
       "----- aaaaa 000 ddddd 0011011" -> ((operands: Map[Char, Int]) => new ADDIW( operands('a'), operands('d') )),
       "sssss aaaaa 001 ddddd 0011011" -> ((operands: Map[Char, Int]) => new SLLIW( operands('s'), operands('a'), operands('d') )),
       "sssss aaaaa 101 ddddd 0011011" -> ((operands: Map[Char, Int]) => new SRIW( operands('s'), operands('a'), operands('d') )),
-      "bbbbb aaaaa 000 ddddd 0111011" -> ((operands: Map[Char, Int]) => new ADDW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 000 ddddd 0111011" -> ((operands: Map[Char, Int]) => new ADDW_MULW( operands('a'), operands('b'), operands('d') )),
       "bbbbb aaaaa 001 ddddd 0111011" -> ((operands: Map[Char, Int]) => new SLLW( operands('a'), operands('b'), operands('d') )),
-      "bbbbb aaaaa 101 ddddd 0111011" -> ((operands: Map[Char, Int]) => new SRW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 100 ddddd 0111011" -> ((operands: Map[Char, Int]) => new DIVW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 101 ddddd 0111011" -> ((operands: Map[Char, Int]) => new SRW_DIVUW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 110 ddddd 0111011" -> ((operands: Map[Char, Int]) => new REMW( operands('a'), operands('b'), operands('d') )),
+      "bbbbb aaaaa 111 ddddd 0111011" -> ((operands: Map[Char, Int]) => new REMUW( operands('a'), operands('b'), operands('d') )),
    ) )
 
   def run: Unit = {
