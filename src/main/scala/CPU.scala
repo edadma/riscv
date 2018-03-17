@@ -6,7 +6,7 @@ import scala.collection.mutable.ListBuffer
 
 class CPU( val mem: Memory ) {
 
-  private [riscv] val registers = new Array[Long]( 32 )
+  private [riscv] val x = new Array[Long]( 32 )
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
   private [riscv] var halt = false
@@ -16,9 +16,9 @@ class CPU( val mem: Memory ) {
 
   private val opcodes = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
 
-  def apply( r: Int ) = if (r == 0) 0L else registers(r)
+  def apply( r: Int ) = if (r == 0) 0L else x(r)
 
-  def update( r: Int, v: Long ): Unit = registers(r) = v
+  def update( r: Int, v: Long ): Unit = x(r) = v
 
 //  private [riscv] val x =
 //    new AnyRef {
@@ -149,6 +149,7 @@ class CPU( val mem: Memory ) {
     List[(String, Map[Char, Int] => Instruction)](
       "----- aaaaa 110 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LWU( operands('a'), operands('d') )),
       "----- aaaaa 011 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LD( operands('a'), operands('d') )),
+      "bbbbb aaaaa 011 ----- 0100011" -> ((operands: Map[Char, Int]) => new SD( operands('a'), operands('b') )),
       "----- aaaaa 000 ddddd 0011011" -> ((operands: Map[Char, Int]) => new ADDIW( operands('a'), operands('d') )),
       "sssss aaaaa 001 ddddd 0011011" -> ((operands: Map[Char, Int]) => new SLLIW( operands('s'), operands('a'), operands('d') )),
       "sssss aaaaa 101 ddddd 0011011" -> ((operands: Map[Char, Int]) => new SRIW( operands('s'), operands('a'), operands('d') )),
@@ -158,7 +159,14 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa 101 ddddd 0111011" -> ((operands: Map[Char, Int]) => new SRW_DIVUW( operands('a'), operands('b'), operands('d') )),
       "bbbbb aaaaa 110 ddddd 0111011" -> ((operands: Map[Char, Int]) => new REMW( operands('a'), operands('b'), operands('d') )),
       "bbbbb aaaaa 111 ddddd 0111011" -> ((operands: Map[Char, Int]) => new REMUW( operands('a'), operands('b'), operands('d') )),
-   ) )
+    ) )
+
+  // RV32D
+  populate(
+    List[(String, Map[Char, Int] => Instruction)](
+      "----- aaaaa 011 ddddd 0000111" -> ((operands: Map[Char, Int]) => new FLD( operands('a'), operands('d') )),
+      "bbbbb aaaaa 011 ----- 0100111" -> ((operands: Map[Char, Int]) => new FSD( operands('a'), operands('b') )),
+    ) )
 
   def run: Unit = {
 

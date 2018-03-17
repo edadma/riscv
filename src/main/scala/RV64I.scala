@@ -7,14 +7,12 @@ class LWU( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   }
 }
 
-class LD( val rs1: Int, val rd: Int ) extends LDITypeInstruction {
+class LD( val rs1: Int, val rd: Int ) extends ITypeInstruction {
   override def perform( cpu: CPU ) = cpu(rd) = load( cpu )
 }
 
 class SD( val rs1: Int, val rs2: Int ) extends STypeInstruction {
-  override def perform( cpu: CPU ) = {
-    cpu.mem.writeLong( immediate(cpu) + cpu(rs1), cpu(rs2) )
-  }
+  override def perform( cpu: CPU ) = store( cpu, cpu(rs2) )
 }
 
 class ADDIW( val rs1: Int, val rd: Int ) extends ITypeInstruction {
