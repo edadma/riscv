@@ -166,6 +166,7 @@ class CPU( val mem: Memory ) {
     List[(String, Map[Char, Int] => Instruction)](
       "----- aaaaa 011 ddddd 0000111" -> ((operands: Map[Char, Int]) => new FLD( operands('a'), operands('d') )),
       "bbbbb aaaaa 011 ----- 0100111" -> ((operands: Map[Char, Int]) => new FSD( operands('a'), operands('b') )),
+      "bbbbb aaaaa rrr ddddd 1000011" -> ((operands: Map[Char, Int]) => new FMADD( operands('a'), operands('b'), operands('d'), operands('r') )),
     ) )
 
   def run: Unit = {

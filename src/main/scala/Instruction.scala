@@ -23,8 +23,22 @@ abstract class RTypeInstruction extends Instruction {
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
 
-  def funct( cpu: CPU, f: Int ) = if ((cpu.instruction >>> 25) != f) illegal( cpu )
+  def funct( cpu: CPU, f: Int ) = if (funct( cpu ) != f) illegal( cpu )
 
+}
+
+abstract class R4TypeInstruction extends Instruction {
+
+  val rs1: Int
+  val rs2: Int
+  val rd: Int
+  val rm: Int
+
+  def funct( cpu: CPU ) = (cpu.instruction >>> 25)&0x3
+
+  def funct( cpu: CPU, f: Int ) = if (funct( cpu ) != f) illegal( cpu )
+
+  def rs3( cpu: CPU ) = cpu.f(cpu.instruction >>> 27)
 }
 
 abstract class FRTypeInstruction( f: Int ) extends RTypeInstruction {
