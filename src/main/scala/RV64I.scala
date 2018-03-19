@@ -2,26 +2,26 @@ package xyz.hyperreal.riscv
 
 
 class LWU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LWU" ) {
-  override def perform( cpu: CPU ) =
+  def apply( cpu: CPU ) =
     cpu(rd) = cpu.mem.readInt( immediate(cpu) + cpu(rs1) ).asInstanceOf[Long]&0xFFFFFFFF
 }
 
 class LD( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LD" ) {
-  override def perform( cpu: CPU ) = cpu(rd) = load( cpu )
+  def apply( cpu: CPU ) = cpu(rd) = load( cpu )
 }
 
 class SD( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SD" ) {
-  override def perform( cpu: CPU ) = store( cpu, cpu(rs2) )
+  def apply( cpu: CPU ) = store( cpu, cpu(rs2) )
 }
 
 class ADDIW( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ADDIW" ) {
-  override def perform( cpu: CPU ) =
+  def apply( cpu: CPU ) =
     cpu(rd) = immediate(cpu) + cpu(rs1).asInstanceOf[Int]
 }
 
 //todo: find out if SLLIW/SRIW/SLLW/SRW should sign-extend to 64 bits or not; the manual (pg. 30) doesn't say to sign-extend
 class SLLIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction( "SLLIW" ) {
-  override def perform( cpu: CPU ) =
+  def apply( cpu: CPU ) =
     if (funct(cpu) == 0)
       cpu(rd) = cpu(rs1).asInstanceOf[Int] << shamt
     else
@@ -29,7 +29,7 @@ class SLLIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInst
 }
 
 class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction( "SRIW" ) {
-  override def perform( cpu: CPU ) =
+  def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> shamt
       case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >> shamt
@@ -39,7 +39,7 @@ class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstr
 
 class ADDW_SUBW_MULW(val rs1: Int, val rs2: Int, val rd: Int ) extends
   RTypeInstruction( Map(0 -> "ADDW", 1 -> "MULW", 0x20 -> "SUBW") ) {
-  override def perform( cpu: CPU ) =
+  def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] + cpu(rs2).asInstanceOf[Int]
       case 1 => cpu(rd) = cpu(rs1).asInstanceOf[Int] * cpu(rs2).asInstanceOf[Int]
@@ -67,7 +67,7 @@ class REMUW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction
 
 class SRW_DIVUW( val rs1: Int, val rs2: Int, val rd: Int ) extends
   RTypeInstruction( Map(0 -> "SRLW", 1 -> "DIVUW", 0x20 -> "SRAW") ) {
-  override def perform( cpu: CPU ) =
+  def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> (cpu(rs2).asInstanceOf[Int]&0x1F)
       case 1 => cpu(rd) = (cpu(rs1)&0xFFFFFFFF) / (cpu(rs2)&0xFFFFFFFF)

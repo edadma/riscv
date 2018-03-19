@@ -11,6 +11,7 @@ class CPU( val mem: Memory ) {
   private [riscv] var instruction = 0
   private [riscv] var halt = false
   private [riscv] val f = new Array[Double]( 32 )
+  private [riscv] var disp: Long = 0
 
   var counter = 0L
 
@@ -172,8 +173,18 @@ class CPU( val mem: Memory ) {
   def run: Unit = {
 
     while (!halt) {
-      instruction = mem.readInt( pc.toInt )
+      if ((mem.readByte( pc.toInt )&0x3) == 3) {
+        instruction = mem.readInt( pc.toInt )
+        disp = 4
+      } else {
+        problem( this, "compressed" )
+        val cinst = mem.readShort( pc.toInt )
+        instruction = 0
+        disp = 2
+      }
+
       opcodes( instruction&0xFFFFFF )( this )
+      pc += disp
       counter += 1
     }
 

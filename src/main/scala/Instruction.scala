@@ -8,11 +8,6 @@ abstract class Instruction extends (CPU => Unit) {
 
   def disassemble( cpu: CPU ): String
 
-  def apply( cpu: CPU ): Unit = {
-    perform( cpu )
-    cpu.pc += 4
-  }
-
   def illegal( cpu: CPU ) = problem( cpu, "illegal instruction" )
 
 }
@@ -57,9 +52,11 @@ abstract class R4TypeInstruction( mnemonic: String ) extends Instruction {
 
 abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( Map(f -> m) ) {
 
-  override def apply( cpu: CPU ): Unit = {
+  def perform( cpu: CPU ): Unit
+
+  def apply( cpu: CPU ): Unit = {
     funct( cpu, f )
-    super.apply( cpu )
+    perform( cpu )
   }
 
 }
@@ -156,7 +153,7 @@ abstract class JTypeInstruction( mnemonic: String ) extends Instruction {
 
 object IllegalInstruction extends Instruction {
 
-  override def perform( cpu: CPU ) = illegal( cpu )
+  def apply( cpu: CPU ) = illegal( cpu )
 
   val mnemonic = null
 
@@ -166,7 +163,7 @@ object IllegalInstruction extends Instruction {
 
 object HaltInstruction extends Instruction {
 
-  override def apply( cpu: CPU ) = cpu.halt = true
+  def apply( cpu: CPU ) = cpu.halt = true
 
   val mnemonic = null
 
@@ -184,7 +181,7 @@ abstract class EmulatorInstruction extends Instruction {
 
 class PrintInstruction( val r: Int ) extends EmulatorInstruction {
 
-  override def perform( cpu: CPU ) = {
+  def apply( cpu: CPU ) = {
     println( cpu(r) )
   }
 
