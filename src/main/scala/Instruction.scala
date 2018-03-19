@@ -19,7 +19,7 @@ abstract class Instruction extends (CPU => Unit) {
 
 }
 
-abstract class RTypeInstruction extends Instruction {
+abstract class RTypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -27,12 +27,16 @@ abstract class RTypeInstruction extends Instruction {
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
 
-  def funct( cpu: CPU, f: Int ) = if (funct( cpu ) != f) illegal( cpu )
+  def funct( cpu: CPU, f: Int ): Int =
+    funct( cpu ) match {
+      case a if a != f => illegal( cpu )
+      case a => a
+    }
 
   def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, x$rs2"
 }
 
-abstract class R4TypeInstruction extends Instruction {
+abstract class R4TypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -41,12 +45,19 @@ abstract class R4TypeInstruction extends Instruction {
 
   def funct( cpu: CPU ) = (cpu.instruction >>> 25)&0x3
 
-  def funct( cpu: CPU, f: Int ) = if (funct( cpu ) != f) illegal( cpu )
+  def funct( cpu: CPU, f: Int ): Int =
+    funct( cpu ) match {
+      case a if a != f => illegal( cpu )
+      case a => a
+    }
 
   def rs3( cpu: CPU ) = cpu.f(cpu.instruction >>> 27)
+
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, x$rs2, rm: $rm"
+
 }
 
-abstract class FRTypeInstruction( f: Int ) extends RTypeInstruction {
+abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( m ) {
 
   override def apply( cpu: CPU ): Unit = {
     funct( cpu, f )
@@ -55,7 +66,7 @@ abstract class FRTypeInstruction( f: Int ) extends RTypeInstruction {
 
 }
 
-abstract class ITypeInstruction extends Instruction {
+abstract class ITypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rd: Int
@@ -64,9 +75,11 @@ abstract class ITypeInstruction extends Instruction {
 
   def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
 
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${immediate( cpu )}"
+
 }
 
-abstract class ShiftITypeInstruction extends Instruction {
+abstract class ShiftITypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rd: Int
@@ -75,9 +88,11 @@ abstract class ShiftITypeInstruction extends Instruction {
 
   def shamt( cpu: CPU ) = (cpu.instruction >> 20)&0x3F
 
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${shamt( cpu )}"
+
 }
 
-abstract class ShiftWITypeInstruction extends Instruction {
+abstract class ShiftWITypeInstruction( val mnemonic: String ) extends Instruction {
 
   val shamt: Int
   val rs1: Int
@@ -85,9 +100,11 @@ abstract class ShiftWITypeInstruction extends Instruction {
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
 
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, $shamt"
+
 }
 
-abstract class STypeInstruction extends Instruction {
+abstract class STypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -96,9 +113,11 @@ abstract class STypeInstruction extends Instruction {
 
   def store( cpu: CPU, v: Long ) = cpu.mem.writeLong( immediate(cpu) + cpu(rs1), v )
 
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rs1, x$rs2, ${immediate( cpu )}"
+
 }
 
-abstract class BTypeInstruction extends Instruction {
+abstract class BTypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -109,6 +128,8 @@ abstract class BTypeInstruction extends Instruction {
       (cpu.instruction << 4)&0x800 |
       (cpu.instruction >> 19)&0xFFFFF000
 
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rs1, x$rs2, ${immediate( cpu )}"
+
 }
 
 abstract class UTypeInstruction( val mnemonic: String ) extends Instruction {
@@ -116,9 +137,12 @@ abstract class UTypeInstruction( val mnemonic: String ) extends Instruction {
   val rd: Int
 
   def immediate( cpu: CPU ) = cpu.instruction&0xFFFFF000
+
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${immediate( cpu )}"
+
 }
 
-abstract class JTypeInstruction extends Instruction {
+abstract class JTypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rd: Int
 
@@ -127,6 +151,8 @@ abstract class JTypeInstruction extends Instruction {
       (cpu.instruction >> 9)&0x800 |
       cpu.instruction&0xFF000 |
       (cpu.instruction >> 11)&0xFFF00000
+
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${immediate( cpu )}"
 
 }
 

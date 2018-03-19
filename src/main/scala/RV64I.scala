@@ -1,28 +1,28 @@
 package xyz.hyperreal.riscv
 
 
-class LWU( val rs1: Int, val rd: Int ) extends ITypeInstruction {
+class LWU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LWU" ) {
   override def perform( cpu: CPU ) = {
     cpu(rd) = cpu.mem.readInt( immediate(cpu) + cpu(rs1) ).asInstanceOf[Long]&0xFFFFFFFF
   }
 }
 
-class LD( val rs1: Int, val rd: Int ) extends ITypeInstruction {
+class LD( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LD" ) {
   override def perform( cpu: CPU ) = cpu(rd) = load( cpu )
 }
 
-class SD( val rs1: Int, val rs2: Int ) extends STypeInstruction {
+class SD( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SD" ) {
   override def perform( cpu: CPU ) = store( cpu, cpu(rs2) )
 }
 
-class ADDIW( val rs1: Int, val rd: Int ) extends ITypeInstruction {
+class ADDIW( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ADDIW" ) {
   override def perform( cpu: CPU ) = {
     cpu(rd) = immediate(cpu) + cpu(rs1).asInstanceOf[Int]
   }
 }
 
 //todo: find out if SLLIW/SRIW/SLLW/SRW should sign-extend to 64 bits or not; the manual (pg. 30) doesn't say to sign-extend
-class SLLIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction {
+class SLLIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction( "SLLIW" ) {
   override def perform( cpu: CPU ) = {
     if (funct(cpu) == 0)
       cpu(rd) = cpu(rs1).asInstanceOf[Int] << shamt
@@ -31,7 +31,7 @@ class SLLIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInst
   }
 }
 
-class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction {
+class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstruction( "SRIW" ) {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> shamt
@@ -41,7 +41,7 @@ class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstr
   }
 }
 
-class ADDW_MULW(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+class ADDW_MULW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "ADDW_MULW" ) {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] + cpu(rs2).asInstanceOf[Int]
@@ -53,23 +53,23 @@ class ADDW_MULW(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstructi
 }
 
 // division by zero should cause result to be -1 (all 1's) (pg. 36)
-class SLLW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0 ) {
+class SLLW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 0, "SLLW" ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] << (cpu(rs2).asInstanceOf[Int]&0x1F)
 }
 
-class DIVW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1 ) {
+class DIVW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1, "DIVW" ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] / cpu(rs2).asInstanceOf[Int]
 }
 
-class REMW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1 ) {
+class REMW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1, "REMW" ) {
   override def perform( cpu: CPU ) = cpu(rd) = cpu(rs1).asInstanceOf[Int] % cpu(rs2).asInstanceOf[Int]
 }
 
-class REMUW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1 ) {
+class REMUW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1, "REMUW" ) {
   override def perform( cpu: CPU ) = cpu(rd) = (cpu(rs1)&0xFFFFFFFF) % (cpu(rs2)&0xFFFFFFFF)
 }
 
-class SRW_DIVUW(val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction {
+class SRW_DIVUW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "SRW_DIVUW" ) {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> (cpu(rs2).asInstanceOf[Int]&0x1F)
