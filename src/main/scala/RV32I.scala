@@ -5,15 +5,11 @@ import java.lang.Long.{compareUnsigned => lcu}
 
 
 class LUI( val rd: Int ) extends UTypeInstruction( "LUI" ) {
-  override def perform( cpu: CPU ) = {
-    cpu(rd) = immediate( cpu )
-  }
+  override def perform( cpu: CPU ) = cpu(rd) = immediate( cpu )
 }
 
 class AUIPC( val rd: Int ) extends UTypeInstruction( "AUIPC" ) {
-  override def perform( cpu: CPU ) = {
-    cpu(rd) += immediate( cpu )
-  }
+  override def perform( cpu: CPU ) = cpu(rd) += immediate( cpu )
 }
 
 class JAL( val rd: Int ) extends JTypeInstruction( "JAL" ) {
@@ -31,123 +27,106 @@ class JALR( val rs1: Int, val rd: Int ) extends ITypeInstruction( "JALR" ) {
 }
 
 class BEQ( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BEQ" ) {
-  override def apply( cpu: CPU ) = {
+  override def apply( cpu: CPU ) =
     if (cpu(rs1) == cpu(rs2))
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
-  }
 }
 
 class BNE( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BNE" ) {
-  override def apply( cpu: CPU ) = {
+  override def apply( cpu: CPU ) =
     if (cpu(rs1) != cpu(rs2))
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
-  }
 }
 
 class BLT( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BLT" ) {
-  override def apply( cpu: CPU ) = {
+  override def apply( cpu: CPU ) =
     if (cpu(rs1) < cpu(rs2))
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
-  }
 }
 
 class BLTU( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BLTU" ) {
-  override def apply( cpu: CPU ) = {
+  override def apply( cpu: CPU ) =
     if (lcu( cpu(rs1), cpu(rs2) ) < 0)
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
-  }
 }
 
 class BGE( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BGE" ) {
-  override def apply( cpu: CPU ) = {
+  override def apply( cpu: CPU ) =
     if (cpu(rs1) >= cpu(rs2))
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
-  }
 }
 
 class BGEU( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BGEU" ) {
-  override def apply( cpu: CPU ) = {
+  override def apply( cpu: CPU ) =
     if (lcu( cpu(rs1), cpu(rs2) ) >= 0)
       cpu.pc += immediate( cpu )
     else
       cpu.pc += 4
-  }
 }
 
 class LB( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LB" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = cpu.mem.readByte( immediate(cpu) + cpu(rs1) )
-  }
 }
 
 class LH( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LH" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = cpu.mem.readShort( immediate(cpu) + cpu(rs1) )
-  }
 }
 
 class LW( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LW" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = cpu.mem.readInt( immediate(cpu) + cpu(rs1) )
-  }
 }
 
 class LBU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LBU" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = cpu.mem.readByte( immediate(cpu) + cpu(rs1) )&0xFF
-  }
 }
 
 class LHU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LHU" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = cpu.mem.readShort( immediate(cpu) + cpu(rs1) )&0xFFFF
-  }
 }
 
 class SB( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SB" ) {
-	override def perform( cpu: CPU ) = {
+	override def perform( cpu: CPU ) =
 		cpu.mem.writeByte( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
-	}
 }
 
 class SH( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SH" ) {
-	override def perform( cpu: CPU ) = {
+	override def perform( cpu: CPU ) =
 		cpu.mem.writeShort( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
-	}
 }
 
 class SW( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SW" ) {
-	override def perform( cpu: CPU ) = {
+	override def perform( cpu: CPU ) =
 		cpu.mem.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
-	}
 }
 
 class ADDI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ADDI" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = immediate(cpu) + cpu(rs1)
-  }
 }
 
 class SLTI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "SLTI" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = if (cpu(rs1) < immediate(cpu)) 1 else 0
-  }
 }
 
 class SLTIU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "SLTIU" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     cpu(rd) = if (lcu(cpu(rs1), immediate(cpu)) < 0) 1 else 0
-  }
 }
 
 class XORI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "XORI" ) {
@@ -163,22 +142,20 @@ class ANDI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ANDI" ) {
 }
 
 class SLLI( val rs1: Int, val rd: Int ) extends ShiftITypeInstruction( "SLLI" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     if (funct(cpu) == 0)
       cpu(rd) = cpu(rs1) << shamt( cpu )
     else
       illegal( cpu )
-  }
 }
 
 class SRI( val rs1: Int, val rd: Int ) extends ShiftITypeInstruction( "SRI" ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >>> shamt( cpu )
       case 0x10 => cpu(rd) = cpu(rs1) >> shamt( cpu )
       case _ => illegal( cpu )
     }
-  }
 }
 
 class ADD_SUB_MUL( val rs1: Int, val rs2: Int, val rd: Int ) extends
@@ -236,14 +213,13 @@ class XOR_DIV( val rs1: Int, val rs2: Int, val rd: Int ) extends
 
 class SR_DIVU( val rs1: Int, val rs2: Int, val rd: Int ) extends
   RTypeInstruction( Map(0 -> "SR", 1 -> "DIVU") ) {
-  override def perform( cpu: CPU ) = {
+  override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x3F)
       case 1 => cpu(rd) = (ulong(cpu(rs1)) / ulong(cpu(rs2))).asInstanceOf[Long]
       case 0x20 => cpu(rd) = cpu(rs1) >> (cpu(rs2)&0x3F)
       case _ => illegal( cpu )
     }
-  }
 }
 
 class OR_REM( val rs1: Int, val rs2: Int, val rd: Int ) extends
