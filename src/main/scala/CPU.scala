@@ -100,7 +100,7 @@ class CPU( val mem: Memory ) {
   // emulator instructions
   populate(
     List[(String, Map[Char, Int] => Instruction)](
-      "00000 00000 000 00000 0000000" -> (_ => HaltInstruction),
+      "00000 00000 000 00000 1111111" -> (_ => HaltInstruction),
       "000000000000 rrrrr 0 0000001" -> ((operands: Map[Char, Int]) => new PrintInstruction( operands('r') )),
     ) )
 
@@ -173,12 +173,12 @@ class CPU( val mem: Memory ) {
   def run: Unit = {
 
     while (!halt) {
-      if ((mem.readByte( pc.toInt )&0x3) == 3) {
-        instruction = mem.readInt( pc.toInt )
+      if ((mem.readByte( pc )&0x3) == 3) {
+        instruction = mem.readInt( pc )
         disp = 4
       } else {
         problem( this, "compressed" )
-        val cinst = mem.readShort( pc.toInt )
+        val cinst = mem.readShort( pc )
         instruction = 0
         disp = 2
       }

@@ -66,7 +66,7 @@ class RAM( val name: String, val start: Long, end: Long ) extends Addressable {
 	require( start >= 0 )
 	require( end >= start )
 
-	val size = (end - start + 1).toInt
+	val size = (end - start + 1).asInstanceOf[Int]
 
 	protected val mem = new Array[Byte]( size )
 
@@ -86,7 +86,7 @@ class ROM( val name: String, val start: Long, end: Long ) extends Addressable {
 	require( start >= 0 )
 	require( end >= start )
 
-	val size = (end - start + 1).toInt
+	val size = (end - start + 1).asInstanceOf[Int]
 
 	protected val mem = new Array[Byte]( size )
 
@@ -170,7 +170,7 @@ abstract class Memory extends Addressable {
 
 	def start = first
 
-	def size = (end - first).toInt
+	def size = (end - first).asInstanceOf[Int]
 
 	def readByte( addr: Long ) = find( addr ).readByte( addr )
 	

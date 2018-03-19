@@ -4,6 +4,7 @@ package xyz.hyperreal.riscv
 object Main extends App {
   println( "opcodes..." )
 
+  val HALT = 0X7F
   val cpu = new CPU(
     new Memory {
       def init: Unit = {
@@ -17,7 +18,7 @@ object Main extends App {
 //          0x101,
           itype( 1, 1, 'b000, 1, 'b0010011 ),
           btype( -4, 2, 1, 'b001, 'b1100011 ),
-          0
+          HALT
         )) )
       }
     } )
@@ -33,5 +34,5 @@ object Main extends App {
   println( "run..." )
   cpu.run
   println( (cpu.counter.toDouble/(System.currentTimeMillis - start)*1000).toInt + " instructions per second" )
-  println( cpu.registers mkString ", " )
+  println( cpu.x mkString ", " )
 }
