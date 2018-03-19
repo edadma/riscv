@@ -181,7 +181,8 @@ class SRI( val rs1: Int, val rd: Int ) extends ShiftITypeInstruction( "SRI" ) {
   }
 }
 
-class ADD_SUB_MUL( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "ADD_SUB_MUL" ) {
+class ADD_SUB_MUL( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "ADD", 0x20 -> "SUB", 1 -> "MUL") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) + cpu(rs2)
@@ -191,7 +192,8 @@ class ADD_SUB_MUL( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstru
     }
 }
 
-class SLL_MULH( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "SLL_MULH" ) {
+class SLL_MULH( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "SLL", 1 -> "MULH") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) << (cpu(rs2)&0x3F)
@@ -200,7 +202,8 @@ class SLL_MULH( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstructi
     }
 }
 
-class SLT_MULHSU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "SLT_MULHSU" ) {
+class SLT_MULHSU( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "SLT", 1 -> "MULHSU") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = if (cpu(rs1) < cpu(rs2)) 1 else 0
@@ -209,7 +212,8 @@ class SLT_MULHSU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruc
     }
 }
 
-class SLTU_MULHU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "SLTU_MULHU" ) {
+class SLTU_MULHU( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "SLTU", 1 -> "MULHU") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 =>
@@ -220,7 +224,8 @@ class SLTU_MULHU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruc
     }
 }
 
-class XOR_DIV( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "XOR_DIV" ) {
+class XOR_DIV( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "XOR", 1 -> "DIV") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) ^ cpu(rs2)
@@ -229,7 +234,8 @@ class XOR_DIV( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstructio
     }
 }
 
-class SR_DIVU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "SR_DIVU" ) {
+class SR_DIVU( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "SR", 1 -> "DIVU") ) {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x3F)
@@ -240,7 +246,8 @@ class SR_DIVU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstructio
   }
 }
 
-class OR_REM( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "OR_REM" ) {
+class OR_REM( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "OR", 1 -> "REM") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) | cpu(rs2)
@@ -249,7 +256,8 @@ class OR_REM( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction
     }
 }
 
-class AND_REMU( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "AND_REMU" ) {
+class AND_REMU( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "AND", 1 -> "REMU") ) {
   override def perform( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) & cpu(rs2)

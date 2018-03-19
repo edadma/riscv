@@ -4,8 +4,6 @@ package xyz.hyperreal.riscv
 
 abstract class Instruction extends (CPU => Unit) {
 
-  val mnemonic: String
-
   def perform( cpu: CPU ) {}
 
   def disassemble( cpu: CPU ): String
@@ -19,7 +17,7 @@ abstract class Instruction extends (CPU => Unit) {
 
 }
 
-abstract class RTypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class RTypeInstruction( mnemonic: Map[Int, String] ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -33,10 +31,10 @@ abstract class RTypeInstruction( val mnemonic: String ) extends Instruction {
       case a => a
     }
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, x$rs2"
+  def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} x$rd, x$rs1, x$rs2"
 }
 
-abstract class R4TypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class R4TypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -57,7 +55,7 @@ abstract class R4TypeInstruction( val mnemonic: String ) extends Instruction {
 
 }
 
-abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( m ) {
+abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( Map(f -> m) ) {
 
   override def apply( cpu: CPU ): Unit = {
     funct( cpu, f )
@@ -66,7 +64,7 @@ abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( 
 
 }
 
-abstract class ITypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rd: Int
@@ -79,7 +77,7 @@ abstract class ITypeInstruction( val mnemonic: String ) extends Instruction {
 
 }
 
-abstract class ShiftITypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class ShiftITypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rd: Int
@@ -92,7 +90,7 @@ abstract class ShiftITypeInstruction( val mnemonic: String ) extends Instruction
 
 }
 
-abstract class ShiftWITypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class ShiftWITypeInstruction( mnemonic: String ) extends Instruction {
 
   val shamt: Int
   val rs1: Int
@@ -104,7 +102,7 @@ abstract class ShiftWITypeInstruction( val mnemonic: String ) extends Instructio
 
 }
 
-abstract class STypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class STypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -117,7 +115,7 @@ abstract class STypeInstruction( val mnemonic: String ) extends Instruction {
 
 }
 
-abstract class BTypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class BTypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rs2: Int
@@ -132,7 +130,7 @@ abstract class BTypeInstruction( val mnemonic: String ) extends Instruction {
 
 }
 
-abstract class UTypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class UTypeInstruction( mnemonic: String ) extends Instruction {
 
   val rd: Int
 
@@ -142,7 +140,7 @@ abstract class UTypeInstruction( val mnemonic: String ) extends Instruction {
 
 }
 
-abstract class JTypeInstruction( val mnemonic: String ) extends Instruction {
+abstract class JTypeInstruction( mnemonic: String ) extends Instruction {
 
   val rd: Int
 

@@ -41,7 +41,8 @@ class SRIW( val shamt: Int, val rs1: Int, val rd: Int ) extends ShiftWITypeInstr
   }
 }
 
-class ADDW_MULW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "ADDW_MULW" ) {
+class ADDW_SUBW_MULW(val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "ADDW", 1 -> "MULW", 0x20 -> "SUBW") ) {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] + cpu(rs2).asInstanceOf[Int]
@@ -69,7 +70,8 @@ class REMUW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction
   override def perform( cpu: CPU ) = cpu(rd) = (cpu(rs1)&0xFFFFFFFF) % (cpu(rs2)&0xFFFFFFFF)
 }
 
-class SRW_DIVUW( val rs1: Int, val rs2: Int, val rd: Int ) extends RTypeInstruction( "SRW_DIVUW" ) {
+class SRW_DIVUW( val rs1: Int, val rs2: Int, val rd: Int ) extends
+  RTypeInstruction( Map(0 -> "SRLW", 1 -> "DIVUW", 0x20 -> "SRAW") ) {
   override def perform( cpu: CPU ) = {
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> (cpu(rs2).asInstanceOf[Int]&0x1F)
