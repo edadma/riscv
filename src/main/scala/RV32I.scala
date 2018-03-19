@@ -4,13 +4,13 @@ package xyz.hyperreal.riscv
 import java.lang.Long.{compareUnsigned => lcu}
 
 
-class LUI( val rd: Int ) extends UTypeInstruction {
+class LUI( val rd: Int ) extends UTypeInstruction( "LUI" ) {
   override def perform( cpu: CPU ) = {
     cpu(rd) = immediate( cpu )
   }
 }
 
-class AUIPC( val rd: Int ) extends UTypeInstruction {
+class AUIPC( val rd: Int ) extends UTypeInstruction( "AUIPC" ) {
   override def perform( cpu: CPU ) = {
     cpu(rd) += immediate( cpu )
   }

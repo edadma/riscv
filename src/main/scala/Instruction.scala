@@ -2,9 +2,13 @@
 package xyz.hyperreal.riscv
 
 
-class Instruction extends (CPU => Unit) {
+abstract class Instruction extends (CPU => Unit) {
+
+  val mnemonic: String
 
   def perform( cpu: CPU ) {}
+
+  def disassemble( cpu: CPU ): String
 
   def apply( cpu: CPU ): Unit = {
     perform( cpu )
@@ -25,6 +29,7 @@ abstract class RTypeInstruction extends Instruction {
 
   def funct( cpu: CPU, f: Int ) = if (funct( cpu ) != f) illegal( cpu )
 
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, x$rs2"
 }
 
 abstract class R4TypeInstruction extends Instruction {
@@ -106,7 +111,7 @@ abstract class BTypeInstruction extends Instruction {
 
 }
 
-abstract class UTypeInstruction extends Instruction {
+abstract class UTypeInstruction( val mnemonic: String ) extends Instruction {
 
   val rd: Int
 
@@ -129,17 +134,27 @@ object IllegalInstruction extends Instruction {
 
   override def perform( cpu: CPU ) = illegal( cpu )
 
+  val mnemonic = null
+
+  def disassemble( cpu: CPU ): String = "ILLEGAL"
+
 }
 
 object HaltInstruction extends Instruction {
 
   override def apply( cpu: CPU ) = cpu.halt = true
 
+  val mnemonic = null
+
+  def disassemble( cpu: CPU ): String = "HALT"
+
 }
 
 abstract class EmulatorInstruction extends Instruction {
 
   val r: Int
+
+  val mnemonic = null
 
 }
 
@@ -148,5 +163,7 @@ class PrintInstruction( val r: Int ) extends EmulatorInstruction {
   override def perform( cpu: CPU ) = {
     println( cpu(r) )
   }
+
+  def disassemble( cpu: CPU ): String = s"PRINT $r"
 
 }
