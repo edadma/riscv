@@ -173,12 +173,17 @@ class CPU( val mem: Memory ) {
     ) )
 
   def show: Unit = {
-    printf( "%8x  %s  ", pc, opcodes32(instruction&0xFFFFFF).disassemble(this) )
+    printf( "%8x  %s\n", pc, opcodes32(mem.readInt(pc)&0xFFFFFF).disassemble(this) )
 
-    for (i <- 0 until 32)
-      print( s"x$i=${x(i).toHexString} " )
+    def regs( start: Int ) {
+      for (i <- start until (start + 5 min 32))
+        printf( "%19s  ", s"x$i=${x(i).toHexString}" )
 
-    println
+      println
+    }
+
+    for (i <- 0 until 32 by 5)
+      regs( i )
   }
 
   def problem( error: String ) = {

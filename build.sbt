@@ -31,6 +31,10 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.1"
 )
 
+libraryDependencies ++= Seq(
+  "jline" % "jline" % "2.14.4"
+)
+
 libraryDependencies ++= {
 	val akkaV = "2.5.11"
 	Seq(

@@ -21,7 +21,7 @@ class JAL( val rd: Int ) extends JTypeInstruction( "JAL" ) {
 
 class JALR( val rs1: Int, val rd: Int ) extends ITypeInstruction( "JALR" ) {
   override def apply( cpu: CPU ) = {
-    cpu.disp = (immediate( cpu ) + cpu(rs1))&0xFFFFFFFE
+    cpu.disp = immediate( cpu ) + cpu(rs1) - cpu.pc
     cpu(rd) = cpu.pc + 4
   }
 }

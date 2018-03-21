@@ -44,12 +44,22 @@ object Main extends App {
         def init: Unit = {
           removeDevices
           regions.clear
+          add( new StdIOChar(0x20000) )
           add( new RAM("ram", 0, 0xFFFF) )
           addHexdump( "hex" )
         }
       } ) {
-      trace = true
+//      trace = true
     }
 
   cpu.run
 }
+
+/*
+
+0  0000111000 0  00000000 00001 1101111
+20 10:1       11 19:12    x1    JAL
+
+0000000000000 0111 0000
+
+ */

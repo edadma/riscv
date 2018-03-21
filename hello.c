@@ -5,6 +5,6 @@ out( char c ) {
 
 void
 main() {
-	for (char* p = "Hello\n"; *p;)
+	for (char* p = "Hello world!\n"; *p;)
 		out( *p++ );
 }

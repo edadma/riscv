@@ -6,7 +6,7 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 object Hexdump {
 
   val SECTION = "^Hex dump of section '(.*)':"r
-  val DATA = """^  0x(\w{8}) (\w{8})(?: (\w{8})(?: (\w{8})(?: (\w{8}))?)?)? .*"""r
+  val DATA = """^  0x(\w+) (\w+)(?: (\w+)(?: (\w+)(?: (\w+))?)?)? .*"""r
 
   case class Section( name: String, start: Long, data: Vector[Byte] )
 
