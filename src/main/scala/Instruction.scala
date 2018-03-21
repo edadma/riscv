@@ -173,31 +173,3 @@ object IllegalInstruction extends Instruction {
   def disassemble( cpu: CPU ): String = "ILLEGAL"
 
 }
-
-object HaltInstruction extends Instruction {
-
-  def apply( cpu: CPU ) = cpu.halt = true
-
-  val mnemonic = null
-
-  def disassemble( cpu: CPU ): String = "HALT"
-
-}
-
-abstract class EmulatorInstruction extends Instruction {
-
-  val r: Int
-
-  val mnemonic = null
-
-}
-
-class PrintInstruction( val r: Int ) extends EmulatorInstruction {
-
-  def apply( cpu: CPU ) = {
-    println( cpu(r) )
-  }
-
-  def disassemble( cpu: CPU ): String = s"PRINT $r"
-
-}

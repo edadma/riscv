@@ -111,13 +111,6 @@ class CPU( val mem: Memory ) {
         }
     }
 
-  // emulator instructions
-  populate(
-    List[(String, Map[Char, Int] => Instruction)](
-      "00000 00000 000 00000 1111111" -> (_ => HaltInstruction),
-      "000000000000 rrrrr 0 0000001" -> ((operands: Map[Char, Int]) => new PrintInstruction( operands('r') )),
-    ) )
-
   import RV32I._
 
   // RV32I
