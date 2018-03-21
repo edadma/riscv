@@ -107,8 +107,8 @@ object ROM {
 		}
 	}
 
-	def code( name: String, startx: Long, data: Seq[Int] ) = {
-		new ROM( name, startx, startx + data.length*4 - 1 ) {
+	def code( name: String, start: Long, data: Seq[Int] ) = {
+		new ROM( name, start, start + data.length*4 - 1 ) {
 			for ((inst, idx) <- data zipWithIndex)
 				programInt( start + idx*4, inst )
 		}
@@ -233,7 +233,11 @@ abstract class Memory extends Addressable {
 	def clearRAM =
 		for (r <- regions filter (_.isRAM))
 			r.asInstanceOf[RAM].clear
-			
+
+	def addHexdump( file: String ) =
+		for (Hexdump.Section( name, start, data ) <- Hexdump.read( file ))
+			add( ROM(name, start, data) )
+
 	def add( region: Addressable ) {
 		regions find (r => r.start <= region.start && region.start < r.start + r.size) match {
 			case Some(r) => sys.error( hexLong(region.start) + ", " + hexInt(region.size) + " overlaps " + hexLong(r.start) + ", " + hexInt(r.size) )

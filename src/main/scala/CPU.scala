@@ -7,16 +7,17 @@ import scala.collection.mutable.ListBuffer
 class CPU( val mem: Memory ) {
 
   private [riscv] val x = new Array[Long]( 32 )
-  private [riscv] var pc: Long = 0
+  private [riscv] var pc: Long = mem.code
   private [riscv] var instruction = 0
   private [riscv] var halt = false
   private [riscv] val f = new Array[Double]( 32 )
   private [riscv] var fcsr: Int = 0
   private [riscv] var disp: Long = 0
 
+  var trace = false
   var counter = 0L
 
-  private val opcodes = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
+  private val opcodes32 = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
 
   def apply( r: Int ) = if (r == 0) 0L else x(r)
 
@@ -34,7 +35,7 @@ class CPU( val mem: Memory ) {
 
   private def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
-      opcodes(idx) = inst( m )
+      opcodes32(idx) = inst( m )
 
   private def populate( insts: List[(String, Map[Char, Int] => Instruction)] ): Unit =
     for ((p, c) <- insts)
@@ -176,15 +177,25 @@ class CPU( val mem: Memory ) {
     while (!halt) {
       if ((mem.readByte( pc )&0x3) == 3) {
         instruction = mem.readInt( pc )
+
+        if (trace) {
+          printf( "%8x  %s  ", pc, opcodes32(instruction&0xFFFFFF).disassemble(this) )
+
+          for (i <- 0 until 32)
+            print( s"x$i=${x(i).toHexString} " )
+
+          println
+        }
+
+        opcodes32(instruction&0xFFFFFF)( this )
         disp = 4
       } else {
-        problem( this, "compressed" )
+        problem( this, "compressed instruction" )
         val cinst = mem.readShort( pc )
         instruction = 0
         disp = 2
       }
 
-      opcodes( instruction&0xFFFFFF )( this )
       pc += disp
       counter += 1
     }
