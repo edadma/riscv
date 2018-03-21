@@ -14,6 +14,7 @@ class CPU( val mem: Memory ) {
   private [riscv] var fcsr: Int = 0
   private [riscv] var disp: Long = 0
 
+  val csrs = Array.fill[CSR]( 0x1000 )( IllegalCSR )
   var trace = false
   var counter = 0L
 
@@ -99,6 +100,17 @@ class CPU( val mem: Memory ) {
     enumeration.toList
   }
 
+  csrs(0) =
+    new CSR( "state" ) {
+      def read( cpu: CPU, addr: Int ) = 0
+
+      def write( cpu: CPU, addr: Int, v: Long ): Unit =
+        v match {
+          case 0 => halt = true
+          case _ => problem( s"undefined emulator control value: $v" )
+        }
+    }
+
   // emulator instructions
   populate(
     List[(String, Map[Char, Int] => Instruction)](
@@ -145,6 +157,7 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa 101 ddddd 0110011" -> SR_DIVU,
       "bbbbb aaaaa 110 ddddd 0110011" -> OR_REM,
       "bbbbb aaaaa 111 ddddd 0110011" -> AND_REMU,
+      "----- iiiii 101 ddddd 1110011" -> ((operands: Map[Char, Int]) => new CSRRWI( operands('i'), operands('d') )),
     ) )
 
   // RV64I

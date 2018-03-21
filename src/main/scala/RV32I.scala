@@ -230,6 +230,18 @@ class AND_REMU( val rs1: Int, val rs2: Int, val rd: Int ) extends
     }
 }
 
+class CSRRWI( val zimm: Int, val rd: Int ) extends CSRTypeInstruction( "CSRRWI" ) {
+  def apply( cpu: CPU ) = {
+    val r = csr( cpu )
+    val addr = address( cpu )
+
+    if (rd != 0)
+      cpu(rd) = r.read( cpu, addr )
+
+    r.write( cpu, addr, zimm )
+  }
+}
+
 object RV32I {
 
 	def LUI( operands: Map[Char, Int] ) = new LUI( operands('d') )

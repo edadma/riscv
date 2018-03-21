@@ -74,6 +74,19 @@ abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
 
 }
 
+abstract class CSRTypeInstruction( mnemonic: String ) extends Instruction {
+
+  val zimm: Int
+  val rd: Int
+
+  def address( cpu: CPU ) = cpu.instruction >>> 20
+
+  def csr( cpu: CPU ) = cpu.csrs( address(cpu) )
+
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${address( cpu )}, $zimm"
+
+}
+
 abstract class ShiftITypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
