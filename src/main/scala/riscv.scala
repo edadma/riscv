@@ -16,11 +16,6 @@ package object riscv {
 
   def hex( s: String ) = Integer.parseInt( s, 16 )
 
-  def problem( cpu: CPU, error: String ) = {
-    println( s"$error at ${cpu.pc.toHexString}" )
-    sys.exit( 1 )
-  }
-
   def itype( imm: Int, rs1: Int, funct3: Symbol, rd: Int, opcode: Symbol ) =
     (imm << 20) | (rs1 << 15) | (Integer.parseInt(funct3.name drop 1, 2) << 12) | (rd << 7) |
       Integer.parseInt(opcode.name drop 1, 2)

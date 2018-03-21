@@ -172,25 +172,33 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa rrr ddddd 1000011" -> ((operands: Map[Char, Int]) => new FMADD( operands('a'), operands('b'), operands('d'), operands('r') )),
     ) )
 
+  def show: Unit = {
+    printf( "%8x  %s  ", pc, opcodes32(instruction&0xFFFFFF).disassemble(this) )
+
+    for (i <- 0 until 32)
+      print( s"x$i=${x(i).toHexString} " )
+
+    println
+  }
+
+  def problem( error: String ) = {
+    show
+    sys.error( error )
+  }
+
   def run: Unit = {
 
     while (!halt) {
       if ((mem.readByte( pc )&0x3) == 3) {
         instruction = mem.readInt( pc )
 
-        if (trace) {
-          printf( "%8x  %s  ", pc, opcodes32(instruction&0xFFFFFF).disassemble(this) )
+        if (trace)
+          show
 
-          for (i <- 0 until 32)
-            print( s"x$i=${x(i).toHexString} " )
-
-          println
-        }
-
-        opcodes32(instruction&0xFFFFFF)( this )
         disp = 4
+        opcodes32(instruction&0xFFFFFF)( this )
       } else {
-        problem( this, "compressed instruction" )
+        problem( "compressed instruction" )
         val cinst = mem.readShort( pc )
         instruction = 0
         disp = 2
