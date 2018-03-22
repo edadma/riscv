@@ -206,10 +206,10 @@ abstract class Memory extends Addressable {
 	
 	def memory( addr: Long ) = find( addr, r => r.isRAM || r.isROM )
 	
-	def rom( addr: Long ) = find( addr, r => r.isROM )
+	def rom( addr: Long ) = find( addr, _.isROM )
 	
 	def remove( name: String ) {
-		regions.indexWhere( r => r.name == name ) match {
+		regions.indexWhere( _.name == name ) match {
 			case -1 => sys.error( "not found: " + name )
 			case ind =>
 				if (regions(ind) isDevice)
@@ -219,9 +219,9 @@ abstract class Memory extends Addressable {
 		}
 	}
 	
-	def seqDevice = (regions filter (r => r.isDevice)).asInstanceOf[Seq[Device]]
+	def seqDevice = (regions filter (_.isDevice)).asInstanceOf[Seq[Device]]
 	
-	def seqROM = regions filter (r => r.isROM)
+	def seqROM = regions filter (_.isROM)
 	
 	def removeROM =
 		for (r <- seqROM)
@@ -260,7 +260,7 @@ abstract class Memory extends Addressable {
 			case None =>
 		}
 
-		regions find (r => r.name == region.name) match {
+		regions find (_.name == region.name) match {
 			case Some(r) => sys.error( "duplicate region: " + region.name )
 			case None =>
 		}
