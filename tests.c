@@ -12,8 +12,9 @@ print( char* s ) {
 }
 
 char*
-convert( int n, char* buf ) {
-	char* p = buf + 12;
+convert( int n, int radix, char* buf ) {
+	char digits[] = "0123456789ABCDEF";
+	char* p = &buf[33];
 	int quo = n;
 
 	if (n < 0)
@@ -21,12 +22,12 @@ convert( int n, char* buf ) {
 
 	*p-- = 0;
 
-	while (quo >= 10) {
-		*p-- = (quo%10) + '0';
-		quo /= 10;
+	while (quo >= radix) {
+		*p-- = digits[(quo%radix)];
+		quo /= radix;
 	}
 
-	*p = quo + '0';
+	*p = digits[quo];
 
 	if (n < 0)
 		*--p = '-';
@@ -34,9 +35,36 @@ convert( int n, char* buf ) {
 	return p;
 }
 
+//int
+//bin( char* n, int radix ) {
+//	char digits[] = "0123456789ABCDEF";
+//	char* p = n;
+//	int result = 0;
+//	char c;
+//
+//	while (c = *p++) {
+//
+//	}
+//
+//	return result;
+//}
+
+int
+indexOf( char c, char* s ) {
+	char* p = s;
+	char ch;
+
+	for (int i = 0; ch = *p++; i++)
+		if (ch == c)
+			return i;
+
+	return -1;
+}
+
 void
 main() {
-	char buf[20];
+	char buf[34];	// sign + 32 bits + 0
+	char s[] = "This is a test.";
 
-	print( convert(-123, buf) );
+	print( convert(indexOf('x', s), 10, buf) );
 }
