@@ -53,4 +53,5 @@ object Main extends App {
     }
 
   cpu.run
+  cpu.show
 }
