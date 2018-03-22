@@ -1,1 +1,2 @@
-riscv64-unknown-elf-gcc -nostdlib -nostartfiles -march=rv64g -o $1 start.s $1.c
+riscv64-unknown-elf-gcc -nostdlib -nostartfiles -o $1 start.s $1.c
+# -march=rv64g

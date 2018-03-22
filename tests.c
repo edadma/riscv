@@ -1,3 +1,5 @@
+extern void halt();
+
 void
 out( char c ) {
 	*((char*) 0x20000) = c;
@@ -35,20 +37,6 @@ convert( int n, int radix, char* buf ) {
 	return p;
 }
 
-//int
-//bin( char* n, int radix ) {
-//	char digits[] = "0123456789ABCDEF";
-//	char* p = n;
-//	int result = 0;
-//	char c;
-//
-//	while (c = *p++) {
-//
-//	}
-//
-//	return result;
-//}
-
 int
 indexOf( char c, char* s ) {
 	char* p = s;
@@ -61,10 +49,41 @@ indexOf( char c, char* s ) {
 	return -1;
 }
 
+int
+bin( char* n, int radix ) {
+	char digits[] = "0123456789ABCDEF";
+	char* p = n;
+	int result = 0;
+	char c;
+	int neg = 0;
+
+	if (*p == '-') {
+		neg = 1;
+		p++;
+	}
+
+	while (c = *p++) {
+		int idx = indexOf( c, digits );
+
+		if (idx == -1 || idx >= radix) {
+			print( "invalid number" );
+			halt();
+		}
+
+		result = result*radix + idx;
+	}
+
+	if (neg)
+		result = -result;
+
+	return result;
+}
+
 void
 main() {
 	char buf[34];	// sign + 32 bits + 0
 	char s[] = "This is a test.";
+	int n = bin( "123", 10 );
 
-	print( convert(indexOf('x', s), 10, buf) );
+	print( convert(n, 16, buf) );
 }

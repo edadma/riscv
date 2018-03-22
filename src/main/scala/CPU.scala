@@ -200,8 +200,11 @@ class CPU( val mem: Memory ) {
   def run: Unit = {
 
     while (!halt) {
-      if ((mem.readByte( pc )&0x3) == 3) {
-        instruction = mem.readInt( pc )
+      val m = mem.find( pc )
+      val low = m.readByte( pc )
+
+      if ((low&3) == 3) {
+        instruction = m.readInt( pc, low )
 
         if (trace)
           show
@@ -209,9 +212,8 @@ class CPU( val mem: Memory ) {
         disp = 4
         opcodes32(instruction&0xFFFFFF)( this )
       } else {
+        instruction = m.readShort( pc, low )
         problem( "compressed instruction" )
-        val cinst = mem.readShort( pc )
-        instruction = 0
         disp = 2
       }
 
