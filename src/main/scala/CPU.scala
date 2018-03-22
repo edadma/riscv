@@ -210,7 +210,7 @@ class CPU( val mem: Memory ) {
           show
 
         disp = 4
-        opcodes32(instruction&0xFFFFFF)( this )
+        opcodes32(instruction&0x1FFFFFF)( this )
       } else {
         instruction = m.readShort( pc, low )
         problem( "compressed instruction" )
