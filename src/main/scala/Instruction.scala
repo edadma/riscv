@@ -59,18 +59,37 @@ abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( 
 
 }
 
-abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
+abstract class AbstractITypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
   val rd: Int
+
+  def immediate( cpu: CPU ): Long
+
+  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${immediate( cpu )}"
+
+}
+
+trait ITypeInstruction {
+
+  val rs1: Int
 
   def immediate( cpu: CPU ) = (cpu.instruction >> 20).asInstanceOf[Long]
 
   def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${immediate( cpu )}"
-
 }
+
+//abstract class ITypeInstruction( mnemonic: String ) extends AbstractITypeInstruction( mnemonic: String ) {
+//
+//  val rs1: Int
+//  val rd: Int
+//
+//  def immediate( cpu: CPU ) = (cpu.instruction >> 20).asInstanceOf[Long]
+//
+//  def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
+//
+//}
 
 abstract class CSRTypeInstruction( mnemonic: String ) extends Instruction {
 
@@ -165,8 +184,6 @@ abstract class JTypeInstruction( mnemonic: String ) extends Instruction {
 object IllegalInstruction extends Instruction {
 
   def apply( cpu: CPU ) = illegal( cpu )
-
-  val mnemonic = null
 
   def disassemble( cpu: CPU ): String = "ILLEGAL"
 

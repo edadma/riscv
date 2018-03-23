@@ -35,13 +35,21 @@ class CPU( val mem: Memory ) {
 //
 //  private [riscv] def x( r: Int ) = if (r == 0) 0L else registers(r)
 
-  private def populate( pattern: String, inst: Map[Char, Int] => Instruction ) =
+  private def populate32( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
       opcodes32(idx) = inst( m )
 
-  private def populate( insts: List[(String, Map[Char, Int] => Instruction)] ): Unit =
+  private def populate32( insts: List[(String, Map[Char, Int] => Instruction)] ): Unit =
     for ((p, c) <- insts)
-      populate( p, c )
+      populate32( p, c )
+
+  private def populate16( pattern: String, inst: Map[Char, Int] => Compressed ) =
+    for ((idx, m) <- generate( pattern ))
+      opcodes16(idx) = inst( m )
+
+  private def populate16( insts: List[(String, Map[Char, Int] => Compressed)] ): Unit =
+    for ((p, c) <- insts)
+      populate16( p, c )
 
   private def generate( pattern: String ) = {
     case class Variable( v: Char, lower: Int, upper: Int, bits: List[Int] )
@@ -115,7 +123,7 @@ class CPU( val mem: Memory ) {
   import RV32I._
 
   // RV32I
-  populate(
+  populate32(
     List[(String, Map[Char, Int] => Instruction)](
       "----- ----- --- ddddd 0110111" -> LUI,
       "----- ----- --- ddddd 0010111" -> AUIPC,
@@ -155,7 +163,7 @@ class CPU( val mem: Memory ) {
     ) )
 
   // RV64I
-  populate(
+  populate32(
     List[(String, Map[Char, Int] => Instruction)](
       "----- aaaaa 110 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LWU( operands('a'), operands('d') )),
       "----- aaaaa 011 ddddd 0000011" -> ((operands: Map[Char, Int]) => new LD( operands('a'), operands('d') )),
@@ -172,11 +180,17 @@ class CPU( val mem: Memory ) {
     ) )
 
   // RV32D
-  populate(
+  populate32(
     List[(String, Map[Char, Int] => Instruction)](
       "----- aaaaa 011 ddddd 0000111" -> ((operands: Map[Char, Int]) => new FLD( operands('a'), operands('d') )),
       "bbbbb aaaaa 011 ----- 0100111" -> ((operands: Map[Char, Int]) => new FSD( operands('a'), operands('b') )),
       "bbbbb aaaaa rrr ddddd 1000011" -> ((operands: Map[Char, Int]) => new FMADD( operands('a'), operands('b'), operands('d'), operands('r') )),
+    ) )
+
+  // RV32C
+  populate16(
+    List[(String, Map[Char, Int] => Compressed)](
+      "000 iiiiiiii ddd 00" -> ((operands: Map[Char, Int]) => new C.ADDI4SPN( operands('i'), operands('d') )),
     ) )
 
   def show: Unit = {
