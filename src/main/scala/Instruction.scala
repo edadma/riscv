@@ -4,8 +4,6 @@ package xyz.hyperreal.riscv
 
 abstract class Instruction extends (CPU => Unit) {
 
-  def perform( cpu: CPU ) {}
-
   def disassemble( cpu: CPU ): String
 
   def illegal( cpu: CPU ) = cpu.problem( "illegal instruction" )

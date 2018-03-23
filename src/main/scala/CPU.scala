@@ -19,6 +19,7 @@ class CPU( val mem: Memory ) {
   var counter = 0L
 
   private val opcodes32 = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
+  private val opcodes16 = Array.fill[Compressed]( 0x10000 )( IllegalCompressed )
 
   def apply( r: Int ) = if (r == 0) 0L else x(r)
 
@@ -179,7 +180,7 @@ class CPU( val mem: Memory ) {
     ) )
 
   def show: Unit = {
-    printf( "%8x  %s\n", pc, opcodes32(mem.readInt(pc)&0xFFFFFF).disassemble(this) )
+    printf( "%8x  %s\n", pc, opcodes32(mem.readInt(pc)&0x1FFFFFF).disassemble(this) )
 
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
@@ -200,21 +201,20 @@ class CPU( val mem: Memory ) {
   def run: Unit = {
 
     while (!halt) {
+      if (trace)
+        show
+
       val m = mem.find( pc )
       val low = m.readByte( pc )
 
       if ((low&3) == 3) {
         instruction = m.readInt( pc, low )
-
-        if (trace)
-          show
-
         disp = 4
         opcodes32(instruction&0x1FFFFFF)( this )
       } else {
         instruction = m.readShort( pc, low )
-        problem( "compressed instruction" )
         disp = 2
+        opcodes16(instruction)( this )
       }
 
       pc += disp
