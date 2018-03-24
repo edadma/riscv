@@ -18,30 +18,13 @@ object IllegalCompressed extends Compressed {
 
 }
 
-trait CIWTypeCompressed {
+abstract class CIWTypeCompressed( val mnemonic: String ) extends Compressed {
 
   val nzuimm: Int
+  val rd: Int
 
 	def immediate( cpu: CPU ) = ((nzuimm >> 2)&8) | ((nzuimm >> 3)&4) | ((nzuimm << 1)&0x3C0) | ((nzuimm >> 1)&0x30)
 
-}
-
-//abstract class CIWTypeCompressed( mnemonic: String ) extends AbstractITypeInstruction( mnemonic: String ) {
-//
-//  val nzuimm: Int
-//  val rd: Int
-//
-//	def immediate( cpu: CPU ) = ((nzuimm >> 2)&8) | ((nzuimm >> 3)&4) | ((nzuimm << 1)&0x3C0) | ((nzuimm >> 1)&0x30)
-//
-//}
-
-
-trait ITypeInstruction {
-
-  val rs1: Int
-
-  def immediate( cpu: CPU ) = (cpu.instruction >> 20).asInstanceOf[Long]
-
-  def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
+	def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x2, ${immediate( cpu )}"
 
 }

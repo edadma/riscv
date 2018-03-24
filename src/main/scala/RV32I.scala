@@ -102,19 +102,9 @@ class SW( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SW" ) {
 		cpu.mem.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 }
 
-//object RV32IC {
-//  def addi( cpu: CPU, rs1: Int, rd: Int, imm: Int ) = cpu(rd) = imm + cpu(rs1)
-//}
-
-abstract class AbstractADDI extends AbstractITypeInstruction( "ADDI" ) {
+class ADDI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ADDI" ) {
   def apply( cpu: CPU ) = cpu(rd) = immediate(cpu) + cpu(rs1)
 }
-
-class ADDI( val rs1: Int, val rd: Int ) extends AbstractADDI with ITypeInstruction
-
-//class ADDI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ADDI" ) {
-//  def apply( cpu: CPU ) = cpu(rd) = immediate(cpu) + cpu(rs1)
-//}
 
 class SLTI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "SLTI" ) {
   def apply( cpu: CPU ) =
