@@ -8,6 +8,8 @@ abstract class CSR( name: String ) {
 
   def write( cpu: CPU, addr: Int, v: Long )
 
+  def init( cpu: CPU ) {}
+
 }
 
 object IllegalCSR extends CSR( "Illegal" ) {

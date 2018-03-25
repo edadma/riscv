@@ -28,7 +28,10 @@ abstract class CPU {
   private [riscv] def ebreak = problem( "ebreak" )
 
   def reset: Unit = {
-    memory.init
+    memory.seqDevice foreach (_.init)
+
+    for (r <- csrs if r != IllegalCSR)
+      r.init( this )
 
     for (i <- x indices) {
       x(i) = 0
@@ -42,16 +45,6 @@ abstract class CPU {
   def apply( r: Int ) = if (r == 0) 0L else x(r)
 
   def update( r: Int, v: Long ): Unit = x(r) = v
-
-//  private [riscv] val x =
-//    new AnyRef {
-//      def apply( r: Int ) = if (r == 0) 0L else registers(r)
-//
-//      def update( r: Int, v: Long ): Unit = registers(r) = v
-//    }
-//  private [riscv] def x_=( r: Int, v: Long ): Unit = registers(r) = v
-//
-//  private [riscv] def x( r: Int ) = if (r == 0) 0L else registers(r)
 
   private def populate32( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
