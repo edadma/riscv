@@ -175,16 +175,16 @@ class Machine {
 //		buf.toString dropRight 1
 //	}
 		
-//	def load( file: String ) {
-//		if (cpu.isRunning)
-//			sys.error( "can't load while running" )
-//
-//		mem.init
-//		SREC( mem, new File(file) )
-//		discur = mem.code
+	def load( file: String ) {
+		if (cpu.isRunning)
+			sys.error( "can't load while running" )
+
+		mem.init
+		mem.addHexdump( file )
+		discur = mem.code
 //		clearBreakpoints
-//		reset
-//	}
+		reset
+	}
 
 //	def save( file: String ) = 	SREC.write( mem, new File(file), file.getBytes.toVector )
 	

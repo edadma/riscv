@@ -15,13 +15,10 @@ object Main extends App {
 	{
 		case "--help" :: _ =>
 			"""
-			|MOS 6502 emulator v0.3
+			|RISC-V (v2.2) Emulator v0.1
 			|Usage:  --help      display this help and exit
-			|        -l <file>   load SREC <file> and enter REPL
-			|        -le <file>  load SREC <file> and execute
-			|        -a <file>   assemble source <file> and enter REPL
-			|        -ae <file>  assemble source <file> and execute
-			|        -as <file>  assemble source <file> and save SREC
+			|        -l <file>   load hexdump <file> and enter REPL
+			|        -le <file>  load hexdump <file> and execute
 			""".trim.stripMargin.lines foreach println
 			enterREPL = false
 			Nil
@@ -44,8 +41,8 @@ object Main extends App {
 	if (enterREPL)
 		REPL
 
-//	def load( file: String ) = emu.load( file )
-//
+	def load( file: String ) = mach.load( file )
+
 //	def save( file: String ) = emu.save( file )
 
 	def waitUntilRunning = {
@@ -78,7 +75,7 @@ object Main extends App {
 
 		def dump( start: Int, lines: Int ) = out.println( mach.dump(start, lines) )
 
-		def disassemble( start: Int, lines: Int ) = out.println( mach.disassemble(start, lines) )
+//		def disassemble( start: Int, lines: Int ) = out.println( mach.disassemble(start, lines) )
 
 //		def printBreakpoints = out.println( mach.breakpoints map {case (b, l) => hexShort(b) + (if (l != "") "/" + l else "")} mkString " " )
 
@@ -89,7 +86,7 @@ object Main extends App {
 			registers
 		}
 
-		out.println( "MOS 6502 Emulator v0.5" )
+		out.println( "RISC-V (v2.2) Emulator v0.1" )
 		out.println( "Type 'help' for list of commands." )
 		out.println
 
@@ -98,51 +95,45 @@ object Main extends App {
 
 			try {
 				com match {
-					case List( "assemble"|"a", file ) =>
-						reload = command
-						assemble( file )
-						out.println( mach.mem )
-					case List( "breakpoint"|"b" ) =>
-						printBreakpoints
-					case List( "breakpoint"|"b", "--" ) =>
-						mach.clearBreakpoints
-						printBreakpoints
-					case List( "breakpoint"|"b", bp ) if bp startsWith "-" =>
-						mach.clearBreakpoint( mach.target(bp drop 1) )
-						printBreakpoints
-					case List( "breakpoint"|"b", bp ) =>
-						mach.setBreakpoint( mach.target(bp) )
-						printBreakpoints
-					case List( "disassemble"|"u", addr )  =>
-						disassemble( mach.target( addr ), 15 )
-					case List( "disassemble"|"u" )  =>
-						disassemble( -1, 15 )
-					case List( "clear"|"c", addr1, addr2 ) =>
-						for (i <- hex( addr1 ) until hex( addr2 ))
-							mach.mem.program( i, 0 )
+//					case List( "breakpoint"|"b" ) =>
+//						printBreakpoints
+//					case List( "breakpoint"|"b", "--" ) =>
+//						mach.clearBreakpoints
+//						printBreakpoints
+//					case List( "breakpoint"|"b", bp ) if bp startsWith "-" =>
+//						mach.clearBreakpoint( mach.target(bp drop 1) )
+//						printBreakpoints
+//					case List( "breakpoint"|"b", bp ) =>
+//						mach.setBreakpoint( mach.target(bp) )
+//						printBreakpoints
+//					case List( "disassemble"|"u", addr )  =>
+//						disassemble( mach.target( addr ), 15 )
+//					case List( "disassemble"|"u" )  =>
+//						disassemble( -1, 15 )
+//					case List( "clear"|"c", addr1, addr2 ) =>
+//						for (i <- hex( addr1 ) until hex( addr2 ))
+//							mach.mem.program( i, 0 )
 					case List( "clear"|"c" ) =>
 						mach.mem.clearRAM
 					case List( "drop"|"dr", region ) =>
 						mach.mem.remove( region )
 						out.println( mach.mem )
-					case List( "dump"|"d", addr ) =>
-						dump( mach.target(addr), 10 )
+//					case List( "dump"|"d", addr ) =>
+//						dump( mach.target(addr), 10 )
 					case List( "dump"|"d" ) =>
 						dump( -1, 10 )
-					case List( "execute"|"e", addr ) =>
-						mach.cpu.PC = mach.target( addr )
-						mach.run
+//					case List( "execute"|"e", addr ) =>
+//						mach.cpu.pc = mach.target( addr )
+//						mach.run
 					case List( "execute"|"e" ) =>
 						mach.run
-					case List( "execute&wait"|"ew", addr ) =>
-						mach.cpu.PC = mach.target( addr )
-						runAndWait
+//					case List( "execute&wait"|"ew", addr ) =>
+//						mach.cpu.pc = mach.target( addr )
+//						runAndWait
 					case List( "execute&wait"|"ew" ) =>
 						runAndWait
 					case List( "help"|"h" ) =>
 						"""
-						|assemble (a) <file>              clear ROM, assemble <file>, and reset CPU
-						|assemble (a) <org>               clear ROM, assemble REPL input at <org>, and reset CPU
 						|breakpoint (b) <addr>*           set/clear breakpoint at <addr>
 						|disassemble (u) [<addr>*]        print disassembled code at <addr> or where left off
 						|clear (c) [<addr1>* <addr2>*]    clear RAM, optionally from <addr1> up to but not including <addr2>
@@ -170,38 +161,38 @@ object Main extends App {
 					case List( "load"|"l", file ) =>
 						reload = command
 						load( file )
-					case ("memory"|"m") :: addr :: data =>
-						val addr1 = mach.target( addr )
-
-						for ((d, i) <- data map mach.target zipWithIndex)
-							mach.program( addr1 + i, d )
-
-						dump( addr1, (data.length + addr1%16)/16 + 1 )
+//					case ("memory"|"m") :: addr :: data =>
+//						val addr1 = mach.target( addr )
+//
+//						for ((d, i) <- data map mach.target zipWithIndex)
+//							mach.program( addr1 + i, d )
+//
+//						dump( addr1, (data.length + addr1%16)/16 + 1 )
 					case List( "memory"|"m" ) =>
 						out.println( mach.mem )
 					case List( "quit"|"q" ) =>
-						mach.stop
+//						mach.stop
 						mach.mem.removeDevices
 						sys.exit
-					case List( "registers"|"r", reg, value ) =>
-						val n = mach.target( value )
-
-						reg.toLowerCase match {
-							case "a" => mach.cpu.A = n
-							case "x" => mach.cpu.X = n
-							case "y" => mach.cpu.Y = n
-							case "sp" => mach.cpu.SP = n
-							case "pc" => mach.cpu.PC = n
-							case "n" => mach.cpu.set( N, n )
-							case "v" => mach.cpu.set( V, n )
-							case "b" => mach.cpu.set( B, n )
-							case "d" => mach.cpu.set( D, n )
-							case "i" => mach.cpu.set( I, n )
-							case "z" => mach.cpu.set( Z, n )
-							case "c" => mach.cpu.set( C, n )
-						}
-
-						registers
+//					case List( "registers"|"r", reg, value ) =>
+//						val n = mach.target( value )
+//
+//						reg.toLowerCase match {
+//							case "a" => mach.cpu.A = n
+//							case "x" => mach.cpu.X = n
+//							case "y" => mach.cpu.Y = n
+//							case "sp" => mach.cpu.SP = n
+//							case "pc" => mach.cpu.PC = n
+//							case "n" => mach.cpu.set( N, n )
+//							case "v" => mach.cpu.set( V, n )
+//							case "b" => mach.cpu.set( B, n )
+//							case "d" => mach.cpu.set( D, n )
+//							case "i" => mach.cpu.set( I, n )
+//							case "z" => mach.cpu.set( Z, n )
+//							case "c" => mach.cpu.set( C, n )
+//						}
+//
+//						registers
 					case List( "registers"|"r" ) =>
 						registers
 					case List( "reload"|"rl" ) =>
@@ -209,21 +200,19 @@ object Main extends App {
 					case List( "reset"|"re" ) =>
 						mach.reset
 						registers
-					case List( "step"|"s", addr ) =>
-						mach.cpu.PC = mach.target( addr )
-						mach.step
-						registers
+//					case List( "step"|"s", addr ) =>
+//						mach.cpu.pc = mach.target( addr )
+//						mach.step
+//						registers
 					case List( "step"|"s" ) =>
 						mach.step
 						registers
-					case List( "stop"|"st" ) =>
-						mach.stop
-						waitWhileRunning
-						registers
-					case List( "save"|"sa", file ) =>
-						save( file )
-					case List( "symbols"|"sy", symbol, value ) =>
-						mach.symbols += (symbol -> mach.target( value ))
+//					case List( "stop"|"st" ) =>
+//						mach.stop
+//						waitWhileRunning
+//						registers
+//					case List( "symbols"|"sy", symbol, value ) =>
+//						mach.symbols += (symbol -> mach.target( value ))
 					case List( "symbols"|"sy" ) =>
 						out.println( "name            value segment" )
 						out.println( "----            ----- -------" )
