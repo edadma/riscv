@@ -38,21 +38,20 @@ object Main extends App {
 //  println( cpu.x mkString ", " )
 
   val cpu =
-    new CPU {
-      val memory =
-        new Memory {
-          def init: Unit = {
-            removeDevices
-            regions.clear
-            add( new StdIOChar(0x20000) )
-            add( new RAM("ram", 0, 0xFFFF) )
-            addHexdump( "tests.hex" )
-          }
+    new CPU(
+      new Memory {
+        def init: Unit = {
+          removeDevices
+          regions.clear
+          add( new StdIOChar(0x20000) )
+          add( new RAM("ram", 0, 0xFFFF) )
+          addHexdump( "tests.hex" )
         }
+      } ) {
 //      trace = true
-    }
+      }
 
   cpu.reset
   cpu.run
-  cpu.show
+  cpu.registers
 }

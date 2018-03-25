@@ -4,9 +4,7 @@ package xyz.hyperreal.riscv
 import scala.collection.mutable.ListBuffer
 
 
-abstract class CPU {
-
-  private [riscv] val memory: Memory
+class CPU( private [riscv] val memory: Memory ) {
 
   private [riscv] val x = new Array[Long]( 32 )
   private [riscv] var pc: Long = 0
@@ -17,8 +15,10 @@ abstract class CPU {
   private [riscv] var disp: Long = 0
 
   val csrs = Array.fill[CSR]( 0x1000 )( IllegalCSR )
-  var trace = false
   var counter = 0L
+  var trace = false
+
+	protected var running = false
 
   private val opcodes32 = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
   private val opcodes16 = Array.fill[Compressed]( 0x10000 )( IllegalCompressed )
@@ -27,20 +27,7 @@ abstract class CPU {
 
   private [riscv] def ebreak = problem( "ebreak" )
 
-  def reset: Unit = {
-    memory.seqDevice foreach (_.init)
-
-    for (r <- csrs if r != IllegalCSR)
-      r.init( this )
-
-    for (i <- x indices) {
-      x(i) = 0
-      f(i) = 0
-    }
-
-    pc = memory.code
-    fcsr = 0
-  }
+	def isRunning = running
 
   def apply( r: Int ) = if (r == 0) 0L else x(r)
 
@@ -205,8 +192,16 @@ abstract class CPU {
       "000 iiiiiiii ddd 00" -> ((operands: Map[Char, Int]) => new C.ADDI4SPN( operands('i'), operands('d') )),
     ) )
 
-  def show: Unit = {
-    printf( "%8x  %s\n", pc, opcodes32(memory.readInt(pc)&0x1FFFFFF).disassemble(this) )
+  def registers: Unit = {
+    val m = memory.find( pc )
+    val low = m.readByte( pc )
+    val disassembly =
+      if ((low&3) == 3)
+        opcodes32(m.readInt( pc, low )&0x1FFFFFF).disassemble(this)
+      else
+        opcodes16(m.readShort( pc, low )).disassemble(this)
+
+    printf( "%8x  %s\n", pc, disassembly )
 
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
@@ -220,33 +215,62 @@ abstract class CPU {
   }
 
   def problem( error: String ) = {
-    show
+    registers
     sys.error( error )
   }
 
-  def run: Unit = {
+  def reset: Unit = {
+    memory.seqDevice foreach (_.init)
 
-    while (!halt) {
-      if (trace)
-        show
+    for (r <- csrs if r != IllegalCSR)
+      r.init( this )
 
-      val m = memory.find( pc )
-      val low = m.readByte( pc )
-
-      if ((low&3) == 3) {
-        instruction = m.readInt( pc, low )
-        disp = 4
-        opcodes32(instruction&0x1FFFFFF)( this )
-      } else {
-        instruction = m.readShort( pc, low )
-        disp = 2
-        opcodes16(instruction)( this )
-      }
-
-      pc += disp
-      counter += 1
+    for (i <- x indices) {
+      x(i) = 0
+      f(i) = 0
     }
 
+    pc = memory.code
+    fcsr = 0
+  }
+
+  def execute: Unit = {
+    if (trace)
+      registers
+
+    val m = memory.find( pc )
+    val low = m.readByte( pc )
+
+    if ((low&3) == 3) {
+      instruction = m.readInt( pc, low )
+      disp = 4
+      opcodes32(instruction&0x1FFFFFF)( this )
+    } else {
+      instruction = m.readShort( pc, low )
+      disp = 2
+      opcodes16(instruction)( this )
+    }
+
+    pc += disp
+    counter += 1
+  }
+
+	def step =
+		if (running)
+			sys.error( "already running" )
+		else {
+			running = true
+			execute
+			running = false
+		}
+
+  def run: Unit = {
+    running = true
+
+    while (!halt)
+      execute
+
+    running = false
   }
 
 }
