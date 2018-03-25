@@ -4,10 +4,12 @@ package xyz.hyperreal.riscv
 import scala.collection.mutable.ListBuffer
 
 
-class CPU( val mem: Memory ) {
+abstract class CPU {
+
+  private [riscv] val memory: Memory
 
   private [riscv] val x = new Array[Long]( 32 )
-  private [riscv] var pc: Long = mem.code
+  private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
   private [riscv] var halt = false
   private [riscv] val f = new Array[Double]( 32 )
@@ -20,6 +22,22 @@ class CPU( val mem: Memory ) {
 
   private val opcodes32 = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
   private val opcodes16 = Array.fill[Compressed]( 0x10000 )( IllegalCompressed )
+
+  private [riscv] def ecall = problem( "ecall" )
+
+  private [riscv] def ebreak = problem( "ebreak" )
+
+  def reset: Unit = {
+    memory.init
+
+    for (i <- x indices) {
+      x(i) = 0
+      f(i) = 0
+    }
+
+    pc = memory.code
+    fcsr = 0
+  }
 
   def apply( r: Int ) = if (r == 0) 0L else x(r)
 
@@ -61,7 +79,7 @@ class CPU( val mem: Memory ) {
 
     val bits = p(0)
 
-    require( bits.length == 25, "pattern should comprise twenty-five bits" )
+    require( bits.length > 0, "pattern should comprise at least one bit" )
     require( bits.forall(c => c == '0' || c == '1' || c.isLetter || c == '-'), "pattern should comprise only 0's, 1's, letters or -'s" )
 
     val ranges = Map( (p drop 1 map {case Range( v, l, u ) => v(0) -> (l.toInt, u.toInt)}): _* )
@@ -159,6 +177,7 @@ class CPU( val mem: Memory ) {
       "bbbbb aaaaa 101 ddddd 0110011" -> SR_DIVU,
       "bbbbb aaaaa 110 ddddd 0110011" -> OR_REM,
       "bbbbb aaaaa 111 ddddd 0110011" -> AND_REMU,
+      "----- 00000 000 00000 1110011" -> ((operands: Map[Char, Int]) => new ECALL_EBREAK),
       "----- iiiii 101 ddddd 1110011" -> ((operands: Map[Char, Int]) => new CSRRWI( operands('i'), operands('d') )),
     ) )
 
@@ -194,7 +213,7 @@ class CPU( val mem: Memory ) {
     ) )
 
   def show: Unit = {
-    printf( "%8x  %s\n", pc, opcodes32(mem.readInt(pc)&0x1FFFFFF).disassemble(this) )
+    printf( "%8x  %s\n", pc, opcodes32(memory.readInt(pc)&0x1FFFFFF).disassemble(this) )
 
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
@@ -218,7 +237,7 @@ class CPU( val mem: Memory ) {
       if (trace)
         show
 
-      val m = mem.find( pc )
+      val m = memory.find( pc )
       val low = m.readByte( pc )
 
       if ((low&3) == 3) {

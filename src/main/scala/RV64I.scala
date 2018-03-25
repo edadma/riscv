@@ -3,7 +3,7 @@ package xyz.hyperreal.riscv
 
 class LWU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LWU" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.mem.readInt( immediate(cpu) + cpu(rs1) ).asInstanceOf[Long]&0xFFFFFFFF
+    cpu(rd) = cpu.memory.readInt( immediate(cpu) + cpu(rs1) ).asInstanceOf[Long]&0xFFFFFFFF
 }
 
 class LD( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LD" ) {

@@ -59,18 +59,6 @@ abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( 
 
 }
 
-//trait AbstractIType {
-//
-//  val mnemonic: String
-//  val rs1: Int
-//  val rd: Int
-//
-//  def immediate( cpu: CPU ): Long
-//
-//  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${immediate( cpu )}"
-//
-//}
-
 abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
 
   val rs1: Int
@@ -78,22 +66,11 @@ abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
 
   def immediate( cpu: CPU ) = (cpu.instruction >> 20).asInstanceOf[Long]
 
-  def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
+  def load( cpu: CPU ) = cpu.memory.readLong( immediate(cpu) + cpu(rs1) )
 
   def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${immediate( cpu )}"
 
 }
-
-//abstract class ITypeInstruction( mnemonic: String ) extends AbstractITypeInstruction( mnemonic: String ) {
-//
-//  val rs1: Int
-//  val rd: Int
-//
-//  def immediate( cpu: CPU ) = (cpu.instruction >> 20).asInstanceOf[Long]
-//
-//  def load( cpu: CPU ) = cpu.mem.readLong( immediate(cpu) + cpu(rs1) )
-//
-//}
 
 abstract class CSRTypeInstruction( mnemonic: String ) extends Instruction {
 
@@ -140,7 +117,7 @@ abstract class STypeInstruction( mnemonic: String ) extends Instruction {
 
   def immediate( cpu: CPU ) = ((cpu.instruction >> 7)&0x1F | (cpu.instruction >> 20)&0xFFFFFFE0).asInstanceOf[Long]
 
-  def store( cpu: CPU, v: Long ) = cpu.mem.writeLong( immediate(cpu) + cpu(rs1), v )
+  def store( cpu: CPU, v: Long ) = cpu.memory.writeLong( immediate(cpu) + cpu(rs1), v )
 
   def disassemble( cpu: CPU ) = s"$mnemonic x$rs1, x$rs2, ${immediate( cpu )}"
 

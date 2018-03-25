@@ -64,42 +64,42 @@ class BGEU( val rs1: Int, val rs2: Int ) extends BTypeInstruction( "BGEU" ) {
 
 class LB( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LB" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.mem.readByte( immediate(cpu) + cpu(rs1) )
+    cpu(rd) = cpu.memory.readByte( immediate(cpu) + cpu(rs1) )
 }
 
 class LH( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LH" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.mem.readShort( immediate(cpu) + cpu(rs1) )
+    cpu(rd) = cpu.memory.readShort( immediate(cpu) + cpu(rs1) )
 }
 
 class LW( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LW" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.mem.readInt( immediate(cpu) + cpu(rs1) )
+    cpu(rd) = cpu.memory.readInt( immediate(cpu) + cpu(rs1) )
 }
 
 class LBU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LBU" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.mem.readByte( immediate(cpu) + cpu(rs1) )&0xFF
+    cpu(rd) = cpu.memory.readByte( immediate(cpu) + cpu(rs1) )&0xFF
 }
 
 class LHU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LHU" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.mem.readShort( immediate(cpu) + cpu(rs1) )&0xFFFF
+    cpu(rd) = cpu.memory.readShort( immediate(cpu) + cpu(rs1) )&0xFFFF
 }
 
 class SB( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SB" ) {
 	def apply( cpu: CPU ) =
-		cpu.mem.writeByte( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
+		cpu.memory.writeByte( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 }
 
 class SH( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SH" ) {
 	def apply( cpu: CPU ) =
-		cpu.mem.writeShort( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
+		cpu.memory.writeShort( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 }
 
 class SW( val rs1: Int, val rs2: Int ) extends STypeInstruction( "SW" ) {
 	def apply( cpu: CPU ) =
-		cpu.mem.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
+		cpu.memory.writeInt( immediate(cpu) + cpu(rs1), cpu(rs2).asInstanceOf[Int] )
 }
 
 class ADDI( val rs1: Int, val rd: Int ) extends ITypeInstruction( "ADDI" ) {
@@ -239,6 +239,26 @@ class CSRRWI( val zimm: Int, val rd: Int ) extends CSRTypeInstruction( "CSRRWI" 
 
     r.write( cpu, addr, zimm )
   }
+}
+
+class ECALL_EBREAK extends ITypeInstruction( null ) {
+  val rs1 = 0
+  val rd = 0
+
+  def apply( cpu: CPU ) = {
+    immediate( cpu ) match {
+      case 0 => cpu.ecall
+      case 1 => cpu.ebreak
+      case _ => illegal( cpu )
+    }
+  }
+
+  override def disassemble( cpu: CPU ) =
+    immediate( cpu ) match {
+      case 0 => "ECALL"
+      case 1 => "EBREAK"
+      case _ => "ILLEGAL"
+    }
 }
 
 object RV32I {
