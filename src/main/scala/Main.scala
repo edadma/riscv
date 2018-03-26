@@ -75,7 +75,7 @@ object Main extends App {
 
 		def dump( start: Int, lines: Int ) = out.println( mach.dump(start, lines) )
 
-		def disassemble( start: Int, lines: Int ) = out.println( mach.disassemble(start, lines) )
+//		def disassemble( start: Int, lines: Int ) = out.println( mach.disassemble(start, lines) )
 
 //		def printBreakpoints = out.println( mach.breakpoints map {case (b, l) => hexShort(b) + (if (l != "") "/" + l else "")} mkString " " )
 
