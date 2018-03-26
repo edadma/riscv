@@ -220,7 +220,7 @@ class CPU( private [riscv] val memory: Memory ) {
   }
 
   def reset: Unit = {
-    memory.seqDevice foreach (_.init)
+    memory.reset
 
     for (r <- csrs if r != IllegalCSR)
       r.init( this )

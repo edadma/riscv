@@ -11,6 +11,7 @@ class Machine {
 			def init {
 				removeDevices
 				regions.clear
+				add( new StdIOChar(0x20000) )
 				add( new RAM("main", 0x0000, 0xFFFF) )
 				add( new ROM("program", 0x10000, 0x1FFFF) )
 			}
@@ -179,7 +180,8 @@ class Machine {
 		if (cpu.isRunning)
 			sys.error( "can't load while running" )
 
-		mem.init
+		mem.removeROM
+		mem.reset
 		mem.addHexdump( file )
 		discur = mem.code
 //		clearBreakpoints

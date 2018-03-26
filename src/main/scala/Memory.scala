@@ -279,6 +279,8 @@ abstract class Memory extends Addressable {
 					first = region.start
 		}
 	}
-	
+
+	def reset = seqDevice foreach (_.init)
+
 	override def toString = regions mkString "\n"
 }
