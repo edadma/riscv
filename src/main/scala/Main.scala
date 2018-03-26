@@ -110,21 +110,21 @@ object Main extends App {
 //						disassemble( mach.target( addr ), 15 )
 //					case List( "disassemble"|"u" )  =>
 //						disassemble( -1, 15 )
-//					case List( "clear"|"c", addr1, addr2 ) =>
-//						for (i <- hex( addr1 ) until hex( addr2 ))
-//							mach.mem.program( i, 0 )
+					case List( "clear"|"c", addr1, addr2 ) =>
+						for (i <- hex( addr1 ) until hex( addr2 ))
+							mach.mem.programByte( i, 0 )
 					case List( "clear"|"c" ) =>
 						mach.mem.clearRAM
 					case List( "drop"|"dr", region ) =>
 						mach.mem.remove( region )
 						out.println( mach.mem )
-//					case List( "dump"|"d", addr ) =>
-//						dump( mach.target(addr), 10 )
+					case List( "dump"|"d", addr ) =>
+						dump( mach.target(addr), 10 )
 					case List( "dump"|"d" ) =>
 						dump( -1, 10 )
-//					case List( "execute"|"e", addr ) =>
-//						mach.cpu.pc = mach.target( addr )
-//						mach.run
+					case List( "execute"|"e", addr ) =>
+						mach.cpu.pc = mach.target( addr )
+						mach.run
 					case List( "execute"|"e" ) =>
 						mach.run
 //					case List( "execute&wait"|"ew", addr ) =>
@@ -161,13 +161,13 @@ object Main extends App {
 					case List( "load"|"l", file ) =>
 						reload = command
 						load( file )
-//					case ("memory"|"m") :: addr :: data =>
-//						val addr1 = mach.target( addr )
-//
-//						for ((d, i) <- data map mach.target zipWithIndex)
-//							mach.program( addr1 + i, d )
-//
-//						dump( addr1, (data.length + addr1%16)/16 + 1 )
+					case ("memory"|"m") :: addr :: data =>
+						val addr1 = mach.target( addr )
+
+						for ((d, i) <- data map mach.target zipWithIndex)
+							mach.program( addr1 + i, d )
+
+						dump( addr1, (data.length + addr1%16)/16 + 1 )
 					case List( "memory"|"m" ) =>
 						out.println( mach.mem )
 					case List( "quit"|"q" ) =>
@@ -200,10 +200,10 @@ object Main extends App {
 					case List( "reset"|"re" ) =>
 						mach.reset
 						registers
-//					case List( "step"|"s", addr ) =>
-//						mach.cpu.pc = mach.target( addr )
-//						mach.step
-//						registers
+					case List( "step"|"s", addr ) =>
+						mach.cpu.pc = mach.target( addr )
+						mach.step
+						registers
 					case List( "step"|"s" ) =>
 						mach.step
 						registers
@@ -211,8 +211,8 @@ object Main extends App {
 //						mach.stop
 //						waitWhileRunning
 //						registers
-//					case List( "symbols"|"sy", symbol, value ) =>
-//						mach.symbols += (symbol -> mach.target( value ))
+					case List( "symbols"|"sy", symbol, value ) =>
+						mach.symbols += (symbol -> mach.target( value ))
 					case List( "symbols"|"sy" ) =>
 						out.println( "name            value segment" )
 						out.println( "----            ----- -------" )

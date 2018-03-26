@@ -98,7 +98,24 @@ class Machine {
 	
 	def program( addr: Long, b: Int ) = mem.programByte( addr, b )
 
-//	def disassemble( start: Int, lines: Int ): String = {
+//	def reference( target: Int, zp: Boolean ) =
+//		reverseSymbols get target match {
+//			case None => "$" + (if (zp) hexByte( target ) else hexWord( target ))
+//			case Some( l ) => display( l )
+//		}
+
+	def target( ref: String ) =
+		if (isHex( ref ))
+			hex( ref )
+		else
+			-1
+//			symbols get (if (ref endsWith ":") ref dropRight 1 else ref) match {
+//				case Some( t: Int ) => t
+//				case None => sys.error( "unknown label: " + ref )
+//				case Some( s ) => sys.error( "symbol not an integer: " + s )
+//			}
+
+	//	def disassemble( start: Int, lines: Int ): String = {
 //		val buf = new StringBuilder
 //		var addr =
 //			if (start == -1)
