@@ -98,6 +98,12 @@ class Machine {
 	
 	def program( addr: Long, b: Int ) = mem.programByte( addr, b )
 
+	def display( label: String ) =
+		label indexOf '.' match {
+			case -1 => label
+			case dot => label substring dot
+		}
+
 //	def reference( target: Int, zp: Boolean ) =
 //		reverseSymbols get target match {
 //			case None => "$" + (if (zp) hexByte( target ) else hexWord( target ))
@@ -115,83 +121,76 @@ class Machine {
 //				case Some( s ) => sys.error( "symbol not an integer: " + s )
 //			}
 
-	//	def disassemble( start: Int, lines: Int ): String = {
-//		val buf = new StringBuilder
-//		var addr =
-//			if (start == -1)
-//				discur
-//			else
-//				start
-//
-//		for (_ <- 1 to lines) {
-//			if (!mem.memory( addr ))
-//				return buf.toString
-//
-//			val opcode = cpu.readByte( addr )
-//
-//			CPU.dis6502 get opcode match {
-//				case None =>
-//				case Some( (mnemonic, mode) ) =>
-//					if (mode != 'implicit && mode != 'accumulator && (!mem.memory( addr + 1 ) || !mem.memory( addr + 2 )))
-//						return buf.toString
-//			}
-//
-//			val label =
-//				(reverseSymbols get addr match {
-//					case None => ""
-//					case Some( l ) => display( l )
-//				})
-//
+	def disassemble( start: Long, lines: Int ): String = {
+		val buf = new StringBuilder
+		var addr =
+			if (start == -1)
+				discur
+			else
+				start
+
+		for (_ <- 1 to lines) {
+			if (!mem.memory( addr ))
+				return buf.toString
+
+			val opcode = mem.readByte( addr )
+
+			val label =
+				(reverseSymbols get addr match {
+					case None => ""
+					case Some( l ) => display( l )
+				})
+
 //			if (cpu.breakpoints( addr ))
 //				buf append Console.CYAN_B
-//
-//			buf append( hexShort(addr) + "  " + hexByte(opcode) + " " )
-//			addr += 1
-//
-//			CPU.dis6502 get opcode match {
-//				case None => buf append( " "*(6 + 2 + 15 + 1) + "---" )
-//				case Some( (mnemonic, mode) ) =>
-//					val (display, size) =
-//						(mode match {
-//							case 'implicit => ("", 0)
-//							case 'accumulator => ("A", 0)
-//							case 'immediate =>
-//								val b = cpu.readByte( addr )
-//
-//								if (b < 10)
-//									("#" + b, 1)
-//								else
-//									("#$" + hexByte(b), 1)
-//							case 'relative => (reference(cpu.readByte(addr).toByte + addr + 1, false), 1)
-//							case 'indirectX => ("(" + reference(cpu.readByte(addr), true) + ",X)", 1)
-//							case 'indirectY => ("(" + reference(cpu.readByte(addr), true) + "),Y", 1)
-//							case 'zeroPage => (reference(cpu.readByte(addr), true), 1)
-//							case 'zeroPageIndexedX => (reference(cpu.readByte(addr), true) + ",X", 1)
-//							case 'zeroPageIndexedY => (reference(cpu.readByte(addr), true) + ",Y", 1)
-//							case 'direct => (reference(cpu.readWord(addr), false), 2)
-//							case 'directX => (reference(cpu.readWord(addr), false) + ",X", 2)
-//							case 'directY => (reference(cpu.readWord(addr), false) + ",Y", 2)
-//							case 'indirect => ("(" + reference(cpu.readWord(addr), false) + ")", 2)
-//						})
-//
-//					for (i <- 0 until size)
-//						buf append( hexByte(cpu.readByte(addr + i)) + " " )
-//
-//					addr += size
-//
-//					buf append( " "*((2 - size)*3 + 2) )
-//					buf append( label + " "*(15 - label.length + 1) )
-//					buf append( mnemonic.toUpperCase + " " )
-//					buf append( display )
-//			}
-//
-//			buf append( Console.RESET )
-//			buf += '\n'
-//		}
-//
-//		discur = addr
-//		buf.toString dropRight 1
-//	}
+
+			buf append( hexShort(addr) + "  " + hexByte(opcode) + " " )
+			addr += 1
+
+			CPU.dis6502 get opcode match {
+				case None => buf append( " "*(6 + 2 + 15 + 1) + "---" )
+				case Some( (mnemonic, mode) ) =>
+					val (display, size) =
+						(mode match {
+							case 'implicit => ("", 0)
+							case 'accumulator => ("A", 0)
+							case 'immediate =>
+								val b = cpu.readByte( addr )
+
+								if (b < 10)
+									("#" + b, 1)
+								else
+									("#$" + hexByte(b), 1)
+							case 'relative => (reference(cpu.readByte(addr).toByte + addr + 1, false), 1)
+							case 'indirectX => ("(" + reference(cpu.readByte(addr), true) + ",X)", 1)
+							case 'indirectY => ("(" + reference(cpu.readByte(addr), true) + "),Y", 1)
+							case 'zeroPage => (reference(cpu.readByte(addr), true), 1)
+							case 'zeroPageIndexedX => (reference(cpu.readByte(addr), true) + ",X", 1)
+							case 'zeroPageIndexedY => (reference(cpu.readByte(addr), true) + ",Y", 1)
+							case 'direct => (reference(cpu.readWord(addr), false), 2)
+							case 'directX => (reference(cpu.readWord(addr), false) + ",X", 2)
+							case 'directY => (reference(cpu.readWord(addr), false) + ",Y", 2)
+							case 'indirect => ("(" + reference(cpu.readWord(addr), false) + ")", 2)
+						})
+
+					for (i <- 0 until size)
+						buf append( hexByte(cpu.readByte(addr + i)) + " " )
+
+					addr += size
+
+					buf append( " "*((2 - size)*3 + 2) )
+					buf append( label + " "*(15 - label.length + 1) )
+					buf append( mnemonic.toUpperCase + " " )
+					buf append( display )
+			}
+
+			buf append( Console.RESET )
+			buf += '\n'
+		}
+
+		discur = addr
+		buf.toString dropRight 1
+	}
 		
 	def load( file: String ) {
 		if (cpu.isRunning)
