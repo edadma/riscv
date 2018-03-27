@@ -195,13 +195,18 @@ class CPU( private [riscv] val memory: Memory ) {
   def registers: Unit = {
     val m = memory.find( pc )
     val low = m.readByte( pc )
-    val disassembly =
-      if ((low&3) == 3)
-        opcodes32(m.readInt( pc, low )&0x1FFFFFF).disassemble(this)
-      else
-        opcodes16(m.readShort( pc, low )).disassemble(this)
+    val (inst, disassembly) =
+      if ((low&3) == 3) {
+        val inst = m.readInt( pc, low )
 
-    printf( "%8x  %s\n", pc, disassembly )
+        (hexInt( inst ), opcodes32(inst&0x1FFFFFF).disassemble(this))
+      } else {
+        val inst = m.readShort( pc, low )
+
+        (hexShort( inst ), opcodes16(inst).disassemble(this))
+      }
+
+    printf( "%8x  %s  %s\n", pc, inst, disassembly )
 
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
