@@ -45,7 +45,7 @@ object Main extends App {
           regions.clear
           add( new StdIOChar(0x20000) )
           add( new RAM("ram", 0, 0xFFFF) )
-          addHexdump( "tests.hex" )
+          addHexdump( "hello.hex" )
         }
       } ) {
 //      trace = true

@@ -166,9 +166,13 @@ abstract class Memory extends Addressable {
 			case ind => regions(ind)
 		}
 
+	var problem: String => Nothing = _
+
+	def valid( addr: Long ) = lookup( addr ) ne null
+
 	def find( addr: Long ) =
 		lookup( addr ) match {
-			case null => sys.error( addr.toHexString + " is not an addressable memory location" )
+			case null => problem( addr.toHexString + " is not an addressable memory location" )
 			case r => r
 		}
 

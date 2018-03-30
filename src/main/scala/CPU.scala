@@ -193,20 +193,23 @@ class CPU( private [riscv] val memory: Memory ) {
     ) )
 
   def registers: Unit = {
-    val m = memory.find( pc )
-    val low = m.readByte( pc )
-    val (inst, disassembly) =
-      if ((low&3) == 3) {
-        val inst = m.readInt( pc, low )
+    if (memory.valid( pc )) {
+      val m = memory.find( pc )
+      val low = m.readByte( pc )
+      val (inst, disassembly) =
+        if ((low&3) == 3) {
+          val inst = m.readInt( pc, low )
 
-        (hexInt( inst ), opcodes32(inst&0x1FFFFFF).disassemble(this))
-      } else {
-        val inst = m.readShort( pc, low )
+          (hexInt( inst ), opcodes32(inst&0x1FFFFFF).disassemble(this))
+        } else {
+          val inst = m.readShort( pc, low )
 
-        (hexShort( inst ), opcodes16(inst).disassemble(this))
-      }
+          (hexShort( inst ), opcodes16(inst).disassemble(this))
+        }
 
-    printf( "%8x  %s  %s\n", pc, inst, disassembly )
+      printf( "%8x  %s  %s\n", pc, inst, disassembly )
+    } else
+      println( s"pc=${pc.toHexString}")
 
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
@@ -278,4 +281,5 @@ class CPU( private [riscv] val memory: Memory ) {
     running = false
   }
 
+  memory.problem = problem
 }
