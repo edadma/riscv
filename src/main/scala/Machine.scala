@@ -172,7 +172,7 @@ class Machine {
 
 		mem.removeROM
 		mem.reset
-		mem.addHexdump( file )
+		mem.addHexdump( io.Source.fromFile(file) )
 		discur = mem.code
 //		clearBreakpoints
 		reset

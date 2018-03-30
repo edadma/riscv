@@ -224,7 +224,7 @@ class CPU( private [riscv] val memory: Memory ) {
 
   def problem( error: String ) = {
     registers
-    sys.error( error )
+    sys.error( s"error at ${pc.toHexString}: $error" )
   }
 
   def reset: Unit = {

@@ -1,5 +1,6 @@
 //@
 package xyz.hyperreal
+import java.io.ByteArrayOutputStream
 
 
 package object riscv {
@@ -33,4 +34,12 @@ package object riscv {
       BigInt( v&0x7FFFFFFFFFFFFFFFL ).setBit( 63 )
     else
       BigInt( v )
+
+	def capture( code: => Unit ) = {
+		val out = new ByteArrayOutputStream
+
+		Console.withOut( out )( code )
+		out.toString.trim
+	}
+
 }

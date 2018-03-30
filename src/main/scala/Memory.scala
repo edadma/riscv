@@ -254,8 +254,8 @@ abstract class Memory extends Addressable {
 		for (r <- regions filter (_.isRAM))
 			r.asInstanceOf[RAM].clear
 
-	def addHexdump( file: String ) =
-		for (Hexdump.Section( name, start, data ) <- Hexdump.read( file ))
+	def addHexdump( src: io.Source ) =
+		for (Hexdump.Section( name, start, data ) <- Hexdump.read( src ))
 			add( ROM(name, start, data) )
 
 	def add( region: Addressable ) {
