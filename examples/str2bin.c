@@ -1,5 +1,3 @@
-extern void halt();
-
 void
 out( char c ) {
 	*((char*) 0x20000) = c;
@@ -11,30 +9,6 @@ print( char* s ) {
 		out( *p++ );
 
 	out( '\n' );
-}
-
-char*
-convert( int n, int radix, char* buf ) {
-	char digits[] = "0123456789ABCDEF";
-	char* p = &buf[33];
-	int quo = n;
-
-	if (n < 0)
-		quo = -quo;
-
-	*p-- = 0;
-
-	while (quo >= radix) {
-		*p-- = digits[(quo%radix)];
-		quo /= radix;
-	}
-
-	*p = digits[quo];
-
-	if (n < 0)
-		*--p = '-';
-
-	return p;
 }
 
 int
@@ -50,7 +24,7 @@ indexOf( char c, char* s ) {
 }
 
 int
-bin( char* n, int radix ) {
+str2bin( char* n, int radix ) {
 	char digits[] = "0123456789ABCDEF";
 	char* p = n;
 	int result = 0;
@@ -81,9 +55,10 @@ bin( char* n, int radix ) {
 
 void
 main() {
-	char buf[34];	// sign + 32 bits + 0
-	char s[] = "This is a test.";
-	int n = bin( "123", 10 );
+	int n = str2bin( "123", 10 );
 
-	print( convert(n, 16, buf) );
+	if (n == 123)
+		print( "yes" );
+	else
+		print( "no" );
 }

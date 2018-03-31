@@ -4,8 +4,20 @@ import org.scalatest._
 import prop.PropertyChecks
 
 
-class SimpleExamples extends FreeSpec with PropertyChecks with Matchers {
+class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 
+	/*
+      void
+      out( char c ) {
+        *((char*) 0x20000) = c;
+      }
+
+      void
+      main() {
+        for (char* p = "Hello world!\n"; *p;)
+        out( *p++ );
+      }
+  */
 	"hello" in {
 		Run(
 			"""

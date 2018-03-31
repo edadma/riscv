@@ -5,7 +5,6 @@ package xyz.hyperreal.riscv
 object Main extends App {
 //  println( "opcodes..." )
 //
-//  val HALT = 0X7F
 //  val cpu = new CPU(
 //    new Memory {
 //      def init: Unit = {
@@ -45,7 +44,7 @@ object Main extends App {
           regions.clear
           add( new StdIOChar(0x20000) )
           add( new RAM("ram", 0, 0xFFFF) )
-          addHexdump( io.Source.fromFile("hello.hex") )
+          addHexdump( io.Source.fromFile("signum.hex") )
         }
       } ) {
 //      trace = true
