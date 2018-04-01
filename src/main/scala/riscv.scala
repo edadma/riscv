@@ -29,6 +29,9 @@ package object riscv {
   def utype( imm: Int, rd: Int, opcode: Symbol ) =
     (imm << 12) | (rd << 7) | Integer.parseInt(opcode.name drop 1, 2)
 
+  def csrtype( csr: Int, zimm: Int, funct3: Symbol, rd: Int, opcode: Symbol ) =
+    (csr << 20) | (zimm << 15) | (Integer.parseInt(funct3.name drop 1, 2) << 12) | (rd << 7) | Integer.parseInt(opcode.name drop 1, 2)
+
   def ulong( v: Long ) =
     if (v < 0)
       BigInt( v&0x7FFFFFFFFFFFFFFFL ).setBit( 63 )

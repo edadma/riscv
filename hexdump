@@ -1,1 +1,1 @@
-riscv64-unknown-elf-readelf -R .text -x .rodata $1
+riscv64-unknown-elf-readelf -R .text -x .rodata -x .data $1 >$1.hex

@@ -64,7 +64,7 @@ abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
   val rs1: Int
   val rd: Int
 
-  def immediate( cpu: CPU ) = (cpu.instruction >> 20).asInstanceOf[Long]
+  def immediate( cpu: CPU ) = cpu.instruction >> 20
 
   def load( cpu: CPU ) = cpu.memory.readLong( immediate(cpu) + cpu(rs1) )
 
@@ -142,7 +142,7 @@ abstract class UTypeInstruction( mnemonic: String ) extends Instruction {
 
   val rd: Int
 
-  def immediate( cpu: CPU ) = cpu.instruction&0xFFFFF000
+  def immediate( cpu: CPU ) = cpu.instruction&0xFFFFF000L
 
   def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${immediate( cpu )}"
 

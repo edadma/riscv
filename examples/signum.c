@@ -18,14 +18,13 @@ signum( int n ) {
 
 void
 prints( int n ) {
-	static char* signs[3] = {
+	static char* signs[] = {
 		"negative",
 		"zero",
 		"positive"
 	};
 
 	print( signs[signum(n) + 1] );
-	out( '\n' );
 }
 
 void
