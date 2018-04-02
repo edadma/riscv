@@ -42,7 +42,43 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 		) shouldBe "Hello world!"
 	}
+/*
+	void
+	out( char c ) {
+		*((char*) 0x20000) = c;
+	}
 
+	void
+	print( char* s ) {
+		while (*s)
+			out( *s++ );
+
+		out( '\n' );
+	}
+
+	int
+	signum( int n ) {
+		return n == 0 ? 0 : n < 0 ? -1 : 1;
+	}
+
+	void
+	prints( int n ) {
+		static char* signs[] = {
+			"negative",
+			"zero",
+			"positive"
+		};
+
+		print( signs[signum(n) + 1] );
+	}
+
+	void
+	main() {
+		prints( -5 );
+		prints( 0 );
+		prints( 200 );
+	}
+	*/
 	"signum" in {
 		Run(
 			"""
