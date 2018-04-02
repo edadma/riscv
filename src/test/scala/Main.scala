@@ -53,17 +53,24 @@ object Main extends App {
 //  cpu.run
 //  cpu.registers
 
+  println( "cpu" )
+
   val cpu =
     new CPU(
       new Memory {
         def init: Unit = {
           regions.clear
           add( new StdIOChar(0x20000) )
-          add( new RAM("ram", 0, 0xFFFF) )
-          addHexdump( io.Source.fromFile("hello.hex") )
+          add( new RAM("stack", 0, 0xFFFF) )
+          add( new RAM("bss", 0x1000000, 0x100FFFF) )
+          addHexdump( io.Source.fromFile("tests/armstrong.hex") )
         }
       } )
 
   cpu.reset
+  println( "gc" )
+  System.gc
+  println( "run" )
   cpu.run
+  println( "done" )
 }

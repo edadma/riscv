@@ -22,7 +22,8 @@ object Run {
         def init: Unit = {
           regions.clear
           add( new StdIOChar(0x20000) )
-          add( new RAM("ram", 0, 0xFFFF) )
+          add( new RAM("stack", 0, 0xFFFF) )
+          add( new RAM("bss", 0x1000000, 0x100FFFF) )
         }
       } )
 
