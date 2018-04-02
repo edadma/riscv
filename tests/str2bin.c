@@ -1,3 +1,5 @@
+extern void halt();
+
 void
 out( char c ) {
 	*((char*) 0x20000) = c;
@@ -5,8 +7,8 @@ out( char c ) {
 
 void
 print( char* s ) {
-	for (char* p = s; *p;)
-		out( *p++ );
+	while (*s)
+		out( *s++ );
 
 	out( '\n' );
 }
@@ -55,10 +57,13 @@ str2bin( char* n, int radix ) {
 
 void
 main() {
-	int n = str2bin( "123", 10 );
-
-	if (n == 123)
-		print( "yes" );
-	else
-		print( "no" );
+	print( str2bin( "0", 10 ) == 0 ? "yes" : "no" );
+	print( str2bin( "123", 10 ) == 123 ? "yes" : "no" );
+	print( str2bin( "123", 16 ) == 0x123 ? "yes" : "no" );
+	print( str2bin( "123", 8 ) == 0123 ? "yes" : "no" );
+	print( str2bin( "123", 10 ) == 123 ? "yes" : "no" );
+	print( str2bin( "123", 16 ) == 0x123 ? "yes" : "no" );
+	print( str2bin( "-123", 8 ) == -0123 ? "yes" : "no" );
+	print( str2bin( "-123", 10 ) == -123 ? "yes" : "no" );
+	print( str2bin( "-123", 16 ) == -0x123 ? "yes" : "no" );
 }

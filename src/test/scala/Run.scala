@@ -26,11 +26,13 @@ object Run {
         }
       } )
 
-  def apply( code: String ) = synchronized {
+  def apply( code: String ): String = Run( io.Source.fromFile(code) )
+
+  def apply( code: io.Source ) = synchronized {
     capture {
       cpu.memory.init
       cpu.reset
-      cpu.memory.addHexdump( io.Source.fromString(code) )
+      cpu.memory.addHexdump( code )
       cpu.pc = cpu.memory.code
       cpu.run
     }
