@@ -5,8 +5,8 @@ out( char c ) {
 
 void
 print( char* s ) {
-	for (char* p = s; *p;)
-		out( *p++ );
+	while (*s)
+		out( *s++ );
 
 	out( '\n' );
 }

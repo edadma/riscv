@@ -46,7 +46,6 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	"signum" in {
 		Run(
 			"""
-				|
 				|Hex dump of section '.text':
 				|  0x000100c0 37010100 ef00c017 73500000 73500000 7.......sP..sP..
 				|  0x000100d0 00000000 00000000 00000000 00000000 ................
@@ -87,14 +86,13 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 				|Hex dump of section '.data':
 				|  0x000112a8 80020100 00000000 90020100 00000000 ................
 				|  0x000112b8 98020100 00000000                   ........
-				|
-				|
-|			""".trim.stripMargin
-		) shouldBe ""
-//			"""	|negative
-//					|zero
-//					|positive
-//			""".trim.stripMargin
+			""".trim.stripMargin
+		) shouldBe
+			"""
+				|negative
+				|zero
+				|positive
+			""".trim.stripMargin
 	}
 	
 }

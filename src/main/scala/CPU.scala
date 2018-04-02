@@ -239,6 +239,7 @@ class CPU( private [riscv] val memory: Memory ) {
     }
 
     pc = memory.code
+    halt = false
     fcsr = 0
   }
 
