@@ -49,4 +49,16 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 				|yes
 			""".trim.stripMargin
 	}
+
+	"bin2str" in {
+		Run( "tests/bin2str.hex" ) shouldBe
+			"""
+				|zero
+				|zero
+				|zero
+				|zero
+				|zero
+			""".trim.stripMargin
+	}
+
 }

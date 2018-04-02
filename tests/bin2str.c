@@ -5,10 +5,26 @@ out( char c ) {
 
 void
 print( char* s ) {
-	for (char* p = s; *p;)
-		out( *p++ );
+	while (*s)
+		out( *s++ );
 
 	out( '\n' );
+}
+
+int
+signum( int n ) {
+	return n == 0 ? 0 : n < 0 ? -1 : 1;
+}
+
+void
+prints( int n ) {
+	static char* signs[] = {
+		"negative",
+		"zero",
+		"positive"
+	};
+
+	print( signs[signum(n) + 1] );
 }
 
 char*
@@ -36,8 +52,7 @@ bin2str( int n, int radix, char* buf ) {
 }
 
 int
-strcmp( char *s1, char *s2 )
-{
+strcmp( char *s1, char *s2 ) {
 	unsigned char c1, c2;
 
 	do {
@@ -55,5 +70,9 @@ void
 main() {
 	char buf[34];
 
-	if (bin2str(0x12AB, 16, buf) == 0)
+	prints( strcmp(bin2str(0, 10, buf), "0") );
+	prints( strcmp(bin2str(123, 10, buf), "123") );
+	prints( strcmp(bin2str(0x12AB, 16, buf), "12AB") );
+	prints( strcmp(bin2str(-123, 10, buf), "-123") );
+	prints( strcmp(bin2str(-0x12AB, 16, buf), "-12AB") );
 }
