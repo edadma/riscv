@@ -5,10 +5,26 @@ out( char c ) {
 
 void
 print( char* s ) {
-	for (char* p = s; *p;)
-		out( *p++ );
+	while (*s)
+		out( *s++ );
 
 	out( '\n' );
+}
+
+int
+signum( int n ) {
+	return n == 0 ? 0 : n < 0 ? -1 : 1;
+}
+
+void
+prints( int n ) {
+	static char* signs[] = {
+		"negative",
+		"zero",
+		"positive"
+	};
+
+	print( signs[signum(n) + 1] );
 }
 
 int
@@ -30,5 +46,13 @@ void
 main() {
 	char buf[34];
 
-	if (strcmp("abc", "abc") == 0)
+	prints( strcmp("", "") );
+	prints( strcmp("a", "a") );
+	prints( strcmp("", "abc") );
+	prints( strcmp("abc", "") );
+	prints( strcmp("abc", "abc") );
+	prints( strcmp("abc", "ab") );
+	prints( strcmp("ab", "abc") );
+	prints( strcmp("bc", "abc") );
+	prints( strcmp("abc", "bc") );
 }
