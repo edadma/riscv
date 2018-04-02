@@ -35,31 +35,7 @@ libraryDependencies ++= Seq(
   "jline" % "jline" % "2.14.4"
 )
 
-libraryDependencies ++= {
-	val akkaV = "2.5.11"
-	Seq(
-//		"com.typesafe.akka" %% "akka-actor"    % akkaV
-//		"com.typesafe.akka" %% "akka-remote"   % akkaV,
-//		"com.typesafe.akka" %% "akka-testkit"  % akkaV    % "test",
-//		"org.specs2"        %% "specs2-core"   % "2.3.11" % "test"
-	)
-}
-
-//libraryDependencies ++= {
-//	val akka_http = "10.0.11"
-//	Seq(
-//		"com.typesafe.akka" %% "akka-http-core"       % akka_http,
-//		"com.typesafe.akka" %% "akka-http"            % akka_http,
-//		"com.typesafe.akka" %% "akka-http-testkit"    % akka_http,
-//		"com.typesafe.akka" %% "akka-http-spray-json" % akka_http,
-//		"com.typesafe.akka" %% "akka-http-jackson"    % akka_http
-//	)
-//}
-
-libraryDependencies ++= Seq(
-)
-
-coverageExcludedPackages := ".*BDF;.*Machine;.*StdIOChar;.*StdIOInt;.*StdIOHex;.*JLineInt;.*JLineHex;.*RNG;.*WriteOnlyDevice;.*ReadOnlyDevice;.*Device;.*RAM;.*ROM;.*Memory;.*Addressable;.*Video;.*Options;.*Main;.*Disk;.*Hexdump"
+coverageExcludedPackages := ".*package;Example;.*BDF;.*Machine;.*StdIOChar;.*StdIOInt;.*StdIOHex;.*JLineInt;.*JLineHex;.*RNG;.*WriteOnlyDevice;.*ReadOnlyDevice;.*Device;.*RAM;.*ROM;.*Memory;.*Addressable;.*Video;.*Options;.*Main;.*Disk;.*Hexdump"
 
 mainClass in (Compile, run) := Some( "xyz.hyperreal." + name.value.replace('-', '_') + ".Main" )
 
