@@ -12,9 +12,9 @@ riscv
 The Obligatory "Hello World" Example
 ------------------------------------
 
-This example assumes that the complete RISC-V toolchain has been built and the various commands that are provided by that are on the path.
+This example assumes that the complete RISC-V toolchain has been built and that the various commands that are provided by the toolchain are on the path.
 
-The following Scala program builds a small emulated RISC-V computer with a "hello world" program in ROM, 64k of RAM and a character output devide memory mapped at address 0x20000.
+The following Scala program builds a small emulated RISC-V computer with a "hello world" program in ROM, 64k of RAM and a character output device memory mapped at address 0x20000.
 
 	import xyz.hyperreal.riscv._
 
