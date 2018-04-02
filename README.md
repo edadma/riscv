@@ -6,7 +6,7 @@
 riscv
 =====
 
-*riscv* is an emulator for the RISC-V ISA (v2.2).  Specifically, RV64ID, is currently being emulated (with a few missing instructions).  Emulation for the compressed instruction sets (RV32C, RV64C) is being worked on.  The goal is for RV64GC to be fully supported.
+*riscv* is an emulator for the RISC-V ISA (v2.2).  Specifically, RV64ID is currently being emulated (with a few missing instructions).  Emulation for the compressed instruction sets (RV32C, RV64C) is being worked on.  The goal is for RV64GC to be fully supported.
 
 
 The Obligatory "Hello World" Example
