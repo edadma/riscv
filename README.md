@@ -16,19 +16,19 @@ This example assumes that the complete RISC-V toolchain has been built and the v
 
 The following Scala program builds a small emulated RISC-V computer with a "hello world" program in ROM, 64k of RAM and a character output devide memory mapped at address 0x20000.
 
-import xyz.hyperreal.riscv._
+	import xyz.hyperreal.riscv._
 
 	object Example extends App {
 	  val cpu =
-		new CPU(
-		  new Memory {
-			def init: Unit = {
-			  regions.clear
-			  add( new StdIOChar(0x20000) )
-			  add( new RAM("ram", 0, 0xFFFF) )
-			  addHexdump( io.Source.fromFile("hello.hex") )
-			}
-		  } )
+	    new CPU(
+	      new Memory {
+	        def init: Unit = {
+	          regions.clear
+	          add( new StdIOChar(0x20000) )
+	          add( new RAM("ram", 0, 0xFFFF) )
+	          addHexdump( io.Source.fromFile("hello.hex") )
+	        }
+	      } )
 
 	  cpu.reset
 	  cpu.run
@@ -47,13 +47,13 @@ and place the following assembly start-up code into a text file called `start.s`
 	.align 6
 	.globl _start
 	_start:
-		lui	 sp, 0x10
-		call main
-		csrrwi x0, 0, 0
+	  lui sp, 0x10
+	  call main
+	  csrrwi x0, 0, 0
 
 	.globl halt
 	halt:
-		csrrwi x0, 0, 0
+	  csrrwi x0, 0, 0
 
 Now enter the command
 
