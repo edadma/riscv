@@ -85,4 +85,28 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
+	"quicksort64" in {
+		Run( "tests/quicksort64.hex" ) shouldBe
+			"""
+				|[1, 2, 3, 7, 7, 7, 7, 8, 9, 10]
+				|[1, 2, 3, 5, 7, 7, 7, 8, 9, 10]
+				|[1, 2, 3, 4, 5, 7, 7, 8, 9, 10]
+				|[9, 10]
+				|[10]
+				|[]
+			""".trim.stripMargin
+	}
+
+	"quicksort16" in {
+		Run( "tests/quicksort16.hex" ) shouldBe
+			"""
+				|[1, 2, 3, 7, 7, 7, 7, 8, 9, 10]
+				|[1, 2, 3, 5, 7, 7, 7, 8, 9, 10]
+				|[1, 2, 3, 4, 5, 7, 7, 8, 9, 10]
+				|[9, 10]
+				|[10]
+				|[]
+			""".trim.stripMargin
+	}
+
 }
