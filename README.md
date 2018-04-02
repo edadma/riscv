@@ -49,8 +49,6 @@ and place the following assembly start-up code into a text file called `start.s`
 	_start:
 	  lui sp, 0x10
 	  call main
-	  csrrwi x0, 0, 0
-
 	.globl halt
 	halt:
 	  csrrwi x0, 0, 0
