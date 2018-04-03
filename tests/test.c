@@ -18,10 +18,10 @@ println() {
 }
 
 char*
-bin2str( short n, int radix, char* buf ) {
+bin2str( char n, int radix, char* buf ) {
 	char digits[] = "0123456789ABCDEF";
 	char* p = &buf[33];
-	short quo = n;
+	char quo = n;
 
 	if (n < 0)
 		quo = -quo;
@@ -42,16 +42,16 @@ bin2str( short n, int radix, char* buf ) {
 }
 
 void
-printn( short n ) {
+printn( char n ) {
 	char buf[34];
 	char* s = bin2str( n, 16, buf );
 
 	print( s );
 }
 
-short
-myabs( short x ) {
-  const short bit31 = x >> 15;
+signed char
+myabs( signed char x ) {
+  const signed char bit31 = x >> 7;
 
   return (x ^ bit31) - bit31;
 }
