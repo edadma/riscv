@@ -5,6 +5,10 @@ import java.io.ByteArrayOutputStream
 
 package object riscv {
 
+  def dtol( d: Double ) = java.lang.Double.doubleToLongBits( d )
+
+  def ltod( l: Long ) = Long.long2double( l )
+
   def hexByte( a: Int ) = "%02x".format( a&0xFF ).toUpperCase
 
   def hexShort( a: Int ) = hexByte( a>>8 ) + hexByte( a )

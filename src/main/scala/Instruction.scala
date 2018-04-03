@@ -25,6 +25,7 @@ abstract class RTypeInstruction( mnemonic: Map[Int, String] ) extends Instructio
     }
 
   def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} x$rd, x$rs1, x$rs2"
+
 }
 
 abstract class R4TypeInstruction( mnemonic: String ) extends Instruction {
@@ -56,6 +57,21 @@ abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( 
     funct( cpu, f )
     perform( cpu )
   }
+
+}
+
+abstract class FloatRTypeInstruction( mnemonic: Map[Int, String] ) extends Instruction {
+
+  val rs2: Int
+  val rs1: Int
+  val mode: Int
+  val rd: Int
+
+  def funct( cpu: CPU ) = cpu.instruction >>> 27
+
+  def fmt( cpu: CPU ) = (cpu.instruction >> 25)&3
+
+  def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} x$rd, x$rs1, x$rs2"
 
 }
 
