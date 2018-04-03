@@ -71,6 +71,11 @@ flipBit( int x, unsigned char position ) {
   return x ^ mask;
 }
 
+int
+isNegative( int n ) {
+	return (int)((unsigned int) n >> 31);
+}
+
 void
 main() {
 	printn( abs(5) );
@@ -92,5 +97,10 @@ main() {
 	printn( flipBit(0, 5) );//20
 	print( ", " );
 	printn( flipBit(0x77, 5) );//57
+	println();
+
+	printn( isNegative(0) );
+	print( ", " );
+	printn( isNegative(-5) );
 	println();
 }

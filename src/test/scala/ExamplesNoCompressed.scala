@@ -127,6 +127,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 				|5, 0, 5
 				|0, 20, 57, 77
 				|20, 57
+				|0, 1
 			""".trim.stripMargin
 	}
 
