@@ -161,4 +161,12 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
+//	"double" in {
+//		Run( "tests/double.hex" ) shouldBe
+//			"""
+//				|true
+//				|true
+//			""".trim.stripMargin
+//	}
+
 }
