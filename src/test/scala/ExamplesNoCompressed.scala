@@ -121,4 +121,11 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
+	"bittwiddling" in {
+		Run( "tests/bittwiddling.hex" ) shouldBe
+			"""
+				|5, 0, 5
+			""".trim.stripMargin
+	}
+
 }
