@@ -44,7 +44,7 @@ bin2str( int n, int radix, char* buf ) {
 void
 printn( int n ) {
 	char buf[34];
-	char* s = bin2str( n, 10, buf );
+	char* s = bin2str( n, 16, buf );
 
 	print( s );
 }
@@ -55,6 +55,14 @@ abs( int x ) {
   return (x ^ bit31) - bit31;
 }
 
+int
+modifyBit( int x, unsigned char position, int newState ) {
+  int mask = 1 << position;
+  int state = (int) newState;
+
+  return (x & ~mask) | (-state & mask);
+}
+
 void
 main() {
 	printn( abs(5) );
@@ -62,5 +70,14 @@ main() {
 	printn( abs(0) );
 	print( ", " );
 	printn( abs(-5) );
+	println();
+
+	printn( modifyBit(0, 5, 0) );//0
+	print( ", " );
+	printn( modifyBit(0, 5, 1) );//0x20
+	print( ", " );
+	printn( modifyBit(0x77, 5, 0) );//0x57
+	print( ", " );
+	printn( modifyBit(0x77, 5, 1) );//0x77
 	println();
 }
