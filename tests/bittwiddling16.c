@@ -18,10 +18,10 @@ println() {
 }
 
 char*
-bin2str( long n, int radix, char* buf ) {
+bin2str( short n, int radix, char* buf ) {
 	char digits[] = "0123456789ABCDEF";
 	char* p = &buf[33];
-	long quo = n;
+	short quo = n;
 
 	if (n < 0)
 		quo = -quo;
@@ -42,47 +42,47 @@ bin2str( long n, int radix, char* buf ) {
 }
 
 void
-printn( long n ) {
+printn( short n ) {
 	char buf[34];
 	char* s = bin2str( n, 16, buf );
 
 	print( s );
 }
 
-long
-abs( long x ) {
-  const long bit31 = x >> 63;
+short
+myabs( short x ) {
+  const short bit31 = x >> 15;
 
   return (x ^ bit31) - bit31;
 }
 
-long
-modifyBit( long x, unsigned char position, int newState ) {
-  long mask = 1 << position;
-  long state = newState;
+short
+modifyBit( short x, unsigned char position, int newState ) {
+  short mask = 1 << position;
+  short state = newState;
 
   return (x & ~mask) | (-state & mask);
 }
 
-long
-flipBit( long x, unsigned char position ) {
-  long mask = 1 << position;
+short
+flipBit( short x, unsigned char position ) {
+  short mask = 1 << position;
 
   return x ^ mask;
 }
 
-long
-isNegative( long n ) {
-	return (long)((unsigned long) n >> 63);
+short
+isNegative( short n ) {
+	return (short)((unsigned short) n >> 15);
 }
 
 void
 main() {
-	printn( abs(5) );
+	printn( myabs(5) );
 	print( ", " );
-	printn( abs(0) );
+	printn( myabs(0) );
 	print( ", " );
-	printn( abs(-5) );
+	printn( myabs(-5) );
 	println();
 
 	printn( modifyBit(0, 5, 0) );//0
