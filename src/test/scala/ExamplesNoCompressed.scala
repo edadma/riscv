@@ -35,8 +35,8 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
-	"str2bin" in {
-		Run( "tests/str2bin.hex" ) shouldBe
+	"str2int" in {
+		Run( "tests/str2int.hex" ) shouldBe
 			"""
 				|yes
 				|yes
@@ -50,8 +50,8 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
-	"bin2str" in {
-		Run( "tests/bin2str.hex" ) shouldBe
+	"int2str" in {
+		Run( "tests/int2str.hex" ) shouldBe
 			"""
 				|zero
 				|zero

@@ -13,14 +13,14 @@ print( char* s ) {
 }
 
 void
-println() {
+println( char* s ) {
+	print( s );
 	out( '\n' );
 }
 
 void
 printb( int b ) {
-	print( b ? "true" : "false" );
-	println();
+	println( b ? "true" : "false" );
 }
 
 void

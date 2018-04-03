@@ -26,7 +26,7 @@ indexOf( char c, char* s ) {
 }
 
 int
-str2bin( char* n, int radix ) {
+str2int( char* n, int radix ) {
 	char digits[] = "0123456789ABCDEF";
 	char* p = n;
 	int result = 0;
@@ -57,13 +57,13 @@ str2bin( char* n, int radix ) {
 
 void
 main() {
-	print( str2bin( "0", 10 ) == 0 ? "yes" : "no" );
-	print( str2bin( "123", 10 ) == 123 ? "yes" : "no" );
-	print( str2bin( "123", 16 ) == 0x123 ? "yes" : "no" );
-	print( str2bin( "123", 8 ) == 0123 ? "yes" : "no" );
-	print( str2bin( "123", 10 ) == 123 ? "yes" : "no" );
-	print( str2bin( "123", 16 ) == 0x123 ? "yes" : "no" );
-	print( str2bin( "-123", 8 ) == -0123 ? "yes" : "no" );
-	print( str2bin( "-123", 10 ) == -123 ? "yes" : "no" );
-	print( str2bin( "-123", 16 ) == -0x123 ? "yes" : "no" );
+	print( str2int( "0", 10 ) == 0 ? "yes" : "no" );
+	print( str2int( "123", 10 ) == 123 ? "yes" : "no" );
+	print( str2int( "123", 16 ) == 0x123 ? "yes" : "no" );
+	print( str2int( "123", 8 ) == 0123 ? "yes" : "no" );
+	print( str2int( "123", 10 ) == 123 ? "yes" : "no" );
+	print( str2int( "123", 16 ) == 0x123 ? "yes" : "no" );
+	print( str2int( "-123", 8 ) == -0123 ? "yes" : "no" );
+	print( str2int( "-123", 10 ) == -123 ? "yes" : "no" );
+	print( str2int( "-123", 16 ) == -0x123 ? "yes" : "no" );
 }

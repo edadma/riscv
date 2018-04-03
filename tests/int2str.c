@@ -28,7 +28,7 @@ prints( int n ) {
 }
 
 char*
-bin2str( int n, int radix, char* buf ) {
+int2str( int n, int radix, char* buf ) {
 	char digits[] = "0123456789ABCDEF";
 	char* p = &buf[33];
 	int quo = n;
@@ -70,9 +70,9 @@ void
 main() {
 	char buf[34];
 
-	prints( strcmp(bin2str(0, 10, buf), "0") );
-	prints( strcmp(bin2str(123, 10, buf), "123") );
-	prints( strcmp(bin2str(0x12AB, 16, buf), "12AB") );
-	prints( strcmp(bin2str(-123, 10, buf), "-123") );
-	prints( strcmp(bin2str(-0x12AB, 16, buf), "-12AB") );
+	prints( strcmp(int2str(0, 10, buf), "0") );
+	prints( strcmp(int2str(123, 10, buf), "123") );
+	prints( strcmp(int2str(0x12AB, 16, buf), "12AB") );
+	prints( strcmp(int2str(-123, 10, buf), "-123") );
+	prints( strcmp(int2str(-0x12AB, 16, buf), "-12AB") );
 }
