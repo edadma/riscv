@@ -52,6 +52,7 @@ printn( int n ) {
 int
 abs( int x ) {
   const int bit31 = x >> 31;
+
   return (x ^ bit31) - bit31;
 }
 
@@ -61,6 +62,13 @@ modifyBit( int x, unsigned char position, int newState ) {
   int state = (int) newState;
 
   return (x & ~mask) | (-state & mask);
+}
+
+int
+flipBit( int x, unsigned char position ) {
+  int mask = 1 << position;
+
+  return x ^ mask;
 }
 
 void
@@ -79,5 +87,10 @@ main() {
 	printn( modifyBit(0x77, 5, 0) );//0x57
 	print( ", " );
 	printn( modifyBit(0x77, 5, 1) );//0x77
+	println();
+
+	printn( flipBit(0, 5) );//20
+	print( ", " );
+	printn( flipBit(0x77, 5) );//57
 	println();
 }
