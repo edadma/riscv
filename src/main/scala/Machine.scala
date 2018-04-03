@@ -12,7 +12,8 @@ class Machine {
 				removeDevices
 				regions.clear
 				add( new StdIOChar(0x20000) )
-				add( new RAM("main", 0x0000, 0xFFFF) )
+				add( new RAM("stack", 0, 0xFFFF) )
+				add( new RAM("bss", 0x1000000, 0x100FFFF) )
 				add( new ROM("program", 0x10000, 0x1FFFF) )
 			}
 		}

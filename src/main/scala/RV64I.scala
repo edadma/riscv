@@ -3,7 +3,7 @@ package xyz.hyperreal.riscv
 
 class LWU( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LWU" ) {
   def apply( cpu: CPU ) =
-    cpu(rd) = cpu.memory.readInt( immediate(cpu) + cpu(rs1) ).asInstanceOf[Long]&0xFFFFFFFF
+    cpu(rd) = cpu.memory.readInt( immediate(cpu) + cpu(rs1) )&0xFFFFFFFFL
 }
 
 class LD( val rs1: Int, val rd: Int ) extends ITypeInstruction( "LD" ) {
@@ -62,7 +62,7 @@ class REMW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction(
 }
 
 class REMUW( val rs1: Int, val rs2: Int, val rd: Int ) extends FRTypeInstruction( 1, "REMUW" ) {
-  override def perform( cpu: CPU ) = cpu(rd) = (cpu(rs1)&0xFFFFFFFF) % (cpu(rs2)&0xFFFFFFFF)
+  override def perform( cpu: CPU ) = cpu(rd) = (cpu(rs1)&0xFFFFFFFFL) % (cpu(rs2)&0xFFFFFFFFL)
 }
 
 class SRW_DIVUW( val rs1: Int, val rs2: Int, val rd: Int ) extends
@@ -70,7 +70,7 @@ class SRW_DIVUW( val rs1: Int, val rs2: Int, val rd: Int ) extends
   def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >>> (cpu(rs2).asInstanceOf[Int]&0x1F)
-      case 1 => cpu(rd) = (cpu(rs1)&0xFFFFFFFF) / (cpu(rs2)&0xFFFFFFFF)
+      case 1 => cpu(rd) = (cpu(rs1)&0xFFFFFFFFL) / (cpu(rs2)&0xFFFFFFFFL)
       case 0x20 => cpu(rd) = cpu(rs1).asInstanceOf[Int] >> (cpu(rs2).asInstanceOf[Int]&0x1F)
       case _ => illegal( cpu )
     }

@@ -213,7 +213,7 @@ class CPU( private [riscv] val memory: Memory ) {
 
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
-        printf( "%19s  ", s"x$i=${x(i).toHexString}" )
+        printf( "%21s  ", s"x$i=${x(i).toHexString}" )
 
       println
     }

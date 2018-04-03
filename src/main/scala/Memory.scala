@@ -39,7 +39,7 @@ trait Addressable {
 		programInt( addr + 4, (value>>32).asInstanceOf[Int] )
 	}
 
-	def readShort( addr: Long, low: Int ) = low | (readByte( addr + 1 ) << 8)
+	def readShort( addr: Long, low: Int ) = (low&0xFF) | (readByte( addr + 1 ) << 8)
 
 	def readShort( addr: Long ): Int = readShort( addr, readByte(addr) )
 
@@ -48,7 +48,7 @@ trait Addressable {
 		writeByte( addr + 1, value>>8 )
 	}
 
-	def readInt( addr: Long, low: Int ) = readShort( addr, low ) | (readShort( addr + 2 )<<16)
+	def readInt( addr: Long, low: Int ) = (readShort( addr, low )&0xFFFF) | (readShort( addr + 2 )<<16)
 
 	def readInt( addr: Long ): Int = readInt( addr, readByte(addr) )
 
@@ -78,7 +78,7 @@ class RAM( val name: String, val start: Long, end: Long ) extends Addressable {
 		for (i <- 0 until size)
 			mem(i) = 0
 
-	def readByte( addr: Long ) = mem( (addr - start).asInstanceOf[Int] )&0xFF
+	def readByte( addr: Long ) = mem( (addr - start).asInstanceOf[Int] )
 
 	def writeByte( addr: Long, value: Int ) = mem( (addr - start).asInstanceOf[Int] ) = value.asInstanceOf[Byte]
 
@@ -94,7 +94,7 @@ class ROM( val name: String, val start: Long, end: Long ) extends Addressable {
 
 	protected val mem = new Array[Byte]( size )
 
-	def readByte( addr: Long ) = mem( (addr - start).asInstanceOf[Int] )&0xFF
+	def readByte( addr: Long ) = mem( (addr - start).asInstanceOf[Int] )
 
 	def writeByte( addr: Long, value: Int ) = sys.error( "read only memory: " + (addr&0xffff).toHexString + " (tried to write " + (value&0xff).toHexString + ")" )
 
