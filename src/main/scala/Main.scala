@@ -132,6 +132,8 @@ object Main extends App {
 //						runAndWait
 					case List( "execute&wait"|"ew" ) =>
 						runAndWait
+					case List( "float"|"f" ) =>
+
 					case List( "help"|"h" ) =>
 						"""
 						|breakpoint (b) <addr>*           set/clear breakpoint at <addr>
@@ -194,7 +196,7 @@ object Main extends App {
 //
 //						registers
 					case List( "registers"|"r" ) =>
-						registers
+						registersAll
 					case List( "reload"|"rl" ) =>
 						interp( reload )
 					case List( "reset"|"re" ) =>

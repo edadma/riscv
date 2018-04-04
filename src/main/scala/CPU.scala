@@ -284,4 +284,5 @@ class CPU( private [riscv] val memory: Memory ) {
   }
 
   memory.problem = problem
+
 }
