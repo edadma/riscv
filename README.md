@@ -1,10 +1,9 @@
+riscv
+=====
 [![Build Status](https://www.travis-ci.org/edadma/riscv.svg?branch=master)](https://www.travis-ci.org/edadma/riscv)
 [![Coverage Status](https://coveralls.io/repos/github/edadma/riscv/badge.svg?branch=master)](https://coveralls.io/github/edadma/riscv?branch=master)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![Version](https://img.shields.io/badge/latest_release-0.1_snapshot_1-orange.svg)](https://www.scala-sbt.org/)
-
-riscv
-=====
 
 *riscv* is an emulator for the RISC-V ISA (v2.2).  Specifically, RV64ID is currently being emulated (with a few missing instructions).  Emulation for the compressed instruction sets (RV32C, RV64C) is being worked on.  The goal is for RV64GC to be fully supported.
 

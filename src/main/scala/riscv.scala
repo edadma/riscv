@@ -7,7 +7,7 @@ package object riscv {
 
   def dtol( d: Double ) = java.lang.Double.doubleToLongBits( d )
 
-  def ltod( l: Long ) = Long.long2double( l )
+  def ltod( l: Long ) = java.lang.Double.longBitsToDouble( l )
 
   def hexByte( a: Int ) = "%02x".format( a&0xFF ).toUpperCase
 

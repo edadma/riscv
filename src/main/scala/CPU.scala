@@ -193,25 +193,27 @@ class CPU( private [riscv] val memory: Memory ) {
       "000 iiiiiiii ddd 00" -> ((operands: Map[Char, Int]) => new C.ADDI4SPN( operands('i'), operands('d') )),
     ) )
 
-  def registers: Unit = {
+  def disassemble: Unit = {
     if (memory.valid( pc )) {
-      val m = memory.find( pc )
-      val low = m.readByte( pc )
-      val (inst, disassembly) =
-        if ((low&3) == 3) {
-          val inst = m.readInt( pc, low )
+    val m = memory.find( pc )
+    val low = m.readByte( pc )
+    val (inst, disassembly) =
+      if ((low&3) == 3) {
+        val inst = m.readInt( pc, low )
 
-          (hexInt( inst ), opcodes32(inst&0x1FFFFFF).disassemble(this))
-        } else {
-          val inst = m.readShort( pc, low )
+        (hexInt( inst ), opcodes32(inst&0x1FFFFFF).disassemble( this ))
+      } else {
+        val inst = m.readShort( pc, low )
 
-          (hexShort( inst ), opcodes16(inst).disassemble(this))
-        }
+        (hexShort( inst ), opcodes16(inst).disassemble( this ))
+      }
 
       printf( "%8x  %s  %s\n", pc, inst, disassembly )
     } else
-      println( s"pc=${pc.toHexString}")
+      println( s"pc=${pc.toHexString}" )
+  }
 
+  def registers: Unit = {
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
         printf( "%21s  ", s"x$i=${x(i).toHexString}" )
@@ -221,6 +223,23 @@ class CPU( private [riscv] val memory: Memory ) {
 
     for (i <- 0 until 32 by 5)
       regs( i )
+  }
+
+  def fregisters: Unit = {
+    def regs( start: Int ) {
+      for (i <- start until (start + 5 min 32))
+        printf( "%21s  ", s"f$i=${"%.2f".format(f(i))}" )
+
+      println
+    }
+
+    for (i <- 0 until 32 by 5)
+      regs( i )
+  }
+
+  def registersAll: Unit = {
+    registers
+    fregisters
   }
 
   def problem( error: String ) = {

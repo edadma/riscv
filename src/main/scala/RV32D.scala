@@ -3,7 +3,7 @@ package xyz.hyperreal.riscv
 
 
 class FLD( val rs1: Int, val rd: Int ) extends ITypeInstruction( "FLD" ) {
-  def apply( cpu: CPU ) = cpu.f(rd) = load( cpu )
+  def apply( cpu: CPU ) = cpu.f(rd) = ltod( load(cpu) )
 }
 
 class FSD( val rs1: Int, val rs2: Int ) extends STypeInstruction( "FSD" ) {
@@ -19,7 +19,7 @@ class FMADD( val rs1: Int, val rs2: Int, val rd: Int, val rm: Int ) extends R4Ty
     }
 }
 
-class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends FloatRTypeInstruction( Map(0x22 -> "FSGNJ") ) {
+class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends FloatRTypeInstruction( Map(0x11 -> "FSGNJ", 1 -> "FADD", 5 -> "FSUB") ) {
   def apply( cpu: CPU ) =
     funct( cpu ) match {
       case 0x11 =>  // FSGNJ

@@ -71,7 +71,10 @@ object Main extends App {
 				mem add new JLineHex( hex(p), reader )
 			} )
 
-		def registers = /*out.println(*/ mach.cpu.registers //)
+		def registers = {
+			mach.cpu.disassemble
+			mach.cpu.registers
+		}
 
 		def dump( start: Int, lines: Int ) = out.println( mach.dump(start, lines) )
 
@@ -132,8 +135,6 @@ object Main extends App {
 //						runAndWait
 					case List( "execute&wait"|"ew" ) =>
 						runAndWait
-					case List( "float"|"f" ) =>
-
 					case List( "help"|"h" ) =>
 						"""
 						|breakpoint (b) <addr>*           set/clear breakpoint at <addr>
@@ -196,7 +197,7 @@ object Main extends App {
 //
 //						registers
 					case List( "registers"|"r" ) =>
-						registersAll
+						mach.cpu.registersAll
 					case List( "reload"|"rl" ) =>
 						interp( reload )
 					case List( "reset"|"re" ) =>

@@ -199,7 +199,7 @@ class XOR_DIV( val rs1: Int, val rs2: Int, val rd: Int ) extends
 }
 
 class SR_DIVU( val rs1: Int, val rs2: Int, val rd: Int ) extends
-  RTypeInstruction( Map(0 -> "SR", 1 -> "DIVU") ) {
+  RTypeInstruction( Map(0 -> "SRL", 1 -> "DIVU", 0x20 -> "SRA") ) {
   def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x3F)
