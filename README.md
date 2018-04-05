@@ -8,32 +8,53 @@ riscv
 *riscv* is an emulator for the RISC-V ISA (v2.2).  Specifically, RV64ID is currently being emulated (with a few missing instructions).  Emulation for the compressed instruction sets (RV32C, RV64C) is being worked on.  The goal is for RV64GC to be fully supported.
 
 
+Usage
+-----
+
+### Library
+
+Use the following definition to use *riscv* in your Maven project:
+
+	<repository>
+	  <id>hyperreal</id>
+	  <url>https://dl.bintray.com/edadma/maven</url>
+	</repository>
+
+	<dependency>
+	  <groupId>xyz.hyperreal</groupId>
+	  <artifactId>riscv</artifactId>
+	  <version>0.1_snapshot_1.1</version>
+	</dependency>
+
+Add the following to your `build.sbt` file to use *riscv* in your SBT project:
+
+	resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
+
+	libraryDependencies += "xyz.hyperreal" %% "riscv" % "0.1_snapshot_1.1"
+
+### Executable
+
+There is a command-line style interface to the emulator which can be used to execute programs. The following requirements need to be met.
+
+- Java 8
+- SBT (Simple Build Tool) 1.1.1+
+
+The execute the following
+
+	git clone git://github.com/edadma/riscv.git
+	cd riscv
+	sbt run
+
+
 The Obligatory "Hello World" Example
 ------------------------------------
 
 This example assumes that the complete RISC-V toolchain has been built and that the various commands that are provided by the toolchain are on the path.
 
-The following Scala program builds a small emulated RISC-V computer with a "hello world" program in ROM, 64k of RAM (for the stack) and a character output device memory mapped at address 0x20000.
 
-	import xyz.hyperreal.riscv._
+### Build the C Executable to be Emulated
 
-	object Example extends App {
-	  val cpu =
-	    new CPU(
-	      new Memory {
-	        def init: Unit = {
-	          regions.clear
-	          add( new StdIOChar(0x20000) )
-	          add( new RAM("stack", 0, 0xFFFF) )
-	          addHexdump( io.Source.fromFile("hello.hex") )
-	        }
-	      } )
-
-	  cpu.reset
-	  cpu.run
-	}
-
-To run the above example, you need to have the `hello.hex` hexdump file that it's loading into emulated ROM. To that end, place the following C "hello world" program into a text file called `hello.c`
+To run the example, you need to have the `hello.hex` hexdump (executable) file that is to be loaded into emulated ROM. To that end, place the following C "hello world" program into a text file called `hello.c`
 
 	void
 	main() {
@@ -60,34 +81,46 @@ to compile the little "hello world" program and assemble the start code producin
 
 	riscv64-unknown-elf-readelf -R .text -x .rodata -x .data hello >hello.hex
 
-to get `hello.hex`
+to get `hello.hex`.
 
-The example should print
+
+### Using the Emulator as a Library
+
+The following Scala program builds a small emulated RISC-V computer with a "hello world" program in ROM, 64k of RAM (for the stack) and a character output device memory mapped at address 0x20000.
+
+	import xyz.hyperreal.riscv._
+
+	object Example extends App {
+	  val cpu =
+	    new CPU(
+	      new Memory {
+	        def init: Unit = {
+	          regions.clear
+	          add( new StdIOChar(0x20000) )
+	          add( new RAM("stack", 0, 0xFFFF) )
+	          addHexdump( io.Source.fromFile("hello.hex") )
+	        }
+	      } )
+
+	  cpu.reset
+	  cpu.run
+	}
+
+It should print
 
 	Hello world!
 
 
-Usage
------
+### Using the Emulator as a Library
 
-Use the following definition to use *riscv* in your Maven project:
+Begin by following the **Usage** instructions. At the emulator command-line, enter
 
-	<repository>
-	  <id>hyperreal</id>
-	  <url>https://dl.bintray.com/edadma/maven</url>
-	</repository>
+	l hello.hex
+	e
 
-	<dependency>
-	  <groupId>xyz.hyperreal</groupId>
-	  <artifactId>riscv</artifactId>
-	  <version>0.1_snapshot_1.1</version>
-	</dependency>
+It should print
 
-Add the following to your `build.sbt` file to use *riscv* in your SBT project:
-
-	resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
-
-	libraryDependencies += "xyz.hyperreal" %% "riscv" % "0.1_snapshot_1.1"
+	Hello world!
 
 
 Building
@@ -97,7 +130,7 @@ Building
 
 - Java 8
 - SBT 1.1.1+
-- Scala 2.12.5+
+
 
 ### Clone and Run the Tests
 
