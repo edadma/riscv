@@ -5,14 +5,14 @@ import org.scalatest._
 import prop.PropertyChecks
 
 
-class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
+class ExamplesNormal extends FreeSpec with PropertyChecks with Matchers {
 
 	"hello" in {
-		Run( "tests/hello.hex" ) shouldBe "Hello world!"
+		Run( "tests/hello.ghex" ) shouldBe "Hello world!"
 	}
 
 	"signum" in {
-		Run( "tests/signum.hex" ) shouldBe
+		Run( "tests/signum.ghex" ) shouldBe
 			"""
 				|negative
 				|zero
@@ -21,7 +21,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"strcmp" in {
-		Run( "tests/strcmp.hex" ) shouldBe
+		Run( "tests/strcmp.ghex" ) shouldBe
 			"""
 				|zero
 				|zero
@@ -36,7 +36,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"str2int" in {
-		Run( "tests/str2int.hex" ) shouldBe
+		Run( "tests/str2int.ghex" ) shouldBe
 			"""
 				|yes
 				|yes
@@ -51,7 +51,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"int2str" in {
-		Run( "tests/int2str.hex" ) shouldBe
+		Run( "tests/int2str.ghex" ) shouldBe
 			"""
 				|zero
 				|zero
@@ -62,7 +62,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"int2stru" in {
-		Run( "tests/int2stru.hex" ) shouldBe
+		Run( "tests/int2stru.ghex" ) shouldBe
 			"""
 				|zero
 				|zero
@@ -72,7 +72,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"int2str64" in {
-		Run( "tests/int2str64.hex" ) shouldBe
+		Run( "tests/int2str64.ghex" ) shouldBe
 			"""
 				|0
 				|123
@@ -87,7 +87,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"int2str64u" in {
-		Run( "tests/int2str64u.hex" ) shouldBe
+		Run( "tests/int2str64u.ghex" ) shouldBe
 			"""
 				|0
 				|123
@@ -99,7 +99,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"armstrong" in {
-		Run( "tests/armstrong.hex" ) shouldBe
+		Run( "tests/armstrong.ghex" ) shouldBe
 			"""
 				|0
 				|1
@@ -111,7 +111,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"armstrong64" in {
-		Run( "tests/armstrong64.hex" ) shouldBe
+		Run( "tests/armstrong64.ghex" ) shouldBe
 			"""
 				|0
 				|1
@@ -123,7 +123,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"quicksort" in {
-		Run( "tests/quicksort.hex" ) shouldBe
+		Run( "tests/quicksort.ghex" ) shouldBe
 			"""
 				|[1, 2, 3, 7, 7, 7, 7, 8, 9, 10]
 				|[1, 2, 3, 5, 7, 7, 7, 8, 9, 10]
@@ -135,7 +135,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"quicksort64" in {
-		Run( "tests/quicksort64.hex" ) shouldBe
+		Run( "tests/quicksort64.ghex" ) shouldBe
 			"""
 				|[1, 2, 3, 7, 7, 7, 7, 8, 9, 10]
 				|[1, 2, 3, 5, 7, 7, 7, 8, 9, 10]
@@ -147,7 +147,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"quicksort16" in {
-		Run( "tests/quicksort16.hex" ) shouldBe
+		Run( "tests/quicksort16.ghex" ) shouldBe
 			"""
 				|[1, 2, 3, 7, 7, 7, 7, 8, 9, 10]
 				|[1, 2, 3, 5, 7, 7, 7, 8, 9, 10]
@@ -159,7 +159,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"quicksort8" in {
-		Run( "tests/quicksort8.hex" ) shouldBe
+		Run( "tests/quicksort8.ghex" ) shouldBe
 			"""
 				|[1, 2, 3, 7, 7, 7, 7, 8, 9, 10]
 				|[1, 2, 3, 5, 7, 7, 7, 8, 9, 10]
@@ -171,17 +171,18 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"bittwiddling" in {
-		Run( "tests/bittwiddling.hex" ) shouldBe
+		Run( "tests/bittwiddling.ghex" ) shouldBe
 			"""
 				|5, 0, 5
 				|0, 20, 57, 77
 				|20, 57
 				|0, 1
+				|1, 0
 			""".trim.stripMargin
 	}
 
 	"bittwiddling8" in {
-		Run( "tests/bittwiddling8.hex" ) shouldBe
+		Run( "tests/bittwiddling8.ghex" ) shouldBe
 			"""
 				|5, 0, 5
 				|0, 20, 57, 77
@@ -191,7 +192,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"bittwiddling16" in {
-		Run( "tests/bittwiddling16.hex" ) shouldBe
+		Run( "tests/bittwiddling16.ghex" ) shouldBe
 			"""
 				|5, 0, 5
 				|0, 20, 57, 77
@@ -201,7 +202,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"bittwiddling64" in {
-		Run( "tests/bittwiddling64.hex" ) shouldBe
+		Run( "tests/bittwiddling64.ghex" ) shouldBe
 			"""
 				|5, 0, 5
 				|0, 20, 57, 77
@@ -212,7 +213,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"bittwiddling64u" in {
-		Run( "tests/bittwiddling64u.hex" ) shouldBe
+		Run( "tests/bittwiddling64u.ghex" ) shouldBe
 			"""
 				|0, 20, 57, 77
 				|20, 57
@@ -221,7 +222,7 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 	}
 
 	"float64" in {
-		Run( "tests/float64.hex" ) shouldBe
+		Run( "tests/float64.ghex" ) shouldBe
 			"""
 				|true
 				|true
