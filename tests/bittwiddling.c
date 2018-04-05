@@ -76,6 +76,11 @@ isNegative( int n ) {
 	return (int)((unsigned int) n >> 31);
 }
 
+int
+bit( int x, int n ) {
+	return (x >> n)&1;
+}
+
 void
 main() {
 	printn( abs(5) );
@@ -102,5 +107,10 @@ main() {
 	printn( isNegative(0) );
 	print( ", " );
 	printn( isNegative(-5) );
+	println();
+
+	printn( bit(5, 2) );
+	print( ", " );
+	printn( bit(5, 1) );
 	println();
 }

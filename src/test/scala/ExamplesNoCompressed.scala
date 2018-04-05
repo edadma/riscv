@@ -195,6 +195,16 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 				|0, 20, 57, 77
 				|20, 57
 				|0, 1
+				|1, 0
+			""".trim.stripMargin
+	}
+
+	"bittwiddling64u" in {
+		Run( "tests/bittwiddling64u.hex" ) shouldBe
+			"""
+				|0, 20, 57, 77
+				|20, 57
+				|1, 0
 			""".trim.stripMargin
 	}
 
