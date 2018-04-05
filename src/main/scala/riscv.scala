@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream
 
 package object riscv {
 
+	def boolean2int( b: Boolean ) = if (b) 1 else 0
+
   def dtol( d: Double ) = java.lang.Double.doubleToLongBits( d )
 
   def ltod( l: Long ) = java.lang.Double.longBitsToDouble( l )

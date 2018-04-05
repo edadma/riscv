@@ -23,15 +23,17 @@ class CPU( private [riscv] val memory: Memory ) {
   private val opcodes32 = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
   private val opcodes16 = Array.fill[Compressed]( 0x10000 )( IllegalCompressed )
 
-  private [riscv] def ecall = problem( "ecall" )
+  private [riscv] def ecall = problem( "ecall instruction not defined" )
 
-  private [riscv] def ebreak = problem( "ebreak" )
+  private [riscv] def ebreak = problem( "ebreak instruction not defined" )
 
 	def isRunning = running
 
-  def apply( r: Int ) = if (r == 0) 0L else x(r)
+  def apply( r: Int ) = x(r)
 
-  def update( r: Int, v: Long ): Unit = x(r) = v
+  def update( r: Int, v: Long ): Unit =
+    if (r != 0)
+      x(r) = v
 
   private def populate32( pattern: String, inst: Map[Char, Int] => Instruction ) =
     for ((idx, m) <- generate( pattern ))
