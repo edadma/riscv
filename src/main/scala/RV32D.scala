@@ -19,7 +19,7 @@ class FMADD( val rs1: Int, val rs2: Int, val rd: Int, val rm: Int ) extends R4Ty
     }
 }
 
-class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends FloatRTypeInstruction( Map(0x11 -> "FSGNJ", 1 -> "FADD", 5 -> "FSUB") ) {
+class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RTypeInstruction( Map(0x11 -> "FSGNJ", 1 -> "FADD", 5 -> "FSUB") ) {
   def apply( cpu: CPU ) =
     funct( cpu ) match {
       case 0x11 =>  // FSGNJ
@@ -33,3 +33,8 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends Float
       case 5 => cpu.f(rd) = cpu.f(rs1) - cpu.f(rs2)
     }
 }
+
+/*
+      0af777d3
+      0000 1010 11111 0111 0111 0111 1101 0011
+*/

@@ -72,6 +72,7 @@ object Main extends App {
 			} )
 
 		def registers = {
+			mach.cpu.fetch
 			mach.cpu.disassemble
 			mach.cpu.registers
 		}

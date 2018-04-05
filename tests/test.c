@@ -20,7 +20,7 @@ println( char* s ) {
 
 void
 main() {
-	double a = 2.0;
-	double b = 1.0;
+	(0x);
+	double b = 3.0;
 	double c = a - b;
 }

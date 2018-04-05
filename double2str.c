@@ -1,10 +1,10 @@
-void
-out( char c ) {
-	*((char*) 0x20000) = c;
-}
+//void
+//out( char c ) {
+//	*((char*) 0x20000) = c;
+//}
 
-//#include <stdio.h>
-//#define out( c ) putchar( c )
+#include <stdio.h>
+#define out( c ) putchar( c )
 
 void
 print( char* s ) {
@@ -22,6 +22,14 @@ void
 double2str( double x, char p[] )
 {
 	int i = 0;
+	int k = 0;
+
+	if (x < 0) {
+		x = -x;
+		p[0] = '-';
+		i++;
+		k++;
+	}
 
 	while (((int) x) > 0) {
 		x /= 10;
@@ -29,7 +37,6 @@ double2str( double x, char p[] )
 	}
 
 	int n;
-	int k = 0;
 
 	p[i] = '.';
 	x *= 10;
@@ -52,8 +59,8 @@ double2str( double x, char p[] )
 
 void
 main() {
-  char a[20];
+	char a[20];
 
-  double2str( 3.4, a );
-  println( a );
+	double2str( 3.4, a );
+	println( a );
 }

@@ -263,6 +263,8 @@ class CPU( private [riscv] val memory: Memory ) {
     fcsr = 0
   }
 
+  def fetch: Unit = instruction = memory.find( pc ).readInt( pc )
+
   def execute: Unit = {
     if (trace)
       registers
@@ -275,7 +277,7 @@ class CPU( private [riscv] val memory: Memory ) {
       disp = 4
       opcodes32(instruction&0x1FFFFFF)( this )
     } else {
-      instruction = m.readShort( pc, low )
+      instruction = m.readShort( pc, low )&0xFFFF
       disp = 2
       opcodes16(instruction)( this )
     }
