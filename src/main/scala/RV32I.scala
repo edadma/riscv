@@ -183,7 +183,7 @@ class SLTU_MULHU( val rs1: Int, val rs2: Int, val rd: Int ) extends
       case 0 =>
         cpu(rd) =
           if (lcu(cpu(rs1).asInstanceOf[Int], cpu(rs2).asInstanceOf[Int]) < 0) 1 else 0
-      case 1 => cpu(rd) = ((ulong(cpu(rs1)) * ulong(cpu(rs2))) >> 32).asInstanceOf[Long]
+      case 1 => cpu(rd) = ((ulong(cpu(rs1)) * ulong(cpu(rs2))) >> 32).longValue
       case _ => illegal( cpu )
     }
 }
@@ -203,7 +203,7 @@ class SR_DIVU( val rs1: Int, val rs2: Int, val rd: Int ) extends
   def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) >>> (cpu(rs2)&0x3F)
-      case 1 => cpu(rd) = (ulong(cpu(rs1)) / ulong(cpu(rs2))).asInstanceOf[Long]
+      case 1 => cpu(rd) = (ulong(cpu(rs1)) / ulong(cpu(rs2))).longValue
       case 0x20 => cpu(rd) = cpu(rs1) >> (cpu(rs2)&0x3F)
       case _ => illegal( cpu )
     }
@@ -224,7 +224,7 @@ class AND_REMU( val rs1: Int, val rs2: Int, val rd: Int ) extends
   def apply( cpu: CPU ) =
     funct(cpu) match {
       case 0 => cpu(rd) = cpu(rs1) & cpu(rs2)
-      case 1 => cpu(rd) = (ulong(cpu(rs1)) % ulong(cpu(rs2))).asInstanceOf[Long]
+      case 1 => cpu(rd) = (ulong(cpu(rs1)) % ulong(cpu(rs2))).longValue
       case _ => illegal( cpu )
     }
 }
