@@ -110,6 +110,18 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
+	"armstrong64" in {
+		Run( "tests/armstrong64.hex" ) shouldBe
+			"""
+				|0
+				|1
+				|153
+				|370
+				|371
+				|407
+			""".trim.stripMargin
+	}
+
 	"quicksort" in {
 		Run( "tests/quicksort.hex" ) shouldBe
 			"""
