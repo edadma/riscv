@@ -158,7 +158,7 @@ abstract class UTypeInstruction( mnemonic: String ) extends Instruction {
 
   val rd: Int
 
-  def immediate( cpu: CPU ) = cpu.instruction&0xFFFFF000L
+  def immediate( cpu: CPU ) = cpu.instruction&0xFFFFFFFFFFFFF000L
 
   def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${immediate( cpu )}"
 

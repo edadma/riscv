@@ -61,6 +61,31 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 			""".trim.stripMargin
 	}
 
+	"int2stru" in {
+		Run( "tests/int2stru.hex" ) shouldBe
+			"""
+				|zero
+				|zero
+				|zero
+				|zero
+			""".trim.stripMargin
+	}
+
+	"int2str64" in {
+		Run( "tests/int2str64.hex" ) shouldBe
+			"""
+				|0
+				|123
+				|12AB
+				|2000000000
+				|20000000000
+				|-123
+				|-12AB
+				|-2000000000
+				|-20000000000
+			""".trim.stripMargin
+	}
+
 	"armstrong" in {
 		Run( "tests/armstrong.hex" ) shouldBe
 			"""
