@@ -39,6 +39,16 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RType
           case 1 => cpu(rd) = boolean2int( cpu.f(rs1) < cpu.f(rs2) )
           case 2 => cpu(rd) = boolean2int( cpu.f(rs1) == cpu.f(rs2) )
         }
+      case 0x61 => // FCVT
+        rs2 match {
+          case 0 => cpu(rd) = cpu.f(rs1).asInstanceOf[Int]
+        }
+      // RV64D
+      case 0x79 => // FMV.D.X
+        if (rs2 == 0 && mode == 0)
+          cpu.f(rd) = ltod( cpu(rs1) )
+        else
+          illegal( cpu )
     }
 }
 

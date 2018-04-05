@@ -61,6 +61,6 @@ void
 main() {
 	char a[20];
 
-	double2str( 3.4, a );
+	double2str( 12, a );
 	println( a );
 }
