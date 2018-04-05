@@ -31,6 +31,8 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RType
         }
       case 1 => cpu.f(rd) = cpu.f(rs1) + cpu.f(rs2)
       case 5 => cpu.f(rd) = cpu.f(rs1) - cpu.f(rs2)
+      case 9 => cpu.f(rd) = cpu.f(rs1) * cpu.f(rs2)
+      case 13 => cpu.f(rd) = cpu.f(rs1) / cpu.f(rs2)
       case 0x51 =>
         mode match {
           case 0 => cpu(rd) = boolean2int( cpu.f(rs1) <= cpu.f(rs2) )

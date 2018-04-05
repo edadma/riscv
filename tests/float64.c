@@ -36,6 +36,6 @@ main() {
 	printb( a > b );
 	printb( a >= b );
 	printb( a != b );
-//	printb( 3.4 * 5.6 == 19.04 );
-//	printb( 3.4 / 5.6 == 0.607142857 );
+	printb( a * b == 3.4 * 5.6 );
+	printb( a / b == 3.4 / 5.6 );
 }
