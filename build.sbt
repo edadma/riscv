@@ -1,6 +1,6 @@
 name := "riscv"
 
-version := "0.1_snapshot_1.1"
+version := "0.1_snapshot_1.2"
 
 scalaVersion := "2.12.5"
 

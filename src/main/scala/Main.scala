@@ -11,11 +11,10 @@ object Main extends App {
 	lazy val mach = new Machine
 	var enterREPL = true
 
-	Options( args )
-	{
+	Options( args ) {
 		case "--help" :: _ =>
 			"""
-			|RISC-V (v2.2) Emulator v0.1
+			|RISC-V (v2.2) Emulator v0.1_snapshot_1.2
 			|Usage:  --help      display this help and exit
 			|        -l <file>   load hexdump <file> and enter REPL
 			|        -le <file>  load hexdump <file> and execute
@@ -90,7 +89,7 @@ object Main extends App {
 			registers
 		}
 
-		out.println( "RISC-V (v2.2) Emulator v0.1" )
+		out.println( "RISC-V (v2.2) Emulator v0.1_snapshot_1.2" )
 		out.println( "Type 'help' for list of commands." )
 		out.println
 
