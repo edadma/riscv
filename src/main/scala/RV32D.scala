@@ -24,9 +24,9 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RType
     funct( cpu ) match {
       case 0x11 =>  // FSGNJ
         mode match {
-          case 0 => ltod( dtol(cpu.f(rs1))&0x7FFFFFFFFFFFFFFFL | dtol(cpu.f(rs2))&0x8000000000000000L )
-          case 1 => ltod( dtol(cpu.f(rs1))&0x7FFFFFFFFFFFFFFFL | dtol(cpu.f(rs2))&0x8000000000000000L^0x8000000000000000L )
-          case 2 => ltod( dtol(cpu.f(rs1))&0x7FFFFFFFFFFFFFFFL ^ (dtol(cpu.f(rs2))&0x8000000000000000L) )
+          case 0 => cpu.f(rd) = ltod( dtol(cpu.f(rs1))&0x7FFFFFFFFFFFFFFFL | dtol(cpu.f(rs2))&0x8000000000000000L )
+          case 1 => cpu.f(rd) = ltod( dtol(cpu.f(rs1))&0x7FFFFFFFFFFFFFFFL | dtol(cpu.f(rs2))&0x8000000000000000L^0x8000000000000000L )
+          case 2 => cpu.f(rd) = ltod( dtol(cpu.f(rs1))&0x7FFFFFFFFFFFFFFFL ^ (dtol(cpu.f(rs2))&0x8000000000000000L) )
           case 3 => illegal( cpu )
         }
       case 1 => cpu.f(rd) = cpu.f(rs1) + cpu.f(rs2)
@@ -43,6 +43,10 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RType
         rs2 match {
           case 0 => cpu(rd) = cpu.f(rs1).asInstanceOf[Int]
         }
+			case 0x69 => // FCVT
+				rs2 match {
+					case 0 => cpu.f(rd) = cpu(rs1).asInstanceOf[Int]
+				}
       // RV64D
       case 0x79 => // FMV.D.X
         if (rs2 == 0 && mode == 0)

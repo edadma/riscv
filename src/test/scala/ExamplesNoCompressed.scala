@@ -220,6 +220,8 @@ class ExamplesNoCompressed extends FreeSpec with PropertyChecks with Matchers {
 				|true
 				|true
 				|true
+				|3.5
+				|-3.5
 			""".trim.stripMargin
 	}
 

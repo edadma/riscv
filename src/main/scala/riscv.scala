@@ -52,3 +52,5 @@ package object riscv {
 	}
 
 }
+
+// todo: fix readme by putting 'usage' before 'example', adding executable/library subsections to 'usage', add corresponding subsections to 'example', fix 'example' so that ELF build is first and applies to both subsections.

@@ -18,11 +18,6 @@ println( char* s ) {
 	out( '\n' );
 }
 
-void
-printb( int b ) {
-	println( b ? "true" : "false" );
-}
-
 char*
 double2str( double x, char p[] )
 {
@@ -65,22 +60,7 @@ double2str( double x, char p[] )
 
 void
 main() {
-    double a = 3.4;
-    double b = 5.6;
-    double c = 7.8;
-
-	printb( a + b == 3.4 + 5.6 );
-	printb( a - b == 3.4 - 5.6 );
-	printb( a < b );
-	printb( a <= b );
-	printb( a > b );
-	printb( a >= b );
-	printb( a != b );
-	printb( a * b == 3.4 * 5.6 );
-	printb( a / b == 3.4 / 5.6 );
-
 	char buf[20];
 
 	println( double2str(3.5, buf) );
-	println( double2str(-3.5, buf) );
 }
