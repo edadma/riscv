@@ -11,6 +11,10 @@ class ExamplesCompressed extends FreeSpec with PropertyChecks with Matchers {
 //		Run( "tests/hello.hex" ) shouldBe "Hello world!"
 //	}
 
+//	"pi_approx" in {
+//		Run( "tests/pi_approx.hex" ) shouldBe "3.141592653589791339641124\n"
+//	}
+
 //	"signum" in {
 //		Run( "tests/signum.hex" ) shouldBe
 //			"""

@@ -11,6 +11,10 @@ class ExamplesNormal extends FreeSpec with PropertyChecks with Matchers {
 		Run( "tests/hello.ghex" ) shouldBe "Hello world!"
 	}
 
+	"pi_approx" in {
+		Run( "tests/pi_approx.ghex" ) shouldBe "3.141592653589791339641124"
+	}
+
 	"signum" in {
 		Run( "tests/signum.ghex" ) shouldBe
 			"""
