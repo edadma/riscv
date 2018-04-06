@@ -46,6 +46,7 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RType
 			case 0x69 => // FCVT
 				rs2 match {
 					case 0 => cpu.f(rd) = cpu(rs1).asInstanceOf[Int]
+          case 2 => cpu.f(rd) = cpu(rs1)
 				}
       // RV64D
       case 0x79 => // FMV.D.X

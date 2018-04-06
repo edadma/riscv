@@ -61,7 +61,7 @@ double2str( double x )
 
 double
 bbp( int iterations ) {
-	double den = 1;
+	long den = 1;
 	double sum = 0;
 
 	for (int k = 0; k <= iterations - 1; k++) {
