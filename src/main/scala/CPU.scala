@@ -23,9 +23,13 @@ class CPU( private [riscv] val memory: Memory ) {
   private val opcodes32 = CPU.opcodeTable32
   private val opcodes16 = CPU.opcodeTable16
 
-  private [riscv] def ecall = problem( "ecall instruction not defined" )
+  private [riscv] def ecall = ecallHandler
 
-  private [riscv] def ebreak = problem( "ebreak instruction not defined" )
+  protected def ecallHandler = problem( "ecall instruction not defined" )
+
+  private [riscv] def ebreak = ebreakHandler
+
+  protected def ebreakHandler = problem( "ebreak instruction not defined" )
 
 	def isRunning = running
 
@@ -97,7 +101,7 @@ class CPU( private [riscv] val memory: Memory ) {
 
   def problem( error: String ) = {
     registers
-    sys.error( s"error at ${pc.toHexString}: $error" )
+    sys.error( s"error at ${pc.toHexString} (${"%08x".format(instruction)}): $error" )
   }
 
   def reset: Unit = {

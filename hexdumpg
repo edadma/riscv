@@ -1,1 +1,1 @@
-riscv64-unknown-elf-readelf -R .text -x .rodata -x .data $1 >$1.ghex
+riscv64-unknown-elf-readelf -R .text -x .rodata -x .data -x .sdata $1 >$1.ghex
