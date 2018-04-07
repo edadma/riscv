@@ -226,19 +226,31 @@ class ExamplesCompressed extends FreeSpec with PropertyChecks with Matchers {
 //
 //	"float64" in {
 //		Run( "tests/float64.hex" ) shouldBe
-//			"""
-//				|true
-//				|true
-//				|true
-//				|true
-//				|false
-//				|false
-//				|true
-//				|true
-//				|true
-//				|3.5
-//				|-3.5
-//			""".trim.stripMargin
+//    """
+//      |true
+//      |true
+//      |true
+//      |true
+//      |false
+//      |false
+//      |true
+//      |true
+//      |true
+//      |3.5
+//      |-3.5
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//      |true
+//  """.trim.stripMargin
 //	}
 
 }

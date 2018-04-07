@@ -42,11 +42,16 @@ class FP( val rs1: Int, val rs2: Int, val rd: Int, val mode: Int ) extends RType
       case 0x61 => // FCVT
         rs2 match {
           case 0 => cpu(rd) = cpu.f(rs1).asInstanceOf[Int]
+          case 1 => cpu(rd) = cpu.f(rs1).asInstanceOf[Long]&0xFFFFFFFFL
+          case 2 => cpu(rd) = cpu.f(rs1).asInstanceOf[Long]
+          case 3 => cpu(rd) = BigDecimal( cpu.f(rs1) ).longValue
         }
 			case 0x69 => // FCVT
 				rs2 match {
 					case 0 => cpu.f(rd) = cpu(rs1).asInstanceOf[Int]
+          case 1 => cpu.f(rd) = cpu(rs1)&0xFFFFFFFFL
           case 2 => cpu.f(rd) = cpu(rs1)
+          case 3 => cpu.f(rd) = ulong( cpu(rs1) ).doubleValue
 				}
       // RV64D
       case 0x79 => // FMV.D.X

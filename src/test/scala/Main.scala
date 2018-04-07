@@ -63,13 +63,13 @@ object Main extends App {
           add( new StdIOChar(0x20000) )
           add( new RAM("stack", 0, 0xFFFF) )
           add( new RAM("bss", 0x1000000, 0x100FFFF) )
-          addHexdump( io.Source.fromFile("tests/pi_approx.ghex") )
+          addHexdump( io.Source.fromFile("tests/float64.ghex") )
         }
       } )
 
   cpu.reset
-  println( "gc" )
-  System.gc
+//  println( "gc" )
+//  System.gc
   println( "run" )
   cpu.run
   println( "done" )
