@@ -8,7 +8,7 @@ import jline.console.ConsoleReader
 
 object Main extends App {
 	
-	lazy val mach = new Machine
+	lazy val emu = new Emulator
 	var enterREPL = true
 
 	Options( args ) {
@@ -26,7 +26,7 @@ object Main extends App {
 			Nil
 		case "-le" :: file :: _ =>
 			load( file )
-			mach.run
+			emu.run
 			enterREPL = false
 			Nil
 		case o :: _ if o startsWith "-" =>
@@ -40,16 +40,16 @@ object Main extends App {
 	if (enterREPL)
 		REPL
 
-	def load( file: String ) = mach.load( file )
+	def load( file: String ) = emu.load( file )
 
 //	def save( file: String ) = emu.save( file )
 
 	def waitUntilRunning = {
-		while (!mach.cpu.isRunning) {}
+		while (!emu.cpu.isRunning) {}
 	}
 
 	def waitWhileRunning = {
-		while (mach.cpu.isRunning) {}
+		while (emu.cpu.isRunning) {}
 	}
 
 	def REPL {
@@ -61,29 +61,29 @@ object Main extends App {
 		reader.setBellEnabled( false )
 		reader.setPrompt( "> " )
 
-		mach.reregister( "_stdioInt_",
+		emu.reregister( "_stdioInt_",
 			(p: String, mem: Memory, cpu: CPU) => {
 				mem add new JLineInt( hex(p), reader )
 			} )
-		mach.reregister( "_stdioHex_",
+		emu.reregister( "_stdioHex_",
 			(p: String, mem: Memory, cpu: CPU) => {
 				mem add new JLineHex( hex(p), reader )
 			} )
 
 		def registers = {
-			mach.cpu.fetch
-			mach.cpu.disassemble
-			mach.cpu.registers
+			emu.cpu.fetch
+			emu.cpu.disassemble
+			emu.cpu.registers
 		}
 
-		def dump( start: Int, lines: Int ) = out.println( mach.dump(start, lines) )
+		def dump( start: Int, lines: Int ) = out.println( emu.dump(start, lines) )
 
 //		def disassemble( start: Int, lines: Int ) = out.println( mach.disassemble(start, lines) )
 
 //		def printBreakpoints = out.println( mach.breakpoints map {case (b, l) => hexShort(b) + (if (l != "") "/" + l else "")} mkString " " )
 
 		def runAndWait {
-			mach.run
+			emu.run
 			waitUntilRunning
 			waitWhileRunning
 			registers
@@ -115,21 +115,21 @@ object Main extends App {
 //						disassemble( -1, 15 )
 					case List( "clear"|"c", addr1, addr2 ) =>
 						for (i <- hex( addr1 ) until hex( addr2 ))
-							mach.mem.programByte( i, 0 )
+							emu.mem.programByte( i, 0 )
 					case List( "clear"|"c" ) =>
-						mach.mem.clearRAM
+						emu.mem.clearRAM
 					case List( "drop"|"dr", region ) =>
-						mach.mem.remove( region )
-						out.println( mach.mem )
+						emu.mem.remove( region )
+						out.println( emu.mem )
 					case List( "dump"|"d", addr ) =>
-						dump( mach.target(addr), 10 )
+						dump( emu.target(addr), 10 )
 					case List( "dump"|"d" ) =>
 						dump( -1, 10 )
 					case List( "execute"|"e", addr ) =>
-						mach.cpu.pc = mach.target( addr )
-						mach.run
+						emu.cpu.pc = emu.target( addr )
+						emu.run
 					case List( "execute"|"e" ) =>
-						mach.run
+						emu.run
 //					case List( "execute&wait"|"ew", addr ) =>
 //						mach.cpu.pc = mach.target( addr )
 //						runAndWait
@@ -165,17 +165,17 @@ object Main extends App {
 						reload = command
 						load( file )
 					case ("memory"|"m") :: addr :: data =>
-						val addr1 = mach.target( addr )
+						val addr1 = emu.target( addr )
 
-						for ((d, i) <- data map mach.target zipWithIndex)
-							mach.program( addr1 + i, d )
+						for ((d, i) <- data map emu.target zipWithIndex)
+							emu.program( addr1 + i, d )
 
 						dump( addr1, (data.length + addr1%16)/16 + 1 )
 					case List( "memory"|"m" ) =>
-						out.println( mach.mem )
+						out.println( emu.mem )
 					case List( "quit"|"q" ) =>
 //						mach.stop
-						mach.mem.removeDevices
+						emu.mem.removeDevices
 						sys.exit
 //					case List( "registers"|"r", reg, value ) =>
 //						val n = mach.target( value )
@@ -197,39 +197,39 @@ object Main extends App {
 //
 //						registers
 					case List( "registers"|"r" ) =>
-						mach.cpu.registersAll
+						emu.cpu.registersAll
 					case List( "reload"|"rl" ) =>
 						interp( reload )
 					case List( "reset"|"re" ) =>
-						mach.reset
+						emu.reset
 						registers
 					case List( "step"|"s", addr ) =>
-						mach.cpu.pc = mach.target( addr )
-						mach.step
+						emu.cpu.pc = emu.target( addr )
+						emu.step
 						registers
 					case List( "step"|"s" ) =>
-						mach.step
+						emu.step
 						registers
 //					case List( "stop"|"st" ) =>
 //						mach.stop
 //						waitWhileRunning
 //						registers
 					case List( "symbols"|"sy", symbol, value ) =>
-						mach.symbols += (symbol -> mach.target( value ))
+						emu.symbols += (symbol -> emu.target( value ))
 					case List( "symbols"|"sy" ) =>
 						out.println( "name            value segment" )
 						out.println( "----            ----- -------" )
-						for ((s, v) <- mach.symbols.toList sortBy (_._1))
+						for ((s, v) <- emu.symbols.toList sortBy (_._1))
 							v match {
 								case str: String => out.printf( "%-15s %-5s\n", s, '"' + str + '"' )
 								case addr: Int =>
 									val seg =
-										mach.segments get addr match {
+										emu.segments get addr match {
 											case None =>
-												if (mach.segments isEmpty)
+												if (emu.segments isEmpty)
 													""
 												else {
-													val range = mach.segments.range( mach.segments.min._1, addr )
+													val range = emu.segments.range( emu.segments.min._1, addr )
 
 													if (range isEmpty)
 														""
@@ -248,9 +248,9 @@ object Main extends App {
 									out.printf( "%-15s %-5s %s\n", s, hexShort(addr), seg )
 							}
 					case List( "trace"|"t", "on" ) =>
-						mach.cpu.trace = true
+						emu.cpu.trace = true
 					case List( "trace"|"t", "off" ) =>
-						mach.cpu.trace = false
+						emu.cpu.trace = false
 					case Nil|List( "" ) =>
 					case _ => out.println( "error interpreting command" )
 				}

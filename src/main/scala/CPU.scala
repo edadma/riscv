@@ -9,7 +9,6 @@ class CPU( private [riscv] val memory: Memory ) {
   private [riscv] val x = new Array[Long]( 32 )
   private [riscv] var pc: Long = 0
   private [riscv] var instruction = 0
-  private [riscv] var halt = false
   private [riscv] val f = new Array[Double]( 32 )
   private [riscv] var fcsr: Int = 0
   private [riscv] var disp: Long = 0
@@ -40,12 +39,12 @@ class CPU( private [riscv] val memory: Memory ) {
       x(r) = v
 
   csrs(0) =
-    new CSR( "state" ) {
+    new CSR( "emulator-state" ) {
       def read( cpu: CPU, addr: Int ) = 0
 
       def write( cpu: CPU, addr: Int, v: Long ): Unit =
         v match {
-          case 0 => halt = true
+          case 0 => halt
           case _ => problem( s"undefined emulator control value: $v" )
         }
     }
@@ -104,7 +103,12 @@ class CPU( private [riscv] val memory: Memory ) {
     sys.error( s"error at ${pc.toHexString} (${"%08x".format(instruction)}): $error" )
   }
 
+  def halt: Unit = {
+    running = false
+  }
+
   def reset: Unit = {
+    halt
     memory.reset
 
     for (r <- csrs if r != IllegalCSR)
@@ -116,7 +120,7 @@ class CPU( private [riscv] val memory: Memory ) {
     }
 
     pc = memory.code
-    halt = false
+    running = false
     fcsr = 0
   }
 
@@ -139,7 +143,13 @@ class CPU( private [riscv] val memory: Memory ) {
       opcodes16(instruction)( this )
     }
 
+    val prev = pc//dbg
+
     pc += disp
+
+    if (pc < 0)//dbg
+      sys.error( s"${prev.toHexString} ${disp.toHexString}" )
+
     counter += 1
   }
 
@@ -155,7 +165,7 @@ class CPU( private [riscv] val memory: Memory ) {
   def run: Unit = {
     running = true
 
-    while (!halt)
+    while (running)
       execute
 
     running = false

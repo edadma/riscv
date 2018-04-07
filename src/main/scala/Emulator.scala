@@ -4,7 +4,7 @@ import scala.collection.immutable.TreeMap
 import scala.collection.mutable.HashMap
 
 
-class Machine {
+class Emulator {
 	
 	val mem =
 		new Memory {

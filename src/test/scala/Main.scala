@@ -62,8 +62,8 @@ object Main extends App {
           regions.clear
           add( new StdIOChar(0x20000) )
           add( new RAM("stack", 0, 0xFFFF) )
-          add( new RAM("bss", 0x1000000, 0x100FFFF) )
-          addHexdump( io.Source.fromFile("tests/float64.ghex") )
+          add( new RAM("bss", 0x155f8, 0x15fff) )
+          addHexdump( io.Source.fromFile("/home/ed/riscv-ports/test/printf.ghex") )
         }
       } )
 
