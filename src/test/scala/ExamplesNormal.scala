@@ -239,7 +239,19 @@ class ExamplesNormal extends FreeSpec with PropertyChecks with Matchers {
 				|true
 				|3.5
 				|-3.5
-			""".trim.stripMargin
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+				|true
+ 			""".trim.stripMargin
 	}
 
 }

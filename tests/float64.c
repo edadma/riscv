@@ -68,6 +68,7 @@ main() {
     double a = 3.4;
     double b = 5.6;
     double c = 7.8;
+	int d = 3;
 
 	printb( a + b == 3.4 + 5.6 );
 	printb( a - b == 3.4 - 5.6 );
@@ -83,4 +84,16 @@ main() {
 
 	println( double2str(3.5, buf) );
 	println( double2str(-3.5, buf) );
+	printb( (int) a == 3 );
+	printb( (short) a == 3 );
+	printb( (char) a == 3 );
+	printb( (long) a == 3 );
+	printb( (double) d == 3.0 );
+	printb( (double) (unsigned int) d == 3.0 );
+	printb( (double) (short) d == 3.0 );
+	printb( (double) (unsigned short) d == 3.0 );
+	printb( (double) (long) d == 3.0 );
+	printb( (double) (unsigned long) d == 3.0 );
+	printb( (double) (char) d == 3.0 );
+	printb( (double) (signed char) d == 3.0 );
 }
