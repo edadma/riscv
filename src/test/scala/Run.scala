@@ -16,27 +16,25 @@ object Run {
     halt:
     csrrwi x0, 0, 0
 */
-  val cpu =
-    new CPU(
-      new Memory {
-        def init: Unit = {
-          regions.clear
-          add( new StdIOChar(0x20000) )
-          add( new RAM("stack", 0, 0xFFFF) )
-          add( new RAM("bss", 0x1000000, 0x100FFFF) )
-        }
-      } )
 
   def apply( code: String ): String = Run( io.Source.fromFile(code) )
 
-  def apply( code: io.Source ) = synchronized {
+  def apply( code: io.Source ) =
     capture {
-      cpu.memory.init
-      cpu.reset
+      val cpu =
+        new CPU(
+          new Memory {
+            def init: Unit = {
+              regions.clear
+              add( new StdIOChar(0x20000) )
+              add( new RAM("stack", 0, 0xFFFF) )
+              add( new RAM("bss", 0x1000000, 0x100FFFF) )
+            }
+          } )
+
       cpu.memory.addHexdump( code )
       cpu.pc = cpu.memory.code
       cpu.run
     }
-  }
 
 }
