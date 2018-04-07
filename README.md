@@ -3,7 +3,7 @@ riscv
 [![Build Status](https://www.travis-ci.org/edadma/riscv.svg?branch=master)](https://www.travis-ci.org/edadma/riscv)
 [![Coverage Status](https://coveralls.io/repos/github/edadma/riscv/badge.svg?branch=master)](https://coveralls.io/github/edadma/riscv?branch=master)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
-[![Version](https://img.shields.io/badge/latest_release-0.1_snapshot_1.2-orange.svg)](https://www.scala-sbt.org/)
+[![Version](https://img.shields.io/badge/latest_release-0.1_snapshot_2-orange.svg)](https://www.scala-sbt.org/)
 
 *riscv* is an emulator for the RISC-V ISA (v2.2).  Specifically, RV64ID is currently being emulated (with a few missing instructions).  Emulation for the compressed instruction sets (RV32C, RV64C) is being worked on.  The goal is for RV64GC to be fully supported.
 
@@ -23,14 +23,14 @@ Use the following definition to use *riscv* in your Maven project:
 	<dependency>
 	  <groupId>xyz.hyperreal</groupId>
 	  <artifactId>riscv</artifactId>
-	  <version>0.1_snapshot_1.2</version>
+	  <version>0.1_snapshot_2</version>
 	</dependency>
 
 Add the following to your `build.sbt` file to use *riscv* in your SBT project:
 
 	resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
 
-	libraryDependencies += "xyz.hyperreal" %% "riscv" % "0.1_snapshot_1.2"
+	libraryDependencies += "xyz.hyperreal" %% "riscv" % "0.1_snapshot_2"
 
 ### Executable
 

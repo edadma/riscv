@@ -23,9 +23,13 @@ class CPU( private [riscv] val memory: Memory ) {
   private val opcodes32 = Array.fill[Instruction]( 0x2000000 )( IllegalInstruction )
   private val opcodes16 = Array.fill[Compressed]( 0x10000 )( IllegalCompressed )
 
-  private [riscv] def ecall = problem( "ecall instruction not defined" )
+  private [riscv] def ecall = ecallHandler
 
-  private [riscv] def ebreak = problem( "ebreak instruction not defined" )
+  protected def ecallHandler = problem( "ecall instruction not defined" )
+
+  private [riscv] def ebreak = ebreakHandler
+
+  protected def ebreakHandler = problem( "ebreak instruction not defined" )
 
 	def isRunning = running
 
