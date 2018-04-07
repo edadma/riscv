@@ -9,10 +9,10 @@ object Run {
   .globl _start
     _start:
     lui	 sp, 0x10
-  call main
+    call main
     csrrwi x0, 0, 0
 
-    .globl halt
+  .globl halt
     halt:
     csrrwi x0, 0, 0
 */
