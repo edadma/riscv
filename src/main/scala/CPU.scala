@@ -145,13 +145,7 @@ class CPU( private [riscv] val memory: Memory ) extends Registers {
       opcodes16(instruction)( this )
     }
 
-    val prev = pc//dbg
-
     pc += disp
-
-    if (pc < 0)//dbg
-      sys.error( s"${prev.toHexString} ${disp.toHexString} ${pc.toHexString}" )
-
     counter += 1
   }
 
