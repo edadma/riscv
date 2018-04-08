@@ -2,6 +2,7 @@
 package xyz.hyperreal.riscv
 
 
+// todo: code FITypeInstruction to do correct register disassembly
 class FLD( val rs1: Int, val rd: Int ) extends ITypeInstruction( "FLD" ) {
   def apply( cpu: CPU ) = cpu.f(rd) = ltod( load(cpu) )
 }

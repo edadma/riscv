@@ -4,7 +4,7 @@ package xyz.hyperreal.riscv
 import scala.collection.mutable.ListBuffer
 
 
-class CPU( private [riscv] val memory: Memory ) {
+class CPU( private [riscv] val memory: Memory ) extends Registers {
 
   private [riscv] val x = new Array[Long]( 32 )
   private [riscv] var pc: Long = 0
@@ -72,7 +72,7 @@ class CPU( private [riscv] val memory: Memory ) {
   def registers: Unit = {
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
-        printf( "%21s  ", s"x$i=${x(i).toHexString}" )
+        printf( "%21s  ", s"${rx(i)}=${x(i).toHexString}" )
 
       println
     }
@@ -84,7 +84,7 @@ class CPU( private [riscv] val memory: Memory ) {
   def fregisters: Unit = {
     def regs( start: Int ) {
       for (i <- start until (start + 5 min 32))
-        printf( "%21s  ", s"f$i=${"%.2f".format(f(i))}" )
+        printf( "%21s  ", s"${rf(i)}=${"%.2f".format(f(i))}" )
 
       println
     }
@@ -127,8 +127,10 @@ class CPU( private [riscv] val memory: Memory ) {
   def fetch: Unit = instruction = memory.find( pc ).readInt( pc )
 
   def execute: Unit = {
-    if (trace)
+    if (trace) {
+      disassemble
       registers
+    }
 
     val m = memory.find( pc )
     val low = m.readByte( pc )
@@ -148,7 +150,7 @@ class CPU( private [riscv] val memory: Memory ) {
     pc += disp
 
     if (pc < 0)//dbg
-      sys.error( s"${prev.toHexString} ${disp.toHexString}" )
+      sys.error( s"${prev.toHexString} ${disp.toHexString} ${pc.toHexString}" )
 
     counter += 1
   }

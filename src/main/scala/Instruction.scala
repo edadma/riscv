@@ -2,7 +2,7 @@
 package xyz.hyperreal.riscv
 
 
-abstract class Instruction extends (CPU => Unit) {
+abstract class Instruction extends (CPU => Unit) with Registers {
 
   def disassemble( cpu: CPU ): String
 
@@ -24,7 +24,7 @@ abstract class RTypeInstruction( mnemonic: Map[Int, String] ) extends Instructio
       case a => a
     }
 
-  def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} x$rd, x$rs1, x$rs2"
+  def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} ${rx(rd)}, ${rx(rs1)}, ${rx(rs2)}"
 
 }
 
@@ -45,7 +45,7 @@ abstract class R4TypeInstruction( mnemonic: String ) extends Instruction {
 
   def rs3( cpu: CPU ) = cpu.f(cpu.instruction >>> 27)
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, x$rs2, rm: $rm"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${rx(rs1)}, ${rx(rs2)}, rm: $rm"
 
 }
 
@@ -71,7 +71,7 @@ abstract class FRTypeInstruction( f: Int, m: String ) extends RTypeInstruction( 
 //
 //  def fmt( cpu: CPU ) = (cpu.instruction >> 25)&3
 //
-//  def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} x$rd, x$rs1, x$rs2"
+//  def disassemble( cpu: CPU ) = s"${mnemonic(funct( cpu ))} ${rf(rd)}, ${rf(rs1)}, ${rf(rs2)}"
 //
 //}
 
@@ -84,7 +84,7 @@ abstract class ITypeInstruction( mnemonic: String ) extends Instruction {
 
   def load( cpu: CPU ) = cpu.memory.readLong( immediate(cpu) + cpu(rs1) )
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${immediate( cpu )}"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${rx(rs1)}, ${immediate( cpu )}"
 
 }
 
@@ -97,7 +97,7 @@ abstract class CSRTypeInstruction( mnemonic: String ) extends Instruction {
 
   def csr( cpu: CPU ) = cpu.csrs( address(cpu) )
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${address( cpu )}, $zimm"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${address( cpu )}, $zimm"
 
 }
 
@@ -110,7 +110,7 @@ abstract class ShiftITypeInstruction( mnemonic: String ) extends Instruction {
 
   def shamt( cpu: CPU ) = (cpu.instruction >> 20)&0x3F
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, ${shamt( cpu )}"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${rx(rs1)}, ${shamt( cpu )}"
 
 }
 
@@ -122,7 +122,7 @@ abstract class ShiftWITypeInstruction( mnemonic: String ) extends Instruction {
 
   def funct( cpu: CPU ) = cpu.instruction >>> 25
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, x$rs1, $shamt"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${rx(rs1)}, $shamt"
 
 }
 
@@ -135,7 +135,7 @@ abstract class STypeInstruction( mnemonic: String ) extends Instruction {
 
   def store( cpu: CPU, v: Long ) = cpu.memory.writeLong( immediate(cpu) + cpu(rs1), v )
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rs1, x$rs2, ${immediate( cpu )}"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rs1)}, ${rx(rs2)}, ${immediate( cpu )}"
 
 }
 
@@ -150,7 +150,7 @@ abstract class BTypeInstruction( mnemonic: String ) extends Instruction {
       (cpu.instruction << 4)&0x800 |
       (cpu.instruction >> 19)&0xFFFFF000
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rs1, x$rs2, ${immediate( cpu )}"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rs1)}, ${rx(rs2)}, ${immediate( cpu )}"
 
 }
 
@@ -160,7 +160,7 @@ abstract class UTypeInstruction( mnemonic: String ) extends Instruction {
 
   def immediate( cpu: CPU ) = cpu.instruction&0xFFFFFFFFFFFFF000L
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${immediate( cpu )}"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${immediate( cpu )}"
 
 }
 
@@ -174,7 +174,7 @@ abstract class JTypeInstruction( mnemonic: String ) extends Instruction {
       cpu.instruction&0xFF000 |
       (cpu.instruction >> 11)&0xFFF00000
 
-  def disassemble( cpu: CPU ) = s"$mnemonic x$rd, ${immediate( cpu )}"
+  def disassemble( cpu: CPU ) = s"$mnemonic ${rx(rd)}, ${immediate( cpu )}"
 
 }
 

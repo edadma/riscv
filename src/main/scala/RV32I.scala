@@ -19,10 +19,17 @@ class JAL( val rd: Int ) extends JTypeInstruction( "JAL" ) {
   }
 }
 
+/*
+F98680E7
+
+    -104           13            1
+
+1111 1001 1000 | 01101 | 000 | 00001 | 1100111
+ */
 class JALR( val rs1: Int, val rd: Int ) extends ITypeInstruction( "JALR" ) {
   override def apply( cpu: CPU ) = {
-//    println( cpu.pc.toHexString, (immediate( cpu ) + cpu(rs1)).toHexString )//dbg
-    cpu.disp = immediate( cpu ) + cpu(rs1) - cpu.pc
+    println( rs1, rd, cpu.pc.toHexString, (immediate( cpu ) + cpu(rs1)).toHexString )//dbg
+    cpu.disp = (immediate( cpu ) + cpu(rs1) - cpu.pc)&0xFFFFFFFFFFFFFFFEL
     cpu(rd) = cpu.pc + 4
   }
 }
